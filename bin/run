@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+exports.initTimeStartTime = process.hrtime();
+
+if (require.main === module) {
+  require("@oclif/command")
+    .run()
+    .then(require("@oclif/command/flush"))
+    .catch(require("@oclif/errors/handle"));
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "target": "es2018",
+    "lib": ["es2018"],
+    "outDir": "lib",
+    "sourceMap": false,
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "importHelpers": true,
+    "declaration": true,
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.ts", "**/__tests__", "**/__mocks__"]
+}
