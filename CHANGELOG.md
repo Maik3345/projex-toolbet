@@ -11,13 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- feat: add the command `puntoscolombia git init` for create the next elements:
+- feat: add the command `projex git init` for create the next elements:
   `docs` folder for save all docs files of the project
   `CHANGELOG.md` file for save all changes of the project
   `README.md` file for save all information of the project
   `.gitignore` file for ignore the next files and folders:
-- feat: add the command `puntoscolombia git setup devops template` for create the `.azuredevops/pull_request_template/PULL_REQUEST_TEMPALTE.md` file, this file is used for create the template of the pull request in the azure devops
-- feat: add the command `puntoscolombia git setup husky` for create the `husky` configuration in the project with `commitlint` and the `commit-msg` hook for add the name of the current branch in the commit message
+- feat: add the command `projex git setup devops template` for create the `.azuredevops/pull_request_template/PULL_REQUEST_TEMPALTE.md` file, this file is used for create the template of the pull request in the azure devops
+- feat: add the command `projex git setup husky` for create the `husky` configuration in the project with `commitlint` and the `commit-msg` hook for add the name of the current branch in the commit message
 - add the unit test for:
    ````bash
   RUNS  src/modules/apps/vtex/login/util/getAuth/getAuth.test.ts
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Create the command `puntoscolombia git clone 'https://DevOpsPCO@dev.azure.com/DevOpsPCO/Marketplace/_git/' '${repoList}'` and `puntoscolombia git setup hook '/Users/myuser/code/prepare-commit-msg'`
+- Create the command `projex git clone 'https://DevOpsPCO@dev.azure.com/DevOpsPCO/Marketplace/_git/' '${repoList}'` and `projex git setup hook '/Users/myuser/code/prepare-commit-msg'`
 
 ## [1.3.4] - 2023-05-19
 
@@ -92,7 +92,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Fix the command `puntoscolombia vtex cms backup` the spinner not close when the process finish
+- Fix the command `projex vtex cms backup` the spinner not close when the process finish
 
 ## [1.0.1] - 2023-01-03
 

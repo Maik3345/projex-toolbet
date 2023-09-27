@@ -3,23 +3,23 @@
 ## Installation
 
 ```bash
-npm i puntoscolombia
+npm i projex
 
-npm i -g puntoscolombia
+npm i -g projex
 ```
 
 Available commands:
 
 ```bash
-$ puntoscolombia
+$ projex
 
     A command line to manage the workflow
 
     VERSION
-      puntoscolombia/1.3.1 darwin-x64 node-v18.15.0
+      projex/1.3.1 darwin-x64 node-v18.15.0
 
     USAGE
-      $ puntoscolombia [COMMAND]
+      $ projex [COMMAND]
 
     TOPICS
       git   Utilities for manage the git repository
@@ -27,7 +27,7 @@ $ puntoscolombia
 
     COMMANDS
       execute  Run a command and accept the ask question by default with yes "y"
-      help     display help for puntoscolombia
+      help     display help for projex
 
 ```
 
@@ -54,6 +54,6 @@ Publish to npm `sudo npm publish`
 If you are a bash user you can start customizing your command prompt by running the following command:
 
 ```sh
-echo "source $(npm root -g)/puntoscolombia/plugins/bash/puntoscolombia.bash" >> ~/.bashrc
-echo "source $(npm root -g)/puntoscolombia/plugins/bash/prompt.bash" >> ~/.bashrc
+echo "source $(npm root -g)/projex/plugins/bash/projex.bash" >> ~/.bashrc
+echo "source $(npm root -g)/projex/plugins/bash/prompt.bash" >> ~/.bashrc
 ```
