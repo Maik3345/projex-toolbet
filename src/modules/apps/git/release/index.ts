@@ -1,8 +1,7 @@
+import { log } from "../../../../shared";
 import chalk from "chalk";
 import { indexOf, prop } from "ramda";
 import semver from "semver";
-
-import log from "../../../../api/logger";
 import { ReleaseUtils } from "./utils";
 
 export const releaseTypeAliases = {
@@ -58,7 +57,7 @@ Valid release tags are: ${supportedTagNames.join(", ")}`);
   return [oldVersion, newVersion];
 };
 
-export default async (
+export const release = async (
   releaseType = "patch", // This arg. can also be a valid (semver) version.
   tagName = "beta",
   options
@@ -67,6 +66,7 @@ export default async (
   const pushAutomatic = options.noPush;
   const automaticDeploy = options.noDeploy;
   const checkPreRelease = options.noCheckRelease;
+  const noTag = options.noTag;
 
   const utils = new ReleaseUtils();
   utils.checkGit();
@@ -107,16 +107,14 @@ export default async (
       utils.updateChangelog(changelogVersion);
     }
     !pushAutomatic && (await utils.add());
-    !pushAutomatic && (await utils.commit(tagText));
-    !pushAutomatic && (await utils.tag(tagText));
-    !pushAutomatic && (await utils.push(tagText));
+    !pushAutomatic && (await utils.commit(tagText, releaseType));
+    !noTag && !pushAutomatic && (await utils.tag(tagText));
+    !pushAutomatic && (await utils.push(tagText, noTag));
     !automaticDeploy && (await utils.postRelease());
 
     if (pushAutomatic && automaticDeploy) {
-      log.info(
-        `you can push all changes with: ${chalk.bold.yellow(
-          `git push && git push origin ${tagText}`
-        )}`
+      console.log(
+        `you can push all changes with:git push && git push origin ${tagText}`
       );
     }
   } catch (e) {

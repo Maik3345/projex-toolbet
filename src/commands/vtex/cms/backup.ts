@@ -1,18 +1,17 @@
-import { ColorifyConstants } from "../../../api/constants/Colors";
-import { CustomCommand } from "../../../api/oclif/CustomCommand";
-import { backup } from "../../../modules/apps";
-import { DEFAULT_SITE_TO_UPLOAD } from "../../../shared";
+import { ColorifyConstants, CustomCommand } from "../../../api";
+import { backup } from "../../../modules";
+import { DEFAULT_SITE_TO_UPLOAD, TOOLBET_NAME } from "../../../shared";
 
 export default class Backup extends CustomCommand {
   static description = `Download the files from the checkout files of vtex`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF(
-      "puntoscolombia vtex cms backup"
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} vtex cms backup`
     )}`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF(
-      "untoscolombia vtex cms backup"
-    )} puntoscolombiaio`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} vtex cms backup`
+    )} my-site`,
   ];
 
   static args = [
@@ -24,10 +23,9 @@ export default class Backup extends CustomCommand {
     },
   ];
 
-
   static flags = {
     ...CustomCommand.globalFlags,
-  }
+  };
 
   async run() {
     const {

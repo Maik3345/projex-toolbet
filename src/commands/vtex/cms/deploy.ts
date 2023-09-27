@@ -1,19 +1,18 @@
-import { ColorifyConstants } from "../../../api/constants/Colors";
-import { CustomCommand } from "../../../api/oclif/CustomCommand";
-import { deploy } from "../../../modules/apps";
-import { DEFAULT_SITE_TO_UPLOAD } from "../../../shared";
 import { flags as oclifFlags } from "@oclif/command";
+import { ColorifyConstants, CustomCommand } from "../../../api";
+import { deploy } from "../../../modules";
+import { DEFAULT_SITE_TO_UPLOAD, TOOLBET_NAME } from "../../../shared";
 
 export default class Deploy extends CustomCommand {
   static description = `Deploy a local files in the checkout of the current account`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF(
-      "puntoscolombia vtex cms backup"
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} vtex cms backup`
     )}`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF(
-      "untoscolombia vtex cms backup"
-    )} puntoscolombiaio`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} vtex cms backup`
+    )} my-site`,
   ];
 
   static args = [

@@ -3,6 +3,10 @@ export interface IFile {
   path: string;
 }
 
+export interface Folders {
+  folders: Array<string>;
+}
+
 export interface ConfigVtexJson {
   login: string;
   token: string;

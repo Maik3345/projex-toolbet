@@ -7,11 +7,48 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.0] - 2023-09-05
+
 ### Added
 
-- Add the output in the release command to show the app name and the version of the app
-- Add flag `--no-check-release`, this flag allow to make the release without check if the app is in the release state
-- No make the push or commit when the flag `--no-push` is present in the release command
+- feat: add the command `puntoscolombia git init` for create the next elements:
+  `docs` folder for save all docs files of the project
+  `CHANGELOG.md` file for save all changes of the project
+  `README.md` file for save all information of the project
+  `.gitignore` file for ignore the next files and folders:
+- feat: add the command `puntoscolombia git setup devops template` for create the `.azuredevops/pull_request_template/PULL_REQUEST_TEMPALTE.md` file, this file is used for create the template of the pull request in the azure devops
+- feat: add the command `puntoscolombia git setup husky` for create the `husky` configuration in the project with `commitlint` and the `commit-msg` hook for add the name of the current branch in the commit message
+- add the unit test for:
+   ````bash
+  RUNS  src/modules/apps/vtex/login/util/getAuth/getAuth.test.ts
+  RUNS  src/modules/apps/vtex/login/login.test.ts
+  RUNS  src/modules/apps/vtex/run/run.test.ts
+  ```
+
+## [1.7.0] - 2023-08-07
+
+### Added
+
+- Add the word `beta` in the release command
+
+## [1.6.0] - 2023-08-07
+
+### Added
+
+- Change the icons and the type message in the release command
+- Add `husky` and `commitlint`, this allow the validation of the commit message
+
+## [1.5.0] - 2023-08-02
+
+### Added
+
+- add the support to read the `package.json` file to get the version, first read the `manifest.json` if exist and then read the `package.json` file in the last case
+
+## [1.4.0] - 2023-08-01
+
+### Added
+
+- Create the command `puntoscolombia git clone 'https://DevOpsPCO@dev.azure.com/DevOpsPCO/Marketplace/_git/' '${repoList}'` and `puntoscolombia git setup hook '/Users/myuser/code/prepare-commit-msg'`
 
 ## [1.3.4] - 2023-05-19
 

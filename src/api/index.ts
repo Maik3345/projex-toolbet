@@ -1,4 +1,5 @@
 export * from "./constants";
+export * from "./directory";
 export { default as logger } from "./logger";
 export * from "./manifest";
 export * from "./metrics";

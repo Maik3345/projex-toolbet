@@ -1,3 +1,5 @@
+import { getAppRoot, promptConfirm } from "../../../../api";
+import { log, runCommand } from "../../../../shared";
 import chalk from "chalk";
 import { execSync } from "child-process-es6-promise";
 import {
@@ -12,31 +14,47 @@ import {
 import { resolve } from "path";
 import { path } from "ramda";
 import semver from "semver";
-import { getAppRoot } from "../../../../api/manifest/ManifestUtil";
-import { promptConfirm } from "../../../../api/modules/prompts";
-import { log } from "../../../../shared";
+const fs = require("fs");
 
 const unreleased = "## [Unreleased]";
 
 export class ReleaseUtils {
-  private root: string;
+  public root: string;
+  private manifestVersionFile: string;
+  private packageVersionFile: string;
   private versionFile: string;
   private changelogPath: string;
 
   constructor() {
     this.root = getAppRoot();
-    this.versionFile = resolve(this.root, "manifest.json");
+    this.manifestVersionFile = resolve(this.root, "manifest.json");
+    this.packageVersionFile = resolve(this.root, "package.json");
+
     this.changelogPath = resolve(this.root, "CHANGELOG.md");
   }
 
-  private readVersionFile = () => {
+  public checkDirectory = (repository: string) => {
     try {
-      return readJsonSync(this.versionFile);
-    } catch (e) {
-      if (e.code === "ENOENT") {
-        log.error(`Version file not found: ${this.versionFile}.`);
-      }
-      throw e;
+      return fs.existsSync(repository);
+    } catch (error) {
+      return false;
+    }
+  };
+
+  private readVersionFile = () => {
+    if (this.checkDirectory(this.manifestVersionFile)) {
+      this.versionFile = this.manifestVersionFile;
+      return readJsonSync(this.manifestVersionFile);
+    } else if (this.checkDirectory(this.packageVersionFile)) {
+      this.versionFile = this.packageVersionFile;
+      return readJsonSync(this.packageVersionFile);
+    } else {
+      log.error(
+        `Version file not found: ${this.manifestVersionFile} or ${this.packageVersionFile}.`
+      );
+      throw new Error(
+        `Manifest or package.json not found in ${this.root} directory`
+      );
     }
   };
 
@@ -50,11 +68,6 @@ export class ReleaseUtils {
       throw new Error(`Invalid app version: ${version}`);
     }
     return version;
-  };
-
-  public readAppName = () => {
-    const vendor = this.readVersionFile().vendor;
-    return `${vendor ? `${vendor}.` : ""}${this.readVersionFile().name}`;
   };
 
   public incrementVersion = (
@@ -74,14 +87,19 @@ export class ReleaseUtils {
     return semver.inc(oldVersion, releaseType);
   };
 
-  public commit = (tagName: string) => {
-    const commitMessage = `ci: :rocket: release ${tagName}`;
-    let successMessage = `File(s) ${this.versionFile} commited`;
+  public commit = (tagName: string, releaseType: string) => {
+    const commitIcon =
+      releaseType === "prerelease" || releaseType === "pre"
+        ? ":construction: beta release"
+        : ":rocket: release";
+    const commitMessage = `build: ${commitIcon} ${tagName}`;
+    let successMessage = `File(s) ${this.versionFile} committed`;
     if (existsSync(this.changelogPath)) {
-      successMessage = `Files ${this.versionFile} ${this.changelogPath} commited`;
+      successMessage = `Files ${this.versionFile} ${this.changelogPath} committed`;
     }
-    return this.runCommand(
+    return runCommand(
       `git commit -m "${commitMessage}"`,
+      this.root,
       successMessage,
       true
     );
@@ -89,24 +107,26 @@ export class ReleaseUtils {
 
   public tag = (tagName: string) => {
     const tagMessage = `Release ${tagName}`;
-    return this.runCommand(
+    return runCommand(
       `git tag ${tagName} -m "${tagMessage}"`,
+      this.root,
       `Tag created: ${tagName}`,
       true
     );
   };
 
-  public push = (tagName: string) => {
-    return this.runCommand(
-      `git push && git push origin ${tagName}`,
-      "Pushed commit and tags",
+  public push = (tagName: string, noTag: string) => {
+    return runCommand(
+      `git push ${noTag ? "" : `&& git push origin ${tagName}`}`,
+      this.root,
+      `Pushed commit ${noTag ? "" : `and tag ${tagName}`}`,
       true,
       2
     );
   };
 
   public gitStatus = () => {
-    return this.runCommand("git status --porcelain", "", true);
+    return runCommand("git status --porcelain", this.root, "", true);
   };
 
   public checkNothingToCommit = () => {
@@ -116,13 +136,15 @@ export class ReleaseUtils {
 
   public checkIfGitPushWorks = () => {
     try {
-      this.runCommand("git push", "", true, 2, true);
+      runCommand("git push", this.root, "", true, 2, true);
     } catch (e) {
       log.error(`Failed pushing to remote.`);
       throw e;
     }
   };
 
+  /* The `preRelease` method is a function that is used to perform pre-release tasks before creating a
+  new release. Here is a breakdown of what it does: */
   public preRelease = () => {
     const msg = "Pre release";
     if (!this.checkNothingToCommit()) {
@@ -133,7 +155,7 @@ export class ReleaseUtils {
     this.runScript(key, msg);
     if (!this.checkNothingToCommit()) {
       const commitMessage = `Pre release commit\n\n ${this.getScript(key)}`;
-      return this.commit(commitMessage);
+      return this.commit(commitMessage, "prerelease");
     }
   };
 
@@ -183,7 +205,12 @@ export class ReleaseUtils {
       gitAddCommand += ` "${this.changelogPath}"`;
       successMessage = `Files ${this.versionFile} ${this.changelogPath} added`;
     }
-    return this.runCommand(gitAddCommand, successMessage, true);
+    return runCommand(gitAddCommand, this.root, successMessage, true);
+  };
+
+  public readAppName = () => {
+    const vendor = this.readVersionFile().vendor;
+    return `${vendor ? `${vendor}.` : ""}${this.readVersionFile().name}`;
   };
 
   public updateChangelog = (changelogVersion: any) => {
@@ -230,41 +257,8 @@ export class ReleaseUtils {
     return path(["scripts", key], this.readVersionFile());
   };
 
-  private runCommand = (
-    cmd: string,
-    successMessage: string,
-    hideOutput = false,
-    retries = 0,
-    hideSuccessMessage = false
-  ) => {
-    let output;
-    try {
-      output = execSync(cmd, {
-        stdio: hideOutput ? "pipe" : "inherit",
-        cwd: this.root,
-      });
-      if (!hideSuccessMessage) {
-        log.info(successMessage + chalk.blue(` >  ${cmd}`));
-      }
-      return output;
-    } catch (e) {
-      log.error(`Command '${cmd}' exited with error code: ${e.status}`);
-      if (retries <= 0) {
-        throw e;
-      }
-      log.info(`Retrying...`);
-      return this.runCommand(
-        cmd,
-        successMessage,
-        hideOutput,
-        retries - 1,
-        hideSuccessMessage
-      );
-    }
-  };
-
   private runScript = (key: string, msg: string) => {
     const cmd: string = this.getScript(key);
-    return cmd ? this.runCommand(cmd, msg, false) : undefined;
+    return cmd ? runCommand(cmd, this.root, msg, false) : undefined;
   };
 }

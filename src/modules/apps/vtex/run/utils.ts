@@ -2,6 +2,14 @@ import { spawn } from "child_process";
 import { ERROR_EXECUTION, log } from "../../../../shared";
 import _ from "lodash";
 
+export const executeCommand = (commandToUse: string | undefined) => {
+  if (!commandToUse) {
+    throw new Error("no command to execute");
+  }
+  log.debug(`Command to execute: ${commandToUse}`);
+  childProcessRunCommandRun(commandToUse);
+};
+
 const debouncedError = _.debounce(() => {
   log.error(`Command error execution`);
   throw new Error("finish execution with errors");

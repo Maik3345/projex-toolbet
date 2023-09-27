@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { ColorifyConstants } from "../../api/constants/Colors";
+import { ColorifyConstants } from "../../api/constants/colors";
 import { FeatureFlag } from "../../modules/featureFlag";
 
 export const Messages = {
@@ -18,67 +18,67 @@ export const Messages = {
   UPDATE_TOOLBELT: () =>
     `To update, you must use the same method you used to install. As the following examples:` +
     `\n\n` +
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `yarn`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `yarn global add vtex`
     )}.` +
     `\n\n` +
-    `• If you installed using our new method there is in alpha-version, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using our new method there is in alpha-version, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `vtex autoupdate`
     )}.\n`,
   UPDATE_TOOLBELT_NPM: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `yarn`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `yarn global add vtex`
     )}.`,
   UPDATE_TOOLBELT_BREW: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `brew`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `brew upgrade vtex/vtex`
     )}.`,
   UPDATE_TOOLBELT_STANDALONE: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `AWS Standalone`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `vtex autoupdate`
     )}.`,
   UPDATE_TOOLBELT_CHOCOLATEY: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `chocolatey`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `choco upgrade vtex`
     )}.`,
   UPDATE_FROM_DEPRECATED_BREW: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `brew`
-    )}, update running ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )}, update running ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `brew unlink vtex && brew install vtex/vtex`
     )}.`,
   UPDATE_FROM_DEPRECATED_STANDALONE: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `AWS Standalone`
     )}, update running:
-    ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `curl https://vtex-toolbelt-test.s3.us-east-2.amazonaws.com/uninstall.sh | sh`
     )}
-    ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `curl https://vtex-toolbelt-test.s3.us-east-2.amazonaws.com/install.sh | sh`
     )}`,
   UPDATE_FROM_DEPRECATED_CHOCOLATEY: () =>
-    `• If you installed using ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `• If you installed using ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `chocolatey`
     )}, update running:
-    ${ColorifyConstants.COMMAND_OR_VTEX_REF(`choco uninstall vtex`)}.
-    ${ColorifyConstants.COMMAND_OR_VTEX_REF(`choco install vtex`)}.`,
+    ${ColorifyConstants.COMMAND_OR_RELEASE_REF(`choco uninstall vtex`)}.
+    ${ColorifyConstants.COMMAND_OR_RELEASE_REF(`choco install vtex`)}.`,
   INIT_HELLO_EXPLANATION: () =>
     `Hello! I will help you generate basic files and folders for your app.`,
   INIT_START_DEVELOPING: (folder: string) =>
-    `Run ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    `Run ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `cd ${folder}`
-    )} and ${ColorifyConstants.COMMAND_OR_VTEX_REF(
+    )} and ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       "vtex link"
     )} to start developing!`,
   PROMPT_CONFIRM_NEW_FOLDER: (folder: string) =>

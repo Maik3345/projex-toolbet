@@ -1,11 +1,11 @@
-import { log } from "../../../shared";
-import { childProcessRunCommandRun } from "./util/child-process-run";
+import { log } from "../../../../shared";
+import { executeCommand } from "./utils";
 
 let commandToUse = "";
 
-export default async function (command: string) {
+export const vtexRunCommand = async function (command: string | undefined) {
   if (command === undefined) {
-    throw new Error("no command to execute");
+    return log.error("No command to execute");
   }
 
   // Capturo el flag para saber si empleo la ultima versión siempre o no.
@@ -20,10 +20,5 @@ export default async function (command: string) {
 
   log.debug(`Command to execute: ${commandToUse}`);
   log.info("Loading execute component process");
-  executeCommand();
-}
-
-const executeCommand = () => {
-  log.debug(`Command to execute: ${commandToUse}`);
-  childProcessRunCommandRun(commandToUse);
+  executeCommand(commandToUse);
 };

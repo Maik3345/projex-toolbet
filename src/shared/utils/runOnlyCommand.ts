@@ -1,6 +1,13 @@
-import { log } from "./../logger";
+import { log } from "../logger";
 import { spawn } from "child_process";
 
+/**
+ * The `runOnlyCommand` function is a TypeScript function that executes a command and returns a promise
+ * that resolves with the output of the command.
+ * @param {string} command - The `command` parameter is a string that represents the command you want
+ * to run. It can be any valid command that can be executed in a shell environment.
+ * @returns The function `runOnlyCommand` returns a Promise that resolves to a string.
+ */
 export const runOnlyCommand = (command: string): Promise<string> => {
   const task = spawn(`${command}`, [], {
     shell: true,

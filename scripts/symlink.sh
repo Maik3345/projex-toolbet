@@ -21,7 +21,7 @@ while getopts "hr" OPT; do
   esac
 done
 
-GLOBAL_BIN_PATH_SUFFIX=".puntoscolombia/dev/bin"
+GLOBAL_BIN_PATH_SUFFIX=".projex/dev/bin"
 GLOBAL_BIN_PATH="$HOME/$GLOBAL_BIN_PATH_SUFFIX"
 
 if ! [[ ":$PATH:" == *":$GLOBAL_BIN_PATH:"* ]]; then

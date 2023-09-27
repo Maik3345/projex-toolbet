@@ -1,13 +1,13 @@
-import { ColorifyConstants } from "../../api/constants/Colors";
-import { CustomCommand } from "../../api/oclif/CustomCommand";
-import { login } from "../../modules/apps";
+import { ColorifyConstants, CustomCommand } from "../../api";
+import { login } from "../../modules";
+import { TOOLBET_NAME } from "../../shared";
 
 export default class Login extends CustomCommand {
   static description = `Command to make login in VTEX, this command use the api key and api token to get the auth token and save in the config file of vtex to allow the process to use the vtex cli`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF(
-      "puntoscolombia vtex login [YourAccount] user@email.com master [YourApiKey] [YourApiToken]]"
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} vtex login [YourAccount] user@email.com master [YourApiKey] [YourApiToken]]`
     )}`,
     ,
   ];

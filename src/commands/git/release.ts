@@ -1,23 +1,31 @@
-import { CustomCommand } from "../../api/oclif/CustomCommand";
-
-import { ColorifyConstants } from "../../api/constants/Colors";
-import appsRelease, {
+import { flags as oclifFlags } from "@oclif/command";
+import { ColorifyConstants, CustomCommand } from "../../api";
+import {
+  release,
   releaseTypeAliases,
   supportedReleaseTypes,
   supportedTagNames,
-} from "../../modules/apps/git/release";
-import { flags as oclifFlags } from "@oclif/command";
+} from "../../modules";
+import { TOOLBET_NAME } from "../../shared";
 
 export default class Release extends CustomCommand {
   static description =
     "(Only for git users) Bumps the app version, commits, and pushes to remote the app in the current directory.";
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF("vtex release")}`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF("vtex release")} patch`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF("vtex release")} patch beta`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF("vtex release")} minor stable`,
-    `${ColorifyConstants.COMMAND_OR_VTEX_REF("vtex release")} pre`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(`${TOOLBET_NAME}  release`)}`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} release`
+    )} patch`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} release`
+    )} patch beta`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} release`
+    )} minor stable`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} release`
+    )} pre`,
   ];
 
   static flags = {
@@ -38,6 +46,10 @@ export default class Release extends CustomCommand {
     "no-check-release": oclifFlags.boolean({
       description:
         "Automatic check if the release is valid and not have local changes.",
+      default: false,
+    }),
+    "no-tag": oclifFlags.boolean({
+      description: "Automatic tag the release.",
       default: false,
     }),
   };
@@ -66,11 +78,12 @@ export default class Release extends CustomCommand {
       args: { releaseType, tagName },
     } = this.parse(Release);
 
-    await appsRelease(releaseType, tagName, {
+    await release(releaseType, tagName, {
       yes,
       noDeploy: flags["no-deploy"],
       noPush: flags["no-push"],
       noCheckRelease: flags["no-check-release"],
+      noTag: flags["no-tag"],
     });
   }
 }

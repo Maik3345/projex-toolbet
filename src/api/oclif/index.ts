@@ -1,1 +1,1 @@
-export * from './CustomCommand';
+export * from "./customCommand";

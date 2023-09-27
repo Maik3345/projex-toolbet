@@ -1,3 +1,5 @@
+import axios from "axios";
+import ora from "ora";
 import {
   Commands,
   Endpoints,
@@ -5,14 +7,12 @@ import {
   log,
   runOnlyCommand,
 } from "../../../../shared";
-import axios from "axios";
 var fs = require("fs");
-import ora from "ora";
 
 // variable indicating where files are found to employees
 let directory: string = "";
 
-export default async (site) => {
+export const backup = async (site) => {
   if (typeof site !== "string") {
     log.error("The site is not a string");
     throw new Error("Error on run the command");

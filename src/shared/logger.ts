@@ -8,15 +8,20 @@ import { LOGS_FOLDER } from "./constants/paths";
 // The debug file is likely to be on ~/.config/configstore/pco_debug.txt
 export const DEBUG_LOG_FILE_PATH = join(LOGS_FOLDER, "debug.json");
 
-const addArgs = format((info) => {
+const addArgs = format((info: any) => {
   // @ts-ignore
   const args: any[] = info[Symbol.for("splat")];
   info.args = args ? [...args] : [];
   return info;
 });
 
-const messageFormatter = format.printf((info) => {
-  const { timestamp: timeString = "", sender = "", message, args = [] } = info;
+const messageFormatter = format.printf((info: any) => {
+  const {
+    timestamp: timeString = "",
+    sender = "",
+    message,
+    args = [],
+  } = info as any;
   const formattedMsgWithArgs = util.formatWithOptions(
     { colors: true },
     message,

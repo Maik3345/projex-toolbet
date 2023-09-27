@@ -10,7 +10,7 @@ export enum COLORS {
 }
 
 export class ColorifyConstants {
-  public static readonly COMMAND_OR_VTEX_REF = (message: string) => chalk.hex(COLORS.PINK)(message)
+  public static readonly COMMAND_OR_RELEASE_REF = (message: string) => chalk.hex(COLORS.PINK)(message)
   public static readonly ID = (id: string) => chalk.hex(COLORS.GREEN)(id)
   public static readonly URL_INTERACTIVE = (url: string) => chalk.hex(COLORS.BLUE).underline(url)
 }

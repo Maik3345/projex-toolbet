@@ -2,6 +2,16 @@ import { accessSync } from "fs";
 import path from "path";
 
 export const MANIFEST_FILE_NAME = "manifest.json";
+export const PACKAGE_FILE_NAME = "package.json";
+
+const fileExists = (filePath) => {
+  try {
+    accessSync(filePath);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 export const getAppRoot = () => {
   if (process.env.OCLIF_COMPILATION) {
@@ -12,12 +22,16 @@ export const getAppRoot = () => {
   const { root: rootDirName } = path.parse(cwd);
 
   const find = (dir) => {
-    try {
-      accessSync(path.join(dir, MANIFEST_FILE_NAME));
+    const manifestPath = path.join(dir, MANIFEST_FILE_NAME);
+    const packagePath = path.join(dir, PACKAGE_FILE_NAME);
+
+    if (fileExists(manifestPath) || fileExists(packagePath)) {
       return dir;
-    } catch (err) {
+    } else {
       if (dir === rootDirName) {
-        throw "Manifest file doesn't exist or is not readable. Please make sure you're in the app's directory or add a manifest.json file in the root folder of the app.";
+        throw new Error(
+          "Manifest or package file doesn't exist or is not readable. Please make sure you're in the app's directory or add the required files in the root folder of the app."
+        );
       }
       return find(path.resolve(dir, ".."));
     }

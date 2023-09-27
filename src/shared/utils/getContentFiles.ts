@@ -1,6 +1,6 @@
-import { ContentManifest } from "../../shared/models/";
+import { ContentManifest } from "../models";
 import { resolve } from "path";
-import { log } from "../../shared";
+import { log } from "..";
 const fs = require("fs");
 const path = require("path");
 

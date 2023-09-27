@@ -13,8 +13,8 @@
     "resolveJsonModule": true,
     "jsx": "react",
     "importHelpers": true,
-    "declaration": true,
+    "declaration": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "**/*.spec.ts", "**/*.test.ts"],
   "exclude": ["**/*.test.ts", "**/__tests__", "**/__mocks__"]
 }

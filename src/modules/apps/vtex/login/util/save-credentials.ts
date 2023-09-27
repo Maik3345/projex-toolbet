@@ -9,17 +9,15 @@ const SESSION_STORE_PATH = join(SESSION_FOLDER, "session.json");
 const TOKEN_CACHE_STORE_PATH = join(SESSION_FOLDER, "tokens.json");
 const WORKSPACE_METADATA_STORE_PATH = join(SESSION_FOLDER, "workspace.json");
 
+/**
+ * The `saveVtexConfig` function saves the Vtex configuration provided as input to the appropriate
+ * configuration files.
+ * @param {ConfigVtexJson} configuration - The `configuration` parameter is an object of type
+ * `ConfigVtexJson` which contains the following properties:
+ */
 export const saveVtexConfig = async (configuration: ConfigVtexJson) => {
   try {
     const conf = new Configstore("vtex");
-    console.log({
-      WORKSPACE_METADATA_STORE_PATH,
-      SESSION_STORE_PATH,
-      TOKEN_CACHE_STORE_PATH,
-      VTEX_FOLDER,
-      SESSION_FOLDER,
-      configuration,
-    });
     await conf.clear();
     conf.all = {
       account: configuration.account,

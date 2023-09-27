@@ -15,14 +15,14 @@ const isObject = (a: any) => {
   return !!a && a.constructor === Object;
 };
 
-const addArgs = format((info) => {
+const addArgs = format((info: any) => {
   // @ts-ignore
   const args: any[] = info[Symbol.for("splat")];
   info.args = args ? [...args] : [];
   return info;
 });
 
-const messageFormatter = format.printf((info) => {
+const messageFormatter = format.printf((info: any) => {
   const { timestamp: timeString = "", sender = "", message, args = [] } = info;
   const formattedMsgWithArgs = util.formatWithOptions(
     { colors: true },

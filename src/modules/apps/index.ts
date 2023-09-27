@@ -1,3 +1,14 @@
-export * from "./vtex";
+export * from "./bash";
+export * from "./bash/run";
+export * from "./git/clone";
 export * from "./git";
-export { default as execute } from "./execute";
+export * from "./git/release";
+export * from "./git/setup/husky";
+export * from "./git/setup";
+export * from "./vtex/cms/deploy";
+export * from "./vtex/cms";
+export * from "./vtex";
+export * from "./vtex/login";
+export * from "./vtex/login/util/getAuth";
+export * from "./vtex/login/util";
+export * from "./vtex/run";

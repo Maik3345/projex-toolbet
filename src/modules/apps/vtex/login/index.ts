@@ -1,34 +1,10 @@
-import axios from "axios";
 import chalk from "chalk";
 import ora from "ora";
 import { log, ConfigVtexJson } from "../../../../shared";
 import { saveVtexConfig } from "./util/save-credentials";
+import { serviceGetAuth } from "./util";
 
-// Call to get auth information
-const getAuth = async (account: string, apiKey: string, apiToken: string) => {
-  try {
-    var config: any = {
-      method: "post",
-      url: `http://api.vtexcommercestable.com.br/api/vtexid/apptoken/login?an=${account}`,
-      headers: {
-        Referer: "",
-        "Content-Type": "application/json, application/json",
-      },
-      data: JSON.stringify({
-        appkey: apiKey,
-        apptoken: apiToken,
-      }),
-    };
-    log.debug(config);
-    return await axios(config);
-  } catch (error) {
-    log.debug(error);
-    log.error("Error on get auth token");
-    throw new Error("Error on get auth token");
-  }
-};
-
-export default async function (
+export const login = async function (
   account: string,
   email: string,
   workspace: string,
@@ -37,7 +13,7 @@ export default async function (
 ) {
   const spinner = ora("Getting auth token \n").start();
   spinner.stop();
-  const auth = await getAuth(account, apiKey, apiToken);
+  const auth = await serviceGetAuth(account, apiKey, apiToken);
   spinner.start();
 
   if (auth) {
@@ -67,7 +43,8 @@ export default async function (
 
     spinner.succeed(`Now you logged in Vtex!!`);
   } else {
-    spinner.fail("No token information found.");
+    spinner.fail("Error on get auth token");
+    log.error("Error on get auth token");
     process.exit(1);
   }
-}
+};
