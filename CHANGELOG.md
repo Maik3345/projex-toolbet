@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.3] - 2023-09-27
+
+### Added
+
+- feat: change the name of the project to `projex` --> `project-expert`
+
 ## [1.8.0] - 2023-09-05
 
 ### Added

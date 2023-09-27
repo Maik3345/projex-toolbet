@@ -1,6 +1,6 @@
 {
   "name": "projex",
-  "version": "1.0.0",
+  "version": "1.8.4",
   "description": "A command line to manage the workflow with vtex",
   "keywords": [
     "cli",
@@ -52,6 +52,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.26.0",
     "ora": "^4.0.4",
+    "prompts": "^2.4.2",
     "ramda": "~0.25.0",
     "update-notifier": "^4.1.0",
     "winston": "^3.2.1"
