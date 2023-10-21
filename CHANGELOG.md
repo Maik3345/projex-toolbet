@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.9.0] - 2023-10-21
+
+### Fixed
+
+- Remove unused messages and change the message for update the cli
+
 ## [1.8.6] - 2023-10-12
 
 ### Fixed
@@ -31,11 +37,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - feat: add the command `projex git setup devops template` for create the `.azuredevops/pull_request_template/PULL_REQUEST_TEMPALTE.md` file, this file is used for create the template of the pull request in the azure devops
 - feat: add the command `projex git setup husky` for create the `husky` configuration in the project with `commitlint` and the `commit-msg` hook for add the name of the current branch in the commit message
 - add the unit test for:
-   ````bash
+  ````bash
   RUNS  src/modules/apps/vtex/login/util/getAuth/getAuth.test.ts
   RUNS  src/modules/apps/vtex/login/login.test.ts
   RUNS  src/modules/apps/vtex/run/run.test.ts
   ```
+  ````
 
 ## [1.7.0] - 2023-08-07
 
