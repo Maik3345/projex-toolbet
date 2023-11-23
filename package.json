@@ -1,6 +1,6 @@
 {
   "name": "projex",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "A command line to manage the workflow with vtex",
   "keywords": [
     "cli",
@@ -31,7 +31,8 @@
     "build-incremental": "yarn tsc --incremental && bash ./scripts/symlinkPlugin.sh && yarn oclif-dev manifest --color=256",
     "build": "yarn build-clean && yarn tsc && yarn oclif-dev manifest --color=256",
     "prepublish": "npm run build",
-    "postinstall": "npx husky install",
+    "postrelease": "npm run prepublish && npm publish",
+    "prepare": "npx husky install",
     "test": "jest"
   },
   "dependencies": {

@@ -12,3 +12,4 @@ scripts/errors.json
 package-lock.json
 ttracker.log
 yarn.lock
+oclif.manifest.json

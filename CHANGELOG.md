@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.10.0] - 2023-11-23
+
+### Added
+
+- ✅ update the script of `postinstall` to `prepare` for install the husky and commitlint in the project
+- ✨ add the postrelease script for make the build of the project and publish the new version in the npm registry
+
 ## [1.9.0] - 2023-10-21
 
 ### Fixed

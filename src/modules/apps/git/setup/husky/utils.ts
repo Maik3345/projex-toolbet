@@ -18,15 +18,15 @@ export class SetupHuskyUtil {
     // install husky
     await runCommand("yarn add husky -D", root, "install husky package");
 
-    // configure husky postinstall
+    // configure husky prepare
     await runCommand(
-      'npm pkg set scripts.postinstall="npx husky install"',
+      'npm pkg set scripts.prepare="npx husky install"',
       root,
-      "husky postinstall script added in the package.json"
+      "husky prepare script added in the package.json"
     );
 
-    // run husky postinstall
-    await runCommand("npm run postinstall", root, "run postinstall script");
+    // run husky prepare
+    await runCommand("npm run prepare", root, "run prepare script");
 
     // install commitlint
     await runCommand(
