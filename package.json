@@ -1,6 +1,6 @@
 {
   "name": "projex",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "A command line to manage the workflow with vtex",
   "keywords": [
     "cli",

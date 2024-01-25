@@ -16,7 +16,7 @@ export class SetupHuskyUtil {
   directory. Here's a breakdown of what it does: */
   async setupHusky(root: string) {
     // install husky
-    await runCommand("yarn add husky -D", root, "install husky package");
+    await runCommand("npm install husky -D", root, "install husky package");
 
     // configure husky prepare
     await runCommand(
@@ -30,7 +30,7 @@ export class SetupHuskyUtil {
 
     // install commitlint
     await runCommand(
-      "yarn add @commitlint/cli @commitlint/config-conventional -D",
+      "npm install @commitlint/cli @commitlint/config-conventional -D -W",
       root,
       "commitlint installation complete"
     );

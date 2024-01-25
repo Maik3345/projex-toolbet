@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.11.0] - 2024-01-25
+
+### Changed
+
+- change to `npm install` the commands to install `husky` and `commitlint` in the project
+
 ## [1.10.0] - 2023-11-23
 
 ### Added
