@@ -115,9 +115,13 @@ export class ReleaseUtils {
     );
   };
 
+  public pushCommand = (tagName: string, noTag: string) => {
+    return `git push ${noTag ? "" : `&& git push origin ${tagName}`}`;
+  };
+
   public push = (tagName: string, noTag: string) => {
     return runCommand(
-      `git push ${noTag ? "" : `&& git push origin ${tagName}`}`,
+      this.pushCommand(tagName, noTag),
       this.root,
       `Pushed commit ${noTag ? "" : `and tag ${tagName}`}`,
       true,

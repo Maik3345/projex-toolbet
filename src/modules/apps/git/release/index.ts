@@ -79,15 +79,21 @@ export const release = async (
     normalizedReleaseType,
     tagName
   );
+  // Pachamama v2 requires that version tags start with a 'v' character.
+  const tagText = `v${newVersion}`;
 
   if (getVersion) {
     return console.log(
-      `old_version:${oldVersion},new_version:${newVersion},app_ame:${utils.readAppName()}`
+      `old_version:${oldVersion},new_version:${newVersion},app_ame:${utils.readAppName()},push:${utils.pushCommand(
+        tagText,
+        noTag
+      )}`
     );
   } else {
     log.info(`Old version: ${chalk.bold(oldVersion)}`);
     log.info(`New version: ${chalk.bold.yellow(newVersion)}`);
     log.info(`App name: ${chalk.bold.yellow(utils.readAppName())}`);
+    log.info(`Push command: ${chalk.bold(utils.pushCommand(tagText, noTag))}`);
   }
 
   const [month, day, year] = new Date()
@@ -98,8 +104,6 @@ export const release = async (
     })
     .split("/");
 
-  // Pachamama v2 requires that version tags start with a 'v' character.
-  const tagText = `v${newVersion}`;
   const changelogVersion = `\n\n## [${newVersion}] - ${year}-${month}-${day}`;
 
   if (!preConfirm && !(await utils.confirmRelease())) {

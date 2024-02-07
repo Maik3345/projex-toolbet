@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [1.13.0] - 2024-02-06
+## [1.14.0] - 2024-02-06
+
+## Added
+
+- add the push information in the release output when execute with the flag `get-version`
 
 ## [1.12.0] - 2024-02-06
 
