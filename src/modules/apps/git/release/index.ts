@@ -67,6 +67,7 @@ export const release = async (
   const automaticDeploy = options.noDeploy;
   const checkPreRelease = options.noCheckRelease;
   const noTag = options.noTag;
+  const getVersion = options.getVersion;
 
   const utils = new ReleaseUtils();
   utils.checkGit();
@@ -79,9 +80,15 @@ export const release = async (
     tagName
   );
 
-  log.info(`Old version: ${chalk.bold(oldVersion)}`);
-  log.info(`New version: ${chalk.bold.yellow(newVersion)}`);
-  log.info(`App name: ${chalk.bold.yellow(utils.readAppName())}`);
+  if (getVersion) {
+    return console.log(
+      `old_version:${oldVersion},new_version:${newVersion},app_ame:${utils.readAppName()}`
+    );
+  } else {
+    log.info(`Old version: ${chalk.bold(oldVersion)}`);
+    log.info(`New version: ${chalk.bold.yellow(newVersion)}`);
+    log.info(`App name: ${chalk.bold.yellow(utils.readAppName())}`);
+  }
 
   const [month, day, year] = new Date()
     .toLocaleDateString("en-US", {

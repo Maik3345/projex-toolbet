@@ -52,6 +52,10 @@ export default class Release extends CustomCommand {
       description: "Automatic tag the release.",
       default: false,
     }),
+    "get-version": oclifFlags.boolean({
+      description: "Only get the current version.",
+      default: false,
+    }),
   };
 
   static args = [
@@ -84,6 +88,7 @@ export default class Release extends CustomCommand {
       noPush: flags["no-push"],
       noCheckRelease: flags["no-check-release"],
       noTag: flags["no-tag"],
+      getVersion: flags["get-version"],
     });
   }
 }

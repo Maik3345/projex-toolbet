@@ -1,4 +1,6 @@
-# Toolbet Puntos Colombia
+# Toolbet Projex
+
+A command line to manage the workflow of the projects for vtex and git
 
 ## Installation
 
