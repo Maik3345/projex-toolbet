@@ -84,7 +84,7 @@ export const release = async (
 
   if (getVersion) {
     return console.log(
-      `old_version:${oldVersion},new_version:${newVersion},app_ame:${utils.readAppName()},push:${utils.pushCommand(
+      `old_version:${oldVersion},new_version:${newVersion},app_name:${utils.readAppName()},push:${utils.pushCommand(
         tagText,
         noTag
       )}`
