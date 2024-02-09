@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { ERROR_EXECUTION, log } from "../../../../shared";
+import { ERROR_EXECUTION, ERROR_TO_EXCLUDE, log } from "../../../../shared";
 import _ from "lodash";
 
 export const executeCommand = (commandToUse: string | undefined) => {
@@ -27,10 +27,15 @@ export const childProcessRunCommandRun = function (command: string) {
 
   const validateErrors = (data: any) => {
     ERROR_EXECUTION.map((item) => {
-      if (data.toString("utf8").includes(item)) {
-        debouncedError.cancel();
-        debouncedError();
-      }
+      ERROR_TO_EXCLUDE.map((exclude) => {
+        if (
+          data.toString("utf8").includes(item) &&
+          !data.toString("utf8").includes(exclude)
+        ) {
+          debouncedError.cancel();
+          debouncedError();
+        }
+      });
     });
   };
 

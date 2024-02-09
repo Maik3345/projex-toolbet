@@ -110,6 +110,7 @@ export const release = async (
     // Abort release.
     return;
   }
+
   log.info("Starting release...");
   try {
     !checkPreRelease && (await utils.preRelease());

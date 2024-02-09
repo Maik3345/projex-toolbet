@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.15.0] - 2024-02-09
+
+## Added
+
+- add the exclude errors to make the deploy in vtex
+
 ## [1.14.1] - 2024-02-06
 
 ## Fixed
