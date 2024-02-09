@@ -12,7 +12,10 @@ export const ERROR_EXECUTION = [
   "See more help with --help",
 ];
 
-export const ERROR_TO_EXCLUDE = ["Failed to get dependencies GraphQL"];
+export const ERROR_TO_EXCLUDE = [
+  "Failed to get dependencies GraphQL",
+  "failed to install dependencies through yarn",
+];
 
 export const SUCCESS_EXECUTION = [
   "Successfully deployed",
