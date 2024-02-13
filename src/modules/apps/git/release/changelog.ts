@@ -121,15 +121,21 @@ ${commitList.map((commit) => `${commit}`).join("\n")}`;
     unReleasedChanges: string,
     newCommitsListMessages: string
   ) => {
-    const newChangelog = changelogContent.replace(
-      unReleasedChanges,
-      newCommitsListMessages
+    const position =
+      changelogContent.indexOf(unReleasedChanges) + unReleasedChanges.length;
+    const bufferedText = Buffer.from(
+      `${newCommitsListMessages}${changelogContent.substring(position)}`
     );
 
-    const bufferedText = Buffer.from(newChangelog);
     const file = openSync(this.changelogPath, "r+");
     try {
-      writeSync(file, bufferedText, 0, bufferedText.length, 0);
+      writeSync(
+        file,
+        bufferedText,
+        0,
+        bufferedText.length,
+        position - unReleasedChanges.length
+      );
       close(file);
       log.info(`updated CHANGELOG with commits messages`);
     } catch (e) {
