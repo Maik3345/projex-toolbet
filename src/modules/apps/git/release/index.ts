@@ -3,18 +3,18 @@ import chalk from "chalk";
 import { indexOf, prop } from "ramda";
 import semver from "semver";
 import { ReleaseUtils } from "./utils";
-
-export const releaseTypeAliases = {
-  pre: "prerelease",
-};
-export const supportedReleaseTypes = ["major", "minor", "patch", "prerelease"];
-export const supportedTagNames = ["stable", "beta", "hkignore"];
-const releaseTypesToUpdateChangelog = ["major", "minor", "patch"];
-const tagNamesToUpdateChangelog = ["stable"];
+import { ChangelogUtils } from "./changelog";
+import {
+  releaseTypesToUpdateChangelogList,
+  tagNamesToUpdateChangelog,
+  supportedReleaseTypesList,
+  supportedTagNamesList,
+  releaseTypeAliases,
+} from "./constants";
 
 const shouldUpdateChangelog = (releaseType, tagName) => {
   return (
-    (releaseTypesToUpdateChangelog.indexOf(releaseType) >= 0 &&
+    (releaseTypesToUpdateChangelogList.indexOf(releaseType) >= 0 &&
       tagNamesToUpdateChangelog.indexOf(tagName) >= 0) ||
     semver.valid(releaseType)
   );
@@ -37,20 +37,20 @@ ${newVersion} <= ${oldVersion}`);
   // Else `releaseType` is just a regular release type. Then we increment the
   // actual version.
   // Check if releaseType is valid.
-  if (indexOf(releaseType, supportedReleaseTypes) === -1) {
+  if (indexOf(releaseType, supportedReleaseTypesList) === -1) {
     // TODO: Remove the below log.error when toolbelt has better error handling.
     log.error(`Invalid release type: ${releaseType}
-Valid release types are: ${supportedReleaseTypes.join(", ")}`);
+Valid release types are: ${supportedReleaseTypesList.join(", ")}`);
     throw new Error(`Invalid release type: ${releaseType}
-Valid release types are: ${supportedReleaseTypes.join(", ")}`);
+Valid release types are: ${supportedReleaseTypesList.join(", ")}`);
   }
   // Check if tagName is valid.
-  if (indexOf(tagName, supportedTagNames) === -1) {
+  if (indexOf(tagName, supportedTagNamesList) === -1) {
     // TODO: Remove the below log.error when toolbelt has better error handling.
     log.error(`Invalid release tag: ${tagName}
-Valid release tags are: ${supportedTagNames.join(", ")}`);
+Valid release tags are: ${supportedTagNamesList.join(", ")}`);
     throw new Error(`Invalid release tag: ${tagName}
-Valid release tags are: ${supportedTagNames.join(", ")}`);
+Valid release tags are: ${supportedTagNamesList.join(", ")}`);
   }
   const oldVersion = utils.readVersion();
   const newVersion = utils.incrementVersion(oldVersion, releaseType, tagName);
@@ -60,6 +60,7 @@ Valid release tags are: ${supportedTagNames.join(", ")}`);
 export const release = async (
   releaseType = "patch", // This arg. can also be a valid (semver) version.
   tagName = "beta",
+  changeLogReleaseType = "Changed",
   options
 ) => {
   const preConfirm = options.y || options.yes;
@@ -70,6 +71,7 @@ export const release = async (
   const getVersion = options.getVersion;
 
   const utils = new ReleaseUtils();
+  const changelogUtils = new ChangelogUtils(changeLogReleaseType);
   utils.checkGit();
   utils.checkIfInGitRepo();
   const normalizedReleaseType =
@@ -115,6 +117,7 @@ export const release = async (
   try {
     !checkPreRelease && (await utils.preRelease());
     await utils.bump(newVersion);
+    await changelogUtils.writeGitLogCommits();
     if (shouldUpdateChangelog(normalizedReleaseType, tagName)) {
       utils.updateChangelog(changelogVersion);
     }

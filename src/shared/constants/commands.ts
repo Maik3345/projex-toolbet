@@ -1,5 +1,6 @@
 const GET_TOKEN = "vtex local token";
 const GET_ACCOUNT = "vtex whoami";
+export const unreleased = "## [Unreleased]";
 
 export const Commands = {
   GET_ACCOUNT,

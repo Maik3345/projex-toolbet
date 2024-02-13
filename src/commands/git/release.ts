@@ -1,11 +1,12 @@
 import { flags as oclifFlags } from "@oclif/command";
 import { ColorifyConstants, CustomCommand } from "../../api";
+import { release } from "../../modules";
 import {
-  release,
   releaseTypeAliases,
+  supportedChangelogTypes,
   supportedReleaseTypes,
   supportedTagNames,
-} from "../../modules";
+} from "../../modules/apps/git/release/constants";
 import { TOOLBET_NAME } from "../../shared";
 
 export default class Release extends CustomCommand {
@@ -63,15 +64,25 @@ export default class Release extends CustomCommand {
       name: "releaseType",
       required: false,
       default: "patch",
-      options: [...Object.keys(releaseTypeAliases), ...supportedReleaseTypes],
+      options: [
+        ...Object.keys(releaseTypeAliases),
+        ...Object.keys(supportedReleaseTypes),
+      ],
       description: `Release type.`,
     },
     {
       name: "tagName",
       required: false,
       default: "beta",
-      options: supportedTagNames,
+      options: Object.keys(supportedTagNames),
       description: `Tag name.`,
+    },
+    {
+      name: "changeLogReleaseType",
+      required: false,
+      default: supportedChangelogTypes.Changed,
+      options: [...Object.keys(supportedChangelogTypes)],
+      description: `Changelog release type.`,
     },
   ];
 
@@ -79,10 +90,10 @@ export default class Release extends CustomCommand {
     const {
       flags: { yes },
       flags,
-      args: { releaseType, tagName },
+      args: { releaseType, tagName, changeLogReleaseType },
     } = this.parse(Release);
 
-    await release(releaseType, tagName, {
+    await release(releaseType, tagName, changeLogReleaseType, {
       yes,
       noDeploy: flags["no-deploy"],
       noPush: flags["no-push"],

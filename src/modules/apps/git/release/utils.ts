@@ -1,5 +1,5 @@
 import { getAppRoot, promptConfirm } from "../../../../api";
-import { log, runCommand } from "../../../../shared";
+import { log, runCommand, unreleased } from "../../../../shared";
 import chalk from "chalk";
 import { execSync } from "child-process-es6-promise";
 import {
@@ -15,8 +15,6 @@ import { resolve } from "path";
 import { path } from "ramda";
 import semver from "semver";
 const fs = require("fs");
-
-const unreleased = "## [Unreleased]";
 
 export class ReleaseUtils {
   public root: string;
