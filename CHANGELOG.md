@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.18.0] - 2024-02-13
+
+## Fixed
+
+- change the method for get the commit list now use `git rev-list --abbrev-commit HEAD --not master --format=short --pretty=oneline`
+
 ## [1.17.0] - 2024-02-13
 
 ## Added

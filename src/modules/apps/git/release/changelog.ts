@@ -15,9 +15,19 @@ export class ChangelogUtils {
     this.changelogPath = resolve(this.root, "CHANGELOG.md");
   }
 
-  private gitLog = () => {
+  private getOriginBranchName = () => {
     return runCommand(
-      `git rev-list origin..HEAD --format=short --pretty=oneline --abbrev-commit`,
+      `git remote show origin | grep "HEAD branch" | cut -d ":" -f 2 | xargs`,
+      this.root,
+      "",
+      true
+    );
+  };
+
+  private gitLog = () => {
+    const originBranch = this.getOriginBranchName().toString().trim();
+    return runCommand(
+      `git rev-list --abbrev-commit HEAD --not ${originBranch} --format=short --pretty=oneline`,
       this.root,
       "",
       true
@@ -31,6 +41,8 @@ export class ChangelogUtils {
       .filter((commit) => commit !== "")
       .map((commit) => `- ${commit.slice(8)}`)
       .reverse();
+
+    log.info({ commitList });
 
     const newCommitsListMessages = commitList.join("\n");
 
