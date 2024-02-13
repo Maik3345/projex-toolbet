@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.20.0] - 2024-02-13
+
+## Changed
+
+- add `changeLogReleaseType` in the `release` command for indicate the content of the release commits list, with this attribute you can pass the list of commits to validate to add in the changelog file
+
 ## [1.19.0] - 2024-02-13
 
 ## Fixed

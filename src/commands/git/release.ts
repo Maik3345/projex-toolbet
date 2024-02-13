@@ -14,19 +14,24 @@ export default class Release extends CustomCommand {
     "(Only for git users) Bumps the app version, commits, and pushes to remote the app in the current directory.";
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(`${TOOLBET_NAME}  release`)}`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} release`
+      `${TOOLBET_NAME} git  release`
+    )}`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} git release`
     )} patch`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} release`
+      `${TOOLBET_NAME} git release`
     )} patch beta`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} release`
+      `${TOOLBET_NAME} git release`
     )} minor stable`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} release`
+      `${TOOLBET_NAME} git release`
     )} pre`,
+    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
+      `${TOOLBET_NAME} git release prerelease stable Major "["test-change-01, "test-change-02"]"`
+    )}`,
   ];
 
   static flags = {
@@ -84,22 +89,34 @@ export default class Release extends CustomCommand {
       options: [...Object.keys(supportedChangelogTypes)],
       description: `Changelog release type.`,
     },
+    {
+      name: "changelogContent",
+      required: false,
+      default: "",
+      description: `Pass the list of comments in a string, this content is used to generate the changelog file changes without use the git rev-list, example: "["test-change-01, "test-change-02"]"`,
+    },
   ];
 
   async run() {
     const {
       flags: { yes },
       flags,
-      args: { releaseType, tagName, changeLogReleaseType },
+      args: { releaseType, tagName, changeLogReleaseType, changelogContent },
     } = this.parse(Release);
 
-    await release(releaseType, tagName, changeLogReleaseType, {
-      yes,
-      noDeploy: flags["no-deploy"],
-      noPush: flags["no-push"],
-      noCheckRelease: flags["no-check-release"],
-      noTag: flags["no-tag"],
-      getVersion: flags["get-version"],
-    });
+    await release(
+      releaseType,
+      tagName,
+      changeLogReleaseType,
+      changelogContent,
+      {
+        yes,
+        noDeploy: flags["no-deploy"],
+        noPush: flags["no-push"],
+        noCheckRelease: flags["no-check-release"],
+        noTag: flags["no-tag"],
+        getVersion: flags["get-version"],
+      }
+    );
   }
 }

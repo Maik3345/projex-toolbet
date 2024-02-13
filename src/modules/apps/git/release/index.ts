@@ -61,6 +61,7 @@ export const release = async (
   releaseType = "patch", // This arg. can also be a valid (semver) version.
   tagName = "beta",
   changeLogReleaseType = "Changed",
+  changelogContent = "",
   options
 ) => {
   const preConfirm = options.y || options.yes;
@@ -71,7 +72,10 @@ export const release = async (
   const getVersion = options.getVersion;
 
   const utils = new ReleaseUtils();
-  const changelogUtils = new ChangelogUtils(changeLogReleaseType);
+  const changelogUtils = new ChangelogUtils(
+    changeLogReleaseType,
+    changelogContent
+  );
   utils.checkGit();
   utils.checkIfInGitRepo();
   const normalizedReleaseType =

@@ -8,9 +8,11 @@ export class ChangelogUtils {
   public root: string;
   private changelogPath: string;
   private changeLogReleaseType: string;
+  private changelogContent: string;
 
-  constructor(changeLogReleaseType: string) {
+  constructor(changeLogReleaseType: string, changelogContent: string) {
     this.changeLogReleaseType = changeLogReleaseType;
+    this.changelogContent = changelogContent;
     this.root = getAppRoot();
     this.changelogPath = resolve(this.root, "CHANGELOG.md");
   }
@@ -35,16 +37,32 @@ export class ChangelogUtils {
   };
 
   public writeGitLogCommits = () => {
-    const commitList: string[] = this.gitLog()
-      .toString()
-      .split("\n")
-      .filter((commit) => commit !== "")
-      .map((commit) => `- ${commit.slice(8)}`)
-      .reverse();
+    const comments =
+      this.changelogContent && this.changelogContent !== ""
+        ? this.changelogContent
+        : null;
 
+    let commitList: string[] = [];
+    let newCommitsListMessages = "";
+
+    if (!comments) {
+      commitList = this.gitLog()
+        .toString()
+        .split("\n")
+        .filter((commit) => commit !== "")
+        .map((commit) => `- ${commit.slice(8)}`)
+        .reverse();
+    } else {
+      commitList = comments
+        .split("\\n")
+        .filter((commit) => commit !== "")
+        .map((commit) => `- ${commit}`)
+        .reverse();
+    }
+
+    newCommitsListMessages = commitList.join("\n");
     log.info({ commitList });
-
-    const newCommitsListMessages = commitList.join("\n");
+    log.info({ newCommitsListMessages });
 
     const changelogContent = this.getChangelogContent();
     const haveUnReleasedContent =
