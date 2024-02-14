@@ -132,7 +132,7 @@ export const release = async (
     !automaticDeploy && (await utils.postRelease());
 
     if (pushAutomatic && automaticDeploy) {
-      console.log(
+      log.info(
         `you can push all changes with:git push && git push origin ${tagText}`
       );
     }

@@ -1,7 +1,14 @@
 import { getAppRoot } from "../../../../api";
 import { resolve } from "path";
 import { log, runCommand, unreleased } from "../../../../shared";
-import { close, existsSync, openSync, readFileSync, writeSync } from "fs-extra";
+import {
+  close,
+  existsSync,
+  openSync,
+  readFileSync,
+  truncateSync,
+  writeSync,
+} from "fs-extra";
 import chalk from "chalk";
 
 export class ChangelogUtils {
@@ -43,6 +50,7 @@ export class ChangelogUtils {
         : null;
 
     let commitList: string[] = [];
+    console.log(comments);
     let newCommitsListMessages = "";
 
     if (!comments) {
@@ -142,18 +150,17 @@ ${commitList.map((commit) => `${commit}`).join("\n")}`;
     const position =
       changelogContent.indexOf(unReleasedChanges) + unReleasedChanges.length;
     const bufferedText = Buffer.from(
-      `${newCommitsListMessages}${changelogContent.substring(position)}`
+      `${changelogContent.substring(
+        0,
+        changelogContent.indexOf(unReleasedChanges)
+      )}${newCommitsListMessages}${changelogContent.substring(position)}`
     );
 
+    // clean the content of the changelog
+    truncateSync(this.changelogPath, 0);
     const file = openSync(this.changelogPath, "r+");
     try {
-      writeSync(
-        file,
-        bufferedText,
-        0,
-        bufferedText.length,
-        position - unReleasedChanges.length
-      );
+      writeSync(file, bufferedText, 0, bufferedText.length);
       close(file);
       log.info(`updated CHANGELOG with commits messages`);
     } catch (e) {

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.21.0] - 2024-02-13
+
+## Changed
+
+
+
+## Fixed
+
+- fix the process to write the changelog. fix when pass less information in the commit list, this problem make the changelog file write the wrong content
+
 ## [1.20.0] - 2024-02-13
 
 ## Changed
