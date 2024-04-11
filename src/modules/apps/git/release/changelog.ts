@@ -50,7 +50,6 @@ export class ChangelogUtils {
         : null;
 
     let commitList: string[] = [];
-    console.log(comments);
     let newCommitsListMessages = "";
 
     if (!comments) {
@@ -112,7 +111,7 @@ export class ChangelogUtils {
   private getNewUnReleasedText = (commitList: string[]) => {
     const unReleasedContent = `
 
-## ${this.changeLogReleaseType}
+### ${this.changeLogReleaseType}
 
 ${commitList.map((commit) => `${commit}`).join("\n")}`;
     return unReleasedContent;
