@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.22.0] - 2024-04-11
+
 ### Changed
 
-
+main: fix: 🐛 Update push command to display in blue color
+main: fix: 🐛 Fix debug log server connection issue
+main: fix: 🐛 Update PR template with new gif link
+main: fix: 🐛 Update ChangelogUtils to use h3 headers for release type
 
 ## [1.21.0] - 2024-02-13
 
