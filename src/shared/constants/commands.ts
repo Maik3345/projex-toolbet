@@ -16,6 +16,8 @@ export const ERROR_EXECUTION = [
 export const ERROR_TO_EXCLUDE = [
   "Failed to get dependencies GraphQL",
   "failed to install dependencies through yarn",
+  "Connection to debug log server has failed with status",
+  "ErrorID:",
 ];
 
 export const SUCCESS_EXECUTION = [
