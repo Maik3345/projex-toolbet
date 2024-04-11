@@ -99,7 +99,9 @@ export const release = async (
     log.info(`Old version: ${chalk.bold(oldVersion)}`);
     log.info(`New version: ${chalk.bold.yellow(newVersion)}`);
     log.info(`App name: ${chalk.bold.yellow(utils.readAppName())}`);
-    log.info(`Push command: ${chalk.bold(utils.pushCommand(tagText, noTag))}`);
+    log.info(
+      `Push command: ${chalk.bold.blue(utils.pushCommand(tagText, noTag))}`
+    );
   }
 
   const [month, day, year] = new Date()
@@ -127,7 +129,7 @@ export const release = async (
     }
     !pushAutomatic && (await utils.add());
     !pushAutomatic && (await utils.commit(tagText, releaseType));
-    !noTag && !pushAutomatic && (await utils.tag(tagText));
+    !noTag && (await utils.tag(tagText));
     !pushAutomatic && (await utils.push(tagText, noTag));
     !automaticDeploy && (await utils.postRelease());
 
