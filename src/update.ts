@@ -1,10 +1,10 @@
 import chalk from "chalk";
 import updateNotifier from "update-notifier";
-import { ColorifyConstants } from "./api/constants/colors";
 import { updateMessageSwitch } from "./shared/constants/messages";
 import * as pkg from "../package.json";
 import { getDistTag, getSimpleVersion } from "./modules/utils";
 import { TOOLBET_NAME } from "./shared";
+import { ColorifyConstants } from "./api/constants";
 
 const ONE_HOUR = 1000 * 60 * 60 * 1;
 
@@ -22,7 +22,7 @@ export function updateNotify() {
   ) {
     const oldVersion = getSimpleVersion(notifier.update.current);
     const latestVersion = notifier.update.latest;
-    const changelog = `https://github.com/${TOOLBET_NAME}/toolbelt/blob/master/CHANGELOG.md`;
+    const changelog = `https://github.com/Maik3345/projex-toolbet/blob/main/CHANGELOG.md`;
 
     notifier.notify({
       isGlobal: true,
