@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.23.0] - 2024-04-16
+
+### Changed
+
+- feat: :sparkles: Refactor release command in git/release.ts, remove changelog logic
+- feat: :sparkles: Add new command to update changelog file
+- main: feat: :sparkles: Refactor release command in git/release.ts, remove changelog logic
+
 ## [1.22.1] - 2024-04-11
 
 ### Fixed
