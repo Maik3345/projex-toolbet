@@ -3,7 +3,6 @@ import { ColorifyConstants, CustomCommand } from "../../api";
 import { release } from "../../modules";
 import {
   releaseTypeAliases,
-  supportedChangelogTypes,
   supportedReleaseTypes,
   supportedTagNames,
 } from "../../modules/apps/git/release/constants";
@@ -15,7 +14,7 @@ export default class Release extends CustomCommand {
 
   static examples = [
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git  release`
+      `${TOOLBET_NAME} git release`
     )}`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `${TOOLBET_NAME} git release`
@@ -29,9 +28,6 @@ export default class Release extends CustomCommand {
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `${TOOLBET_NAME} git release`
     )} pre`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release prerelease stable Major "["test-change-01, "test-change-02"]"`
-    )}`,
   ];
 
   static flags = {
@@ -82,41 +78,22 @@ export default class Release extends CustomCommand {
       options: Object.keys(supportedTagNames),
       description: `Tag name.`,
     },
-    {
-      name: "changeLogReleaseType",
-      required: false,
-      default: supportedChangelogTypes.Changed,
-      options: [...Object.keys(supportedChangelogTypes)],
-      description: `Changelog release type.`,
-    },
-    {
-      name: "changelogContent",
-      required: false,
-      default: "",
-      description: `Pass the list of comments in a string, this content is used to generate the changelog file changes without use the git rev-list, example: "["test-change-01, "test-change-02"]"`,
-    },
   ];
 
   async run() {
     const {
       flags: { yes },
       flags,
-      args: { releaseType, tagName, changeLogReleaseType, changelogContent },
+      args: { releaseType, tagName },
     } = this.parse(Release);
 
-    await release(
-      releaseType,
-      tagName,
-      changeLogReleaseType,
-      changelogContent,
-      {
-        yes,
-        noDeploy: flags["no-deploy"],
-        noPush: flags["no-push"],
-        noCheckRelease: flags["no-check-release"],
-        noTag: flags["no-tag"],
-        getVersion: flags["get-version"],
-      }
-    );
+    await release(releaseType, tagName, {
+      yes,
+      noDeploy: flags["no-deploy"],
+      noPush: flags["no-push"],
+      noCheckRelease: flags["no-check-release"],
+      noTag: flags["no-tag"],
+      getVersion: flags["get-version"],
+    });
   }
 }
