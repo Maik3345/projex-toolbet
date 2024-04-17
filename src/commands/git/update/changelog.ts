@@ -13,7 +13,7 @@ export default class UpdateChangelog extends CustomCommand {
     )} Changed`,
     `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
       `${TOOLBET_NAME} git update changelog`
-    )} Major "["test-change-01, "test-change-02"]"`,
+    )} Major '${'test-change-01\\ntest-change-02'}'`,
   ];
 
   static flags = {
@@ -32,7 +32,7 @@ export default class UpdateChangelog extends CustomCommand {
       name: "changelogContent",
       required: false,
       default: "",
-      description: `Pass the list of comments in a string, this content is used to generate the changelog file changes without use the git rev-list, example: "["test-change-01, "test-change-02"]"`,
+      description: `Pass the list of comments in a string, this content is used to generate the changelog file changes without use the git rev-list, example: 'test-change-01\\ntest-change-02', use '\\\\n' to separate the comments and not add space between them.`,
     },
   ];
 
