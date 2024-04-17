@@ -1,3 +1,2 @@
-export * from './devops';
-export * from './devops/templates';
-export * from './husky';
+export * from "./devops";
+export * from "./husky";

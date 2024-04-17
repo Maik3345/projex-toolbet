@@ -150,7 +150,12 @@ export class ReleaseUtils {
   public preRelease = () => {
     const msg = "Pre release";
     if (!this.checkNothingToCommit()) {
-      throw new Error("Please commit your changes before proceeding.");
+      console.log(
+        chalk.red(
+          "Process could not continue because there are uncommitted changes, Please commit your changes before proceeding."
+        )
+      );
+      process.exit(1);
     }
     this.checkIfGitPushWorks();
     const key = "prereleasy";
@@ -161,8 +166,14 @@ export class ReleaseUtils {
     }
   };
 
-  public confirmRelease = async (): Promise<boolean> => {
-    const answer = await promptConfirm(chalk.green("Are you sure?"));
+  public confirmRelease = async (newVersion: string): Promise<boolean> => {
+    const answer = await promptConfirm(
+      chalk.green(
+        `Are you sure you want to release with version ${chalk.blue(
+          newVersion
+        )}?`
+      )
+    );
     if (!answer) {
       log.info("Cancelled by user");
       return false;

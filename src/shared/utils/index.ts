@@ -10,3 +10,5 @@ export * from "./prompts";
 export * from "./runCommand";
 export * from "./runMultipleCommand";
 export * from "./runOnlyCommand";
+export * from "./api/table";
+

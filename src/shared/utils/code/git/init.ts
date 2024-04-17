@@ -8,13 +8,7 @@ export const README_TEMPLATE_CODE = `# My App
 
 ## Configuration
 
-1. Import the My app to your theme's dependencies in the \`manifest.json\` as shown below:
-
-\`\`\`json
-"dependencies": {
-  "account.app": "0.x"
-}
-\`\`\`
+Example of configuration content here
 
 ## Table of Contents
 
