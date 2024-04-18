@@ -82,8 +82,8 @@ export const release = async (
       utils.updateChangelog(changelogVersion);
     }
     !pushAutomatic && (await utils.add());
-    !noTag && (await utils.tag(tagText));
     !pushAutomatic && (await utils.commit(tagText, releaseType));
+    !noTag && (await utils.tag(tagText));
     !pushAutomatic && (await utils.push(tagText, noTag));
     !automaticDeploy && (await utils.postRelease());
 
