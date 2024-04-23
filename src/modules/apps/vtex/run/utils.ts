@@ -1,10 +1,10 @@
-import { spawn } from "child_process";
-import { ERROR_EXECUTION, ERROR_TO_EXCLUDE, log } from "../../../../shared";
-import _ from "lodash";
+import { ERROR_EXECUTION, ERROR_TO_EXCLUDE, log } from '@shared';
+import { spawn } from 'child_process';
+const _ = require('lodash');
 
 export const executeCommand = (commandToUse: string | undefined) => {
   if (!commandToUse) {
-    throw new Error("no command to execute");
+    throw new Error('no command to execute');
   }
   log.debug(`Command to execute: ${commandToUse}`);
   childProcessRunCommandRun(commandToUse);
@@ -12,7 +12,7 @@ export const executeCommand = (commandToUse: string | undefined) => {
 
 const debouncedError = _.debounce(() => {
   log.error(`Command error execution`);
-  throw new Error("finish execution with errors");
+  throw new Error('finish execution with errors');
 }, 20000);
 
 const debouncedSuccess = _.debounce(() => {
@@ -28,10 +28,7 @@ export const childProcessRunCommandRun = function (command: string) {
   const validateErrors = (data: any) => {
     ERROR_EXECUTION.map((item) => {
       ERROR_TO_EXCLUDE.map((exclude) => {
-        if (
-          data.toString("utf8").includes(item) &&
-          !data.toString("utf8").includes(exclude)
-        ) {
+        if (data.toString('utf8').includes(item) && !data.toString('utf8').includes(exclude)) {
           debouncedError.cancel();
           debouncedError();
         }
@@ -46,20 +43,20 @@ export const childProcessRunCommandRun = function (command: string) {
 
   const acceptPrompt = () => {
     // simulating user input
-    task.stdin.write("y\n");
+    task.stdin.write('y\n');
   };
 
   // Método para imprimir el log normal
-  task.stdout!.on("data", (data: any) => {
-    console.log(data.toString("utf8"));
+  task.stdout!.on('data', (data: any) => {
+    console.log(data.toString('utf8'));
     validateErrors(data);
     validateSuccess();
     acceptPrompt();
   });
 
   // Método para imprimir el log de error
-  task.stderr!.on("data", function (data: any) {
-    console.log(data.toString("utf8"));
+  task.stderr!.on('data', function (data: any) {
+    console.log(data.toString('utf8'));
     validateErrors(data);
   });
 };

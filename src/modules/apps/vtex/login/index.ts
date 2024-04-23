@@ -1,17 +1,21 @@
-import chalk from "chalk";
-import ora from "ora";
-import { log, ConfigVtexJson } from "../../../../shared";
-import { saveVtexConfig } from "./util/save-credentials";
-import { serviceGetAuth } from "./util";
+const chalk = require('chalk');
+const ora = require('ora');
+import { ConfigVtexJson, log } from '@shared';
+import { saveVtexConfig, serviceGetAuth } from './util';
 
 export const login = async function (
-  account: string,
-  email: string,
-  workspace: string,
-  apiKey: string,
-  apiToken: string
+  account: string | undefined,
+  email: string | undefined,
+  workspace: string | undefined,
+  apiKey: string | undefined,
+  apiToken: string | undefined,
 ) {
-  const spinner = ora("Getting auth token \n").start();
+  if (!account || !email || !workspace || !apiKey || !apiToken) {
+    log.error('Please provide all the required arguments.');
+    process.exit(1);
+  }
+
+  const spinner = ora('Getting authentication token...').start();
   spinner.stop();
   const auth = await serviceGetAuth(account, apiKey, apiToken);
   spinner.start();
@@ -19,32 +23,26 @@ export const login = async function (
   if (auth) {
     const authToken: string = auth.data.token;
 
-    // print information
-    spinner.succeed(
-      `auth token to use: ${chalk.redBright(authToken.slice(1, 20))}...`
-    );
+    // Print information
+    spinner.succeed(`Authentication token obtained: ${chalk.redBright(authToken.slice(1, 20))}...`);
 
-    log.info(
-      `Credentials for use ${chalk.redBright(account)} as ${chalk.redBright(
-        email
-      )} at workspace ${chalk.redBright(workspace)}`
-    );
+    log.info('vtex json save successfully');
 
-    // options for the file config.json
+    // Options for the config.json file
     const options: ConfigVtexJson = {
       account: account,
       token: authToken,
       workspace,
       login: email,
-      env: "prod",
+      env: 'prod',
     };
-    // 1. Overrite the config file from vtex
+    // 1. Overwrite the config file from Vtex
     await saveVtexConfig(options);
 
-    spinner.succeed(`Now you logged in Vtex!!`);
+    spinner.succeed(`You are now logged in to Vtex!`);
   } else {
-    spinner.fail("Error on get auth token");
-    log.error("Error on get auth token");
+    spinner.fail('Error while obtaining authentication token');
+    log.error('Error while obtaining authentication token');
     process.exit(1);
   }
 };

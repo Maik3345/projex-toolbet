@@ -1,4 +1,4 @@
-import chalk from "chalk";
+const chalk = require('chalk');
 import { createTable } from "./table";
 
 export const renderTableOfCommits = ({

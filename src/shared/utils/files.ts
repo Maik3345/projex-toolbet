@@ -1,21 +1,19 @@
-import { existsSync } from "fs";
-import { ColorifyConstants } from "../../api";
-import { log } from "../logger";
-const fs = require("fs/promises");
+import { Colors } from '@api';
+import { existsSync } from 'fs';
+import { log } from '../logger';
+const fs = require('fs/promises');
 
 export class FilesUtils {
   createFile = async (dir: string, content: string) => {
     try {
       if (!existsSync(dir)) {
         await fs.writeFile(dir, content);
-        log.info(`file ${ColorifyConstants.ID(dir.split("/").pop())} created`);
+        log.info(`File ${Colors.ID(dir.split('/').pop() ?? '')} created successfully.`);
       } else {
-        log.info(
-          `file ${ColorifyConstants.ID(dir.split("/").pop())} already exists`
-        );
+        log.info(`File ${Colors.ID(dir.split('/').pop() ?? '')} already exists.`);
       }
     } catch (err) {
-      log.error("error on create the file:", err);
+      log.error('An error occurred while creating the file:', err);
     }
   };
 
@@ -23,20 +21,14 @@ export class FilesUtils {
     try {
       if (!existsSync(dir)) {
         await fs.mkdir(dir);
-        log.info(
-          `directory ${ColorifyConstants.ID(dir.split("/").pop())} created`
-        );
+        log.info(`Directory ${Colors.ID(dir.split('/').pop() ?? '')} created.`);
         return true;
       } else {
-        log.info(
-          `directory ${ColorifyConstants.ID(
-            dir.split("/").pop()
-          )} already exists`
-        );
+        log.info(`Directory ${Colors.ID(dir.split('/').pop() ?? '')} already exists.`);
         return false;
       }
     } catch (error) {
-      log.error("error on create the directory:", error);
+      log.error('An error occurred while creating the directory:', error);
     }
   };
 }

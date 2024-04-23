@@ -1,7 +1,7 @@
-import CliTable from 'cli-table'
+const CliTable = require('cli-table');
 
 interface TableOptions {
-  head?: string[]
+  head?: string[];
 }
 
 export const createTable = (options: TableOptions = {}) =>
@@ -25,4 +25,4 @@ export const createTable = (options: TableOptions = {}) =>
     },
     style: { 'padding-left': 0, 'padding-right': 0 },
     ...options,
-  })
+  });

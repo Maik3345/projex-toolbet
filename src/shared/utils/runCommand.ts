@@ -1,6 +1,6 @@
-import { execSync } from "child-process-es6-promise";
+const cp = require("child-process-es6-promise");
+const chalk = require('chalk');
 import { log } from "../logger";
-import chalk from "chalk";
 
 /**
  * The `runCommand` function executes a command in a specified directory, logs success and error
@@ -30,10 +30,10 @@ export const runCommand = (
   hideOutput = false,
   retries = 0,
   hideSuccessMessage = false
-) => {
+): any => {
   let output;
   try {
-    output = execSync(cmd, {
+    output = cp.execSync(cmd, {
       stdio: hideOutput ? "pipe" : "inherit",
       cwd,
     });
@@ -41,7 +41,7 @@ export const runCommand = (
       log.info(successMessage + chalk.blue(` >  ${cmd}`));
     }
     return output;
-  } catch (e) {
+  } catch (e: any) {
     log.error(`Command '${cmd}' exited with error code: ${e.status}`);
     if (retries <= 0) {
       throw e;

@@ -1,10 +1,10 @@
-import { accessSync } from "fs";
-import path from "path";
+import { accessSync } from 'fs';
+const path = require('path');
 
-export const MANIFEST_FILE_NAME = "manifest.json";
-export const PACKAGE_FILE_NAME = "package.json";
+export const MANIFEST_FILE_NAME = 'manifest.json';
+export const PACKAGE_FILE_NAME = 'package.json';
 
-const fileExists = (filePath) => {
+const fileExists = (filePath: string) => {
   try {
     accessSync(filePath);
     return true;
@@ -15,13 +15,13 @@ const fileExists = (filePath) => {
 
 export const getAppRoot = () => {
   if (process.env.OCLIF_COMPILATION) {
-    return "";
+    return '';
   }
 
   const cwd = process.cwd();
   const { root: rootDirName } = path.parse(cwd);
 
-  const find = (dir) => {
+  const find = (dir: string): string => {
     const manifestPath = path.join(dir, MANIFEST_FILE_NAME);
     const packagePath = path.join(dir, PACKAGE_FILE_NAME);
 
@@ -30,10 +30,10 @@ export const getAppRoot = () => {
     } else {
       if (dir === rootDirName) {
         throw new Error(
-          "Manifest or package file doesn't exist or is not readable. Please make sure you're in the app's directory or add the required files in the root folder of the app."
+          "Manifest or package file doesn't exist or is not readable. Please make sure you're in the app's directory or add the required files in the root folder of the app.",
         );
       }
-      return find(path.resolve(dir, ".."));
+      return find(path.resolve(dir, '..'));
     }
   };
 

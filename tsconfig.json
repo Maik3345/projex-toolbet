@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
     "types": ["node", "jest"],
-    "target": "es2018",
-    "lib": ["es2018"],
-    "outDir": "lib",
-    "sourceMap": false,
+    "declaration": true,
     "module": "commonjs",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
     "resolveJsonModule": true,
-    "jsx": "react",
-    "importHelpers": true,
-    "declaration": true
+    "target": "es2022",
+    "esModuleInterop": true,
+    "baseUrl": ".", // Esto permite que los módulos se resuelvan relativamente a la raíz del proyecto
+    "paths": {
+      "@shared": ["./src/shared/index"],
+      "@api": ["./src/api/index"],
+      "@modules": ["./src/modules/index"],
+      "@commands": ["./src/commands/index"]
+    }
   },
-  "include": ["src/**/*", "**/*.spec.ts", "**/*.test.ts"],
-  "exclude": ["**/*.test.ts", "**/__tests__", "**/__mocks__"]
+  "include": ["src/**/*"]
 }

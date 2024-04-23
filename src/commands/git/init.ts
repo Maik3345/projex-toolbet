@@ -1,21 +1,17 @@
-import { flags as oclifFlags } from "@oclif/command";
-import { ColorifyConstants, CustomCommand } from "../../api";
-import { setupGitRepository } from "../../modules";
-import { TOOLBET_NAME } from "../../shared";
+import { Colors } from '@api';
+import { setupGitRepository } from '@modules';
+import { Command, Flags } from '@oclif/core';
+import { CLI_NAME } from '@shared';
 
-export default class GitSetup extends CustomCommand {
-  static description =
-    "(Only for git users) Add base files for manage the documentation and versioning in the  git repository";
+export default class GitSetup extends Command {
+  static description = 'Initialize base files for managing documentation and versioning in a Git repository';
 
-  static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(`${TOOLBET_NAME} git init`)}`,
-  ];
+  static examples = [`${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git init`)}`];
 
   static flags = {
-    ...CustomCommand.globalFlags,
-    list: oclifFlags.boolean({
-      description: "List all projects to select to setup.",
-      char: "l",
+    list: Flags.boolean({
+      description: 'List all projects to select from for setup',
+      char: 'l',
       default: false,
     }),
   };
@@ -23,7 +19,7 @@ export default class GitSetup extends CustomCommand {
   async run() {
     const {
       flags: { list },
-    } = this.parse(GitSetup);
+    } = await this.parse(GitSetup);
 
     await setupGitRepository({
       list,

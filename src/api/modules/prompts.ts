@@ -1,4 +1,4 @@
-import prompts from "prompts";
+const prompts = require("prompts");
 
 interface PromptState {
   aborted: boolean;

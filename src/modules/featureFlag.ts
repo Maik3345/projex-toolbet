@@ -1,9 +1,9 @@
-import Configstore from "configstore";
-import { join } from "path";
-import { PathConstants } from "../shared/constants/paths";
+import Configstore from 'configstore';
+import { PathConstants } from '@shared';
+const { join } = require('path');
 
 export class FeatureFlag {
-  public static readonly FEATURE_FLAG_STORE_FILENAME = "feature-flag.json";
+  public static readonly FEATURE_FLAG_STORE_FILENAME = 'feature-flag.json';
   private static singleton: FeatureFlag;
 
   public static getSingleton(): FeatureFlag {
@@ -11,10 +11,7 @@ export class FeatureFlag {
       return FeatureFlag.singleton;
     }
 
-    const filePath: string = join(
-      PathConstants.PRETASKS_FOLDER,
-      FeatureFlag.FEATURE_FLAG_STORE_FILENAME
-    );
+    const filePath: string = join(PathConstants.PRETASKS_FOLDER, FeatureFlag.FEATURE_FLAG_STORE_FILENAME);
     FeatureFlag.singleton = new FeatureFlag(filePath);
     return FeatureFlag.singleton;
   }
@@ -22,17 +19,15 @@ export class FeatureFlag {
   private store: Configstore;
 
   constructor(public storeFilePath: string) {
-    this.store = new Configstore("", null, { configPath: storeFilePath });
+    this.store = new Configstore('', null, { configPath: storeFilePath });
   }
 
   getLastFeatureFlagUpdate() {
-    return (this.store.get("lastFeatureFlagCheck") as number) ?? 0;
+    return (this.store.get('lastFeatureFlagCheck') as number) ?? 0;
   }
 
   getAllFeatureFlagInfo() {
-    return (
-      (this.store.get("featureFlagInfo") as Record<string, any> | null) ?? {}
-    );
+    return (this.store.get('featureFlagInfo') as Record<string, any> | null) ?? {};
   }
 
   getFeatureFlagInfo<T>(flagName: string): T {
@@ -40,10 +35,10 @@ export class FeatureFlag {
   }
 
   setLastFeatureFlagUpdate(date: number) {
-    this.store.set("lastFeatureFlagCheck", date);
+    this.store.set('lastFeatureFlagCheck', date);
   }
 
   setFeatureFlagInfo(versionFeatureFlagInfo: Record<string, any>) {
-    this.store.set("featureFlagInfo", versionFeatureFlagInfo);
+    this.store.set('featureFlagInfo', versionFeatureFlagInfo);
   }
 }

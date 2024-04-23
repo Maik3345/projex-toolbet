@@ -9,9 +9,12 @@
  * @returns The debounce function returns a new function that will execute the provided `func` after a
  * specified `timeout` period has elapsed without the new function being called again.
  */
-export function debounce(func, timeout = 300) {
-  let timer;
-  return (...args) => {
+export function debounce(
+  func: (...args: any[]) => void,
+  timeout: number = 300
+) {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(this, args);

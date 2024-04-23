@@ -1,24 +1,24 @@
-import { log } from "../../../../shared";
-import { executeCommand } from "./utils";
+import { log } from '@shared';
+import { executeCommand } from './utils';
 
-let commandToUse = "";
+let commandToUse = '';
 
 export const vtexRunCommand = async function (command: string | undefined) {
   if (command === undefined) {
-    return log.error("No command to execute");
+    return log.error('No command to execute');
   }
 
   // Capturo el flag para saber si empleo la ultima versión siempre o no.
-  const SCAPECOMMAND = "--scape";
+  const SCAPECOMMAND = '--scape';
   const scapeCommand = process.argv.indexOf(SCAPECOMMAND) >= 0;
   commandToUse = command;
 
   if (scapeCommand) {
-    commandToUse = command.replace(/\@S+/g, " ");
-    commandToUse = commandToUse.replace(/\@AND+/g, "&&");
+    commandToUse = command.replace(/\@S+/g, ' ');
+    commandToUse = commandToUse.replace(/\@AND+/g, '&&');
   }
 
   log.debug(`Command to execute: ${commandToUse}`);
-  log.info("Loading execute component process");
+  log.info('Loading execute component process');
   executeCommand(commandToUse);
 };

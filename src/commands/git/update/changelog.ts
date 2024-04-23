@@ -1,46 +1,40 @@
-import { ColorifyConstants, CustomCommand } from "../../../api";
-import { changelogUpdate } from "../../../modules";
-import { supportedChangelogTypes } from "../../../modules/apps/git/changelog/constants";
-import { TOOLBET_NAME } from "../../../shared";
+import { Colors } from '@api';
+import { changelogUpdate, supportedChangelogTypes } from '@modules';
+import { Args, Command } from '@oclif/core';
+import { CLI_NAME } from '@shared';
 
-export default class UpdateChangelog extends CustomCommand {
+export default class UpdateChangelog extends Command {
   static description =
-    "(Only for git users) Update the changelog file with the latest changes in the current branch or with the provided content.";
+    'Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)';
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git update changelog`
-    )} Changed`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git update changelog`
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git update changelog`)} [releaseType]`,
+    `${Colors.COMMAND_OR_RELEASE_REF(
+      `${CLI_NAME} git update changelog`,
     )} Major '${'test-change-01\\ntest-change-02'}'`,
   ];
 
-  static flags = {
-    ...CustomCommand.globalFlags,
-  };
+  static flags = {};
 
-  static args = [
-    {
-      name: "changeLogReleaseType",
+  static args = {
+    releaseType: Args.string({
       required: false,
       default: supportedChangelogTypes.Changed,
       options: [...Object.keys(supportedChangelogTypes)],
-      description: `Changelog release type.`,
-    },
-    {
-      name: "changelogContent",
+      description: `The type of release for the changelog.`,
+    }),
+    changelogContent: Args.string({
       required: false,
-      default: "",
-      description: `Pass the list of comments in a string, this content is used to generate the changelog file changes without use the git rev-list, example: 'test-change-01\\ntest-change-02', use '\\\\n' to separate the comments and not add space between them.`,
-    },
-  ];
+      default: '',
+      description: `Pass the list of comments in a string. This content is used to generate the changelog file changes without using git rev-list. Example: 'test-change-01\\ntest-change-02'. Use '\\\\n' to separate the comments without adding space between them.`,
+    }),
+  };
 
   async run() {
     const {
-      args: { changeLogReleaseType, changelogContent },
-    } = this.parse(UpdateChangelog);
+      args: { releaseType, changelogContent },
+    } = await this.parse(UpdateChangelog);
 
-    await changelogUpdate(changeLogReleaseType, changelogContent);
+    await changelogUpdate(releaseType, changelogContent);
   }
 }

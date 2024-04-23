@@ -1,38 +1,32 @@
-import chalk from "chalk";
-import { Folders, IFile, log } from "..";
-import { ColorifyConstants, getCurrentDirectory } from "../../api";
-import inquirer = require("inquirer");
-const path = require("path");
-const fs = require("fs");
+const chalk = require('chalk');
+const inquirer = require('inquirer');
+import { Colors, getCurrentDirectory } from '@api';
+import { log } from '../logger';
+import { Folders, IFile } from '../models';
+const path = require('path');
+const fs = require('fs');
 
 export class DirectoryUtils {
   private root: string;
   private list: boolean;
 
-  constructor(list?: boolean) {
+  constructor(list?: boolean | undefined) {
     this.root = getCurrentDirectory();
-    this.list = list;
+    this.list = list ? list : false;
   }
 
   /* The `chooseFolders` method is a public method of the `DirectoryUtils` class. It takes in three
   parameters: `folderList`, which is an array of `IFile` objects representing the list of folders to
   choose from, `message`, which is a string representing the message to display to the user, and
   `action`, which is a string representing the action being performed. */
-  public chooseFolders = async (
-    folderList: IFile[],
-    message: string,
-    action: string
-  ): Promise<Folders> => {
-    let folders = [
-      new inquirer.Separator(`${chalk.whiteBright(action)} \n`),
-      ...folderList,
-    ];
+  public chooseFolders = async (folderList: IFile[], message: string, action: string): Promise<Folders> => {
+    let folders = [new inquirer.Separator(`${chalk.whiteBright(action)} \n`), ...folderList];
 
     const promptCommands: Folders = await inquirer.prompt([
       {
-        type: "checkbox",
+        type: 'checkbox',
         message: `${chalk.redBright(message)}`,
-        name: "folders",
+        name: 'folders',
         choices: folders,
       },
     ]);
@@ -52,12 +46,10 @@ export class DirectoryUtils {
   parameters: `srcpath`, which is a string representing the path of the directory to search for
   files, and `extension`, which is a string or null representing the file extension to filter the
   files by. */
-  public getFilesInDirectory = async (
-    extension: string | null
-  ): Promise<IFile[]> => {
+  public getFilesInDirectory = async (extension: string | null | undefined): Promise<IFile[]> => {
     let files: IFile[] = [];
     await fs.readdirSync(this.root).map((file: any) => {
-      if (extension != null) {
+      if (extension != null && extension != undefined) {
         if (this.endsWith(file, extension)) {
           files.push({
             name: file,
@@ -79,16 +71,14 @@ export class DirectoryUtils {
   upload"), and an action string (default value is "Select the project"). */
   public promptSelectElements = async (
     files: IFile[],
-    message: string = "Select the files to upload",
-    action: string = "Select the project"
+    message: string = 'Select the files to upload',
+    action: string = 'Select the project',
   ) => {
     let choose = await this.chooseFolders(files, message, action);
-    log.info(
-      `number of elements to use: ${chalk.whiteBright(
-        `${choose.folders.length}`
-      )}`
-    );
-    return choose.folders;
+    const selectedFolders = choose.folders;
+    const numSelectedFolders = selectedFolders.length;
+    log.info(`Number of selected folders: ${chalk.whiteBright(numSelectedFolders)}`);
+    return selectedFolders;
   };
 
   /**
@@ -119,12 +109,11 @@ export class DirectoryUtils {
    */
   public getCurrentDirectoryFormatted = (): IFile[] => {
     const directory = this.getCurrentDirectory();
-    return [
-      {
-        name: directory.split("/").pop(),
-        path: directory,
-      },
-    ];
+    const currentDirectory: IFile = {
+      name: directory.split('/').pop() as string,
+      path: directory,
+    };
+    return [currentDirectory];
   };
 
   /* The `getFolderDirectories` method is a function that retrieves all the directories within the
@@ -137,9 +126,9 @@ export class DirectoryUtils {
 
     const folders: IFile[] = directories.map((directory) => {
       return {
-        name: directory.split("/").pop(),
+        name: directory.split('/').pop(),
         path: directory,
-      };
+      } as IFile;
     });
 
     const selected = await this.promptSelectElements(folders);
@@ -163,30 +152,20 @@ export class DirectoryUtils {
   }
 
   async getFolders() {
-    return this.list
-      ? await this.getFolderDirectories()
-      : this.getCurrentDirectoryFormatted();
+    return this.list ? await this.getFolderDirectories() : this.getCurrentDirectoryFormatted();
   }
 
-  async runCommandInFolders(
-    folders: IFile[],
-    method: (root: string) => Promise<void>
-  ) {
+  async runCommandInFolders(folders: (IFile | undefined)[], method: (root: string) => Promise<void>) {
     const setupHusky = folders.map(async (folder) => {
-      log.info(
-        `setting up for: ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-          folder.name
-        )}`
-      );
+      if (!folder) {
+        return;
+      }
+
+      log.info(`Setting up for: ${Colors.COMMAND_OR_RELEASE_REF(folder.name)}`);
       await method(folder.path);
-      log.info(
-        `setup complete for: ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-          folder.name
-        )}`
-      );
-      return;
+      log.info(`Setup complete for: ${Colors.COMMAND_OR_RELEASE_REF(folder.name)}`);
     });
 
-    return Promise.all(setupHusky);
+    await Promise.all(setupHusky);
   }
 }

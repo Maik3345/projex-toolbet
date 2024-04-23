@@ -1,10 +1,5 @@
 {
-    "ignore": ["**/*.test.ts", ".git", "node_modules", "lib"],
-    "watch": ["src", "package.json", "tsconfig.json"],
-    "exec": "yarn build-incremental",
-    "ext": "ts,tsx",
-    "events": {
-      "crash": "yarn notify -t 'toolbelt: dev-watch' -m 'build failed'"
-    }
-  }
-  
+  "watch": ["src"],
+  "ext": "ts",
+  "exec": "ts-node -r tsconfig-paths/register src/index.ts && yarn build"
+}

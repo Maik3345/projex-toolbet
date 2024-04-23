@@ -1,99 +1,79 @@
-import { flags as oclifFlags } from "@oclif/command";
-import { ColorifyConstants, CustomCommand } from "../../api";
-import { release } from "../../modules";
-import {
-  releaseTypeAliases,
-  supportedReleaseTypes,
-  supportedTagNames,
-} from "../../modules/apps/git/release/constants";
-import { TOOLBET_NAME } from "../../shared";
+import { Colors } from '@api';
+import { release, releaseTypeAliases, supportedReleaseTypes, supportedTagNames } from '@modules';
+import { Args, Command, Flags } from '@oclif/core';
+import { CLI_NAME } from '@shared';
 
-export default class Release extends CustomCommand {
+import { ReleaseType } from 'semver';
+
+export default class Release extends Command {
   static description =
-    "(Only for git users) Bumps the app version, commits, and pushes to remote the app in the current directory.";
+    'Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).';
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release`
-    )}`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release`
-    )} patch`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release`
-    )} patch beta`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release`
-    )} minor stable`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git release`
-    )} pre`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)}`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} patch`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} patch beta`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} minor stable`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} pre`,
   ];
 
   static flags = {
-    ...CustomCommand.globalFlags,
-    yes: oclifFlags.boolean({
-      description: "Answers yes to all prompts.",
-      char: "y",
+    yes: Flags.boolean({
+      description: 'Automatically answer yes to all prompts.',
+      char: 'y',
       default: false,
     }),
-    "no-push": oclifFlags.boolean({
-      description: "Automatic push all changes?.",
+    'no-push': Flags.boolean({
+      description: 'Do not automatically push all changes to the remote repository.',
       default: false,
     }),
-    "no-deploy": oclifFlags.boolean({
-      description: "Automatic run preRelease script from the manifest file.",
+    'no-deploy': Flags.boolean({
+      description: 'Do not automatically run the preRelease script from the manifest file.',
       default: false,
     }),
-    "no-check-release": oclifFlags.boolean({
-      description:
-        "Automatic check if the release is valid and not have local changes.",
+    'no-check-release': Flags.boolean({
+      description: 'Do not automatically check if the release is valid and does not have local changes.',
       default: false,
     }),
-    "no-tag": oclifFlags.boolean({
-      description: "Automatic tag the release.",
+    'no-tag': Flags.boolean({
+      description: 'Do not automatically tag the release.',
       default: false,
     }),
-    "get-version": oclifFlags.boolean({
-      description: "Only get the current version.",
+    'get-version': Flags.boolean({
+      description: 'Only get the current version without performing any release actions.',
       default: false,
     }),
   };
 
-  static args = [
-    {
-      name: "releaseType",
+  static args = {
+    releaseType: Args.string({
       required: false,
-      default: "patch",
-      options: [
-        ...Object.keys(releaseTypeAliases),
-        ...Object.keys(supportedReleaseTypes),
-      ],
-      description: `Release type.`,
-    },
-    {
-      name: "tagName",
+      default: 'patch',
+      options: [...Object.keys(releaseTypeAliases), ...Object.keys(supportedReleaseTypes)],
+      description: 'The type of release. Defaults to "patch".',
+    }),
+    tagName: Args.string({
       required: false,
-      default: "beta",
+      default: 'beta',
       options: Object.keys(supportedTagNames),
-      description: `Tag name.`,
-    },
-  ];
+      description: 'The name of the tag. Defaults to "beta".',
+    }),
+  };
 
   async run() {
     const {
       flags: { yes },
       flags,
       args: { releaseType, tagName },
-    } = this.parse(Release);
+    } = await this.parse(Release);
 
-    await release(releaseType, tagName, {
+    await release(releaseType as ReleaseType, tagName, {
       yes,
-      noDeploy: flags["no-deploy"],
-      noPush: flags["no-push"],
-      noCheckRelease: flags["no-check-release"],
-      noTag: flags["no-tag"],
-      getVersion: flags["get-version"],
+      noDeploy: flags['no-deploy'],
+      noPush: flags['no-push'],
+      noCheckRelease: flags['no-check-release'],
+      noTag: flags['no-tag'],
+      getVersion: flags['get-version'],
     });
   }
 }

@@ -1,40 +1,35 @@
-import { flags as oclifFlags } from "@oclif/command";
-import { ColorifyConstants, CustomCommand } from "../../api";
-import { bashRunCommand } from "../../modules";
-import { TOOLBET_NAME } from "../../shared";
+import { Colors } from '@api';
+import { bashRunCommand } from '@modules';
+import { Args, Command, Flags } from '@oclif/core';
+import { CLI_NAME } from '@shared';
 
-export default class Browse extends CustomCommand {
+export default class Browse extends Command {
   static description = `Run a command in the current directory or select multiple directories`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} bash run`
-    )} 'git add . && git push'`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} bash run`)} 'git add . && git push'`,
+    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} bash run`)} 'npm install'`,
   ];
 
   static flags = {
-    ...CustomCommand.globalFlags,
-    list: oclifFlags.boolean({
-      description: "List all projects to run the command.",
-      char: "l",
+    list: Flags.boolean({
+      description: 'List all projects before running the command.',
+      char: 'l',
       default: false,
     }),
   };
 
-  static args = [
-    {
-      name: "command",
-      description: `Define the command to run ${ColorifyConstants.ID(
-        "git add . && git push"
-      )}`,
-    },
-  ];
+  static args = {
+    command: Args.string({
+      description: `Specify the command to run. For example: ${Colors.ID('git add . && git push')}`,
+    }),
+  };
 
   async run() {
     const {
       flags: { list },
       args: { command },
-    } = this.parse(Browse);
+    } = await this.parse(Browse);
     await bashRunCommand(command, { list });
   }
 }

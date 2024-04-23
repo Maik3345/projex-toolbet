@@ -1,5 +1,5 @@
-import { DirectoryUtils } from "../../../../../shared";
-import { SetupHuskyUtil } from "./utils";
+import { DirectoryUtils } from '@shared';
+import { SetupHuskyUtil } from './utils';
 
 /**
  * The `setupHusky` function sets up Husky, a Git hook tool, in a specified directory or in the current
