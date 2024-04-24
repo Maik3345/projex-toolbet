@@ -14,7 +14,7 @@ export class PromptsUtils {
     const proceed = prompt.proceed;
 
     if (!proceed) {
-      log.info('Process finished successfully.');
+      log.info('process finished successfully.');
       process.exit();
     }
   };

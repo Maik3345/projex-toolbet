@@ -7,6 +7,8 @@ import {
 } from './constants';
 import { ReleaseUtils } from './utils';
 import { log } from '@shared';
+import { Colors } from '@api';
+import chalk from 'chalk';
 
 export const shouldUpdateChangelog = (releaseType: ReleaseType, tagName: string) => {
   return (
@@ -31,8 +33,10 @@ export const getNewAndOldVersions = (utils: ReleaseUtils, releaseType: ReleaseTy
     const newVersion = parsedVersion?.version;
 
     if (!newVersion || !gt(newVersion, oldVersion)) {
-      const errorMessage = `The new version (${newVersion}) must be greater than the old version (${oldVersion})`;
-      log.error(errorMessage);
+      const errorMessage = `the new version (${chalk.bold(
+        newVersion,
+      )}) must be greater than the old version (${chalk.bold(oldVersion)})`;
+      log.error(Colors.ERROR(errorMessage));
       throw new Error(errorMessage);
     }
 

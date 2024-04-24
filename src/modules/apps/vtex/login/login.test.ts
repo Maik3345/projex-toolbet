@@ -38,7 +38,7 @@ describe('login', () => {
       env: 'prod',
     });
     expect(serviceGetAuthMock).toHaveBeenCalledWith(account, apiKey, apiToken);
-    expect(log.info).toHaveBeenCalledWith('Saving the authentication token in the VTEX config file...');
+    expect(log.info).toHaveBeenCalledWith('saving the authentication token in the VTEX config file...');
   });
 
   it('should log an error message and exit if no token information is found', async () => {
@@ -54,7 +54,7 @@ describe('login', () => {
     serviceGetAuthMock.mockResolvedValueOnce(undefined as any);
 
     await expect(login(account, email, workspace, apiKey, apiToken)).rejects.toThrowError('process.exit() was called.');
-    expect(log.error).toHaveBeenCalledWith('Error while obtaining authentication token');
+    expect(log.error).toHaveBeenCalledWith('error while obtaining authentication token');
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 });

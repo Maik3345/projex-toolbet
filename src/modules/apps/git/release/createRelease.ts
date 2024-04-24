@@ -1,5 +1,5 @@
-import { renderTableOfReleaseVersions } from '@api';
-import { log } from '@shared';
+import { Colors, renderTableOfReleaseVersions } from '@api';
+import { checkGit, checkIfInGitRepo, log, pushCommand, tag } from '@shared';
 import { ReleaseType } from 'semver';
 import { getNewAndOldVersions, shouldUpdateChangelog } from './changelog';
 import { releaseTypeAliases } from './constants';
@@ -28,8 +28,8 @@ export const release = async (
 
   const utils = new ReleaseUtils();
 
-  utils.checkGit();
-  utils.checkIfInGitRepo();
+  checkGit();
+  checkIfInGitRepo();
 
   const normalizedReleaseType =
     releaseTypeAliases[releaseType as keyof typeof releaseTypeAliases] || (releaseType as ReleaseType); // Cast normalizedReleaseType to ReleaseType
@@ -39,7 +39,7 @@ export const release = async (
 
   if (getVersion) {
     return console.log(
-      `old_version:${oldVersion},new_version:${newVersion},app_name:${utils.readAppName()},push:${utils.pushCommand(
+      `old_version:${oldVersion},new_version:${newVersion},app_name:${utils.readAppName()},push:${pushCommand(
         tagText,
         noTag,
       )}`,
@@ -72,11 +72,12 @@ export const release = async (
 
   if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {
     // Abort release.
+    log.verbose('aborted release.');
     return;
   }
 
   try {
-    log.info(`To push the commit and tag manually, use: ${chalk.bold.blue(utils.pushCommand(tagText, noTag))}`);
+    log.warn(`to push the commit and tag manually, use: ${chalk.bold.blue(pushCommand(tagText, noTag))}`);
     if (!checkPreRelease) {
       await utils.preRelease();
     }
@@ -89,7 +90,7 @@ export const release = async (
       await utils.commit(tagText, releaseType);
     }
     if (!noTag) {
-      await utils.tag(tagText);
+      await tag(tagText, utils.root);
     }
     if (!pushAutomatic) {
       await utils.push(tagText, noTag);
@@ -97,11 +98,8 @@ export const release = async (
     if (!automaticDeploy) {
       await utils.postRelease();
     }
-
-    if (pushAutomatic && automaticDeploy) {
-      log.info(`You can push all changes with: git push && git push origin ${tagText}`);
-    }
   } catch (e) {
-    log.error(`Failed to release \n${e}`);
+    log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
+    log.error(e);
   }
 };

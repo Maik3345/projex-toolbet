@@ -48,7 +48,7 @@ describe('serviceGetAuth', () => {
     await serviceGetAuth('account', 'apiKey', undefined as any);
 
     // Check the log
-    expect(log.error).toHaveBeenCalledWith('No account, apiToken or apiKey');
+    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
   });
 
   it('should throw error and log when there is an error in sending the POST request', async () => {
@@ -85,7 +85,7 @@ describe('serviceGetAuth', () => {
     await serviceGetAuth('account', undefined as any, 'apiToken');
 
     // Check the log
-    expect(log.error).toHaveBeenCalledWith('No account, apiToken or apiKey');
+    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
   });
 
   it('should throw error and log when account is empty', async () => {
@@ -93,6 +93,6 @@ describe('serviceGetAuth', () => {
     await serviceGetAuth(undefined as any, 'apiKey', 'apiToken');
 
     // Check the log
-    expect(log.error).toHaveBeenCalledWith('No account, apiToken or apiKey');
+    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
   });
 });

@@ -6,17 +6,17 @@ export const executeCommand = (commandToUse: string | undefined) => {
   if (!commandToUse) {
     throw new Error('no command to execute');
   }
-  log.debug(`Command to execute: ${commandToUse}`);
+  log.warn(`command to execute: ${commandToUse}`);
   childProcessRunCommandRun(commandToUse);
 };
 
 const debouncedError = _.debounce(() => {
-  log.error(`Command error execution`);
+  log.error(`finish with errors on run the command`);
   throw new Error('finish execution with errors');
 }, 20000);
 
 const debouncedSuccess = _.debounce(() => {
-  log.info(`Toolbet, finish successfully on run the command`);
+  log.info(`finish successfully on run the command`);
   process.exit(0);
 }, 20000);
 

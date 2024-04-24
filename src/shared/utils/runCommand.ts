@@ -1,6 +1,7 @@
-const cp = require("child-process-es6-promise");
-const chalk = require('chalk');
-import { log } from "../logger";
+const cp = require('child-process-es6-promise');
+import { Colors } from '@api';
+import { log } from '../logger';
+import chalk from 'chalk';
 
 /**
  * The `runCommand` function executes a command in a specified directory, logs success and error
@@ -29,32 +30,25 @@ export const runCommand = (
   successMessage: string,
   hideOutput = false,
   retries = 0,
-  hideSuccessMessage = false
+  hideSuccessMessage = false,
 ): any => {
   let output;
   try {
     output = cp.execSync(cmd, {
-      stdio: hideOutput ? "pipe" : "inherit",
+      stdio: hideOutput ? 'pipe' : 'inherit',
       cwd,
     });
     if (!hideSuccessMessage) {
-      log.info(successMessage + chalk.blue(` >  ${cmd}`));
+      log.warn(Colors.WARNING(`running command: ${chalk.bold(cmd)}`));
     }
     return output;
   } catch (e: any) {
-    log.error(`Command '${cmd}' exited with error code: ${e.status}`);
+    log.error(`${Colors.ERROR('error running command:')} ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
     if (retries <= 0) {
       throw e;
     }
-    log.info(`Retrying...`);
+    log.info(`retrying command: ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
 
-    return runCommand(
-      cmd,
-      cwd,
-      successMessage,
-      hideOutput,
-      retries - 1,
-      hideSuccessMessage
-    );
+    return runCommand(cmd, cwd, successMessage, hideOutput, retries - 1, hideSuccessMessage);
   }
 };

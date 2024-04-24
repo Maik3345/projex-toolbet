@@ -1,5 +1,6 @@
-import { DirectoryUtils } from '@shared';
+import { DirectoryUtils, log } from '@shared';
 import { BashRunCommandUtils } from './utils';
+import { Colors } from '@api';
 
 /**
  * The `setupHusky` function sets up Husky, a Git hook tool, in a specified directory or in the current
@@ -14,7 +15,8 @@ export const bashRunCommand = async (
   },
 ) => {
   if (!command) {
-    throw new Error('Command is required.');
+    log.error(Colors.ERROR('please provide a command to run'));
+    process.exit(1);
   }
 
   const list = options.l || options.list;

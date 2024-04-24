@@ -1,20 +1,20 @@
 import { Colors } from '@api';
 import { changelogUpdate, supportedChangelogTypes } from '@modules';
 import { Args, Command } from '@oclif/core';
-import { CLI_NAME } from '@shared';
+import { CLI_NAME, globalFlags } from '@shared';
 
 export default class UpdateChangelog extends Command {
   static description =
     'Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)';
 
   static examples = [
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git update changelog`)} [releaseType]`,
-    `${Colors.COMMAND_OR_RELEASE_REF(
-      `${CLI_NAME} git update changelog`,
-    )} Major '${'test-change-01\\ntest-change-02'}'`,
+    `${Colors.PINK(`${CLI_NAME} git update changelog`)} [releaseType]`,
+    `${Colors.PINK(`${CLI_NAME} git update changelog`)} Major '${'test-change-01\\ntest-change-02'}'`,
   ];
 
-  static flags = {};
+  static flags = {
+    ...globalFlags,
+  };
 
   static args = {
     releaseType: Args.string({

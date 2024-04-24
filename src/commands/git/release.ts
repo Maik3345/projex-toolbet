@@ -1,7 +1,7 @@
 import { Colors } from '@api';
 import { release, releaseTypeAliases, supportedReleaseTypes, supportedTagNames } from '@modules';
 import { Args, Command, Flags } from '@oclif/core';
-import { CLI_NAME } from '@shared';
+import { CLI_NAME, globalFlags } from '@shared';
 
 import { ReleaseType } from 'semver';
 
@@ -10,14 +10,15 @@ export default class Release extends Command {
     'Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).';
 
   static examples = [
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)}`,
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} patch`,
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} patch beta`,
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} minor stable`,
-    `${Colors.COMMAND_OR_RELEASE_REF(`${CLI_NAME} git release`)} pre`,
+    `${Colors.PINK(`${CLI_NAME} git release`)}`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} patch`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} patch beta`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} minor stable`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} pre`,
   ];
 
   static flags = {
+    ...globalFlags,
     yes: Flags.boolean({
       description: 'Automatically answer yes to all prompts.',
       char: 'y',

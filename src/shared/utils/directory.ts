@@ -1,8 +1,8 @@
-const chalk = require('chalk');
 const inquirer = require('inquirer');
 import { Colors, getCurrentDirectory } from '@api';
 import { log } from '../logger';
 import { Folders, IFile } from '../models';
+import chalk from 'chalk';
 const path = require('path');
 const fs = require('fs');
 
@@ -77,7 +77,7 @@ export class DirectoryUtils {
     let choose = await this.chooseFolders(files, message, action);
     const selectedFolders = choose.folders;
     const numSelectedFolders = selectedFolders.length;
-    log.info(`Number of selected folders: ${chalk.whiteBright(numSelectedFolders)}`);
+    log.info(`number of selected folders: ${chalk.bold.whiteBright(numSelectedFolders)}`);
     return selectedFolders;
   };
 
@@ -161,9 +161,9 @@ export class DirectoryUtils {
         return;
       }
 
-      log.info(`Setting up for: ${Colors.COMMAND_OR_RELEASE_REF(folder.name)}`);
+      log.info(`setting up for: ${Colors.PINK(folder.name)}`);
       await method(folder.path);
-      log.info(`Setup complete for: ${Colors.COMMAND_OR_RELEASE_REF(folder.name)}`);
+      log.info(`setup complete for: ${Colors.PINK(folder.name)}`);
     });
 
     await Promise.all(setupHusky);

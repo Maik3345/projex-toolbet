@@ -37,6 +37,7 @@
   "dependencies": {
     "@oclif/core": "^3.26.4",
     "@oclif/plugin-help": "^6.0.21",
+    "@oclif/plugin-plugins": "^5.0.14",
     "axios": "^0.21.4",
     "bluebird": "^3.7.2",
     "chalk": "4.1.2",
@@ -87,11 +88,9 @@
     "scope": "projex",
     "topicSeparator": " ",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
     ],
-    "hooks": {
-      "init": "./dist/oclif/hooks/init"
-    },
     "topics": {
       "git": {
         "description": "Utilities for manage the git repository"

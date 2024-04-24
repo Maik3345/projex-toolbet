@@ -4,6 +4,8 @@ export * from './debounce';
 export * from './directory';
 export * from './files';
 export * from './getContentFiles';
+export * from './git';
+export * from './oclif';
 export * from './prompts';
 export * from './runCommand';
 export * from './runMultipleCommand';

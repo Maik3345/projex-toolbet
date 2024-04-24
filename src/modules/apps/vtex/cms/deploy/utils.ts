@@ -27,16 +27,18 @@ export class DeployUtils {
     this.token = await runOnlyCommand(Commands.GET_TOKEN);
     this.userInfo = await runOnlyCommand(Commands.GET_ACCOUNT);
     this.account = getAccountName(this.userInfo);
-    log.debug(`Use the account  ${Colors.COMMAND_OR_RELEASE_REF(this.account)}`);
+    log.debug(`Use the account  ${Colors.PINK(this.account)}`);
   };
 
   public prepare = async (files: IFile[]) => {
     !this.preConfirm &&
       (await this.promptUtils.continuePrompt(
-        `You are about to upload the files in the account ${this.account} with de site configuration ${this.site}. Do you want to continue?`,
+        `you are about to upload the files in the account ${Colors.WARNING(
+          this.account,
+        )} with de site configuration ${Colors.WARNING(this.site)}. Do you want to continue?`,
       ));
 
-    const spinner = ora('Uploading files start').start();
+    const spinner = ora('uploading files...').start();
     const results = files.map(async (item) => {
       const url = Endpoints.UPLOAD_FILE(this.account.replace(/\s/g, ''), item.name, this.site);
       const data = await fs.readFileSync(item.path, 'utf8');
@@ -50,7 +52,7 @@ export class DeployUtils {
     });
 
     Promise.all(results).then(() => {
-      log.info('Charge finished');
+      log.info('files uploaded successfully');
       spinner.stop();
     });
   };
@@ -60,7 +62,7 @@ export class DeployUtils {
     let files = await this.directoryUtils.getFilesInDirectory(extension);
 
     if (!files.length) {
-      log.info('No files found');
+      log.error(Colors.ERROR('no files found'));
       throw new Error('No files found');
     }
 
@@ -71,7 +73,7 @@ export class DeployUtils {
     }
 
     log.info(
-      'Files to upload:',
+      'files to upload:',
       files.map((item) => item.name),
     );
 

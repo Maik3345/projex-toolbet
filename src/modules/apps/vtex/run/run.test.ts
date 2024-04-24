@@ -12,7 +12,7 @@ describe('executeComponentProcess', () => {
 
   it('should throw an error if no command is provided', () => {
     vtexRunCommand(undefined);
-    expect(log.error).toHaveBeenCalledWith('No command to execute');
+    expect(log.error).toHaveBeenCalledWith('no command to execute');
   });
 
   it('should replace @S with spaces and @AND with && if the --scape flag is provided', () => {
@@ -26,7 +26,7 @@ describe('executeComponentProcess', () => {
   it('should log the command to execute and a loading message', () => {
     const command = 'git status';
     vtexRunCommand(command);
-    expect(log.debug).toHaveBeenCalledWith(`Command to execute: ${command}`);
-    expect(log.info).toHaveBeenCalledWith('Loading execute component process');
+    expect(log.warn).toHaveBeenCalledWith(`command to execute: ${command}`);
+    expect(log.info).toHaveBeenCalledWith('executing command...');
   });
 });

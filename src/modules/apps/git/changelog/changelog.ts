@@ -1,4 +1,4 @@
-import { getAppRoot, renderTableOfCommits } from '@api';
+import { Colors, getAppRoot, renderTableOfCommits } from '@api';
 import { log, runCommand, unreleased } from '@shared';
 import { close, existsSync, openSync, readFileSync, truncateSync, writeSync } from 'fs-extra';
 import { resolve } from 'path';
@@ -54,7 +54,7 @@ export class ChangelogUtils {
     }
 
     if (!commitList.length) {
-      log.info(chalk.red('No commits found'));
+      log.error(Colors.ERROR('no commits found in the current branch'));
       return;
     }
 
@@ -68,7 +68,7 @@ export class ChangelogUtils {
 
     const changelogContent = this.getChangelogContent();
     if (!changelogContent) {
-      log.info(chalk.red('No CHANGELOG.md found'));
+      log.error(Colors.ERROR('no have CHANGELOG.md file in the project'));
       return;
     }
 
@@ -92,9 +92,7 @@ export class ChangelogUtils {
     const newChangelogContent = `${unReleasedChanges}\n${newCommitsListMessages}`;
 
     if (newChanges.length) {
-      log.info(
-        chalk.blue(`pass to add the new changes make by the developer, total changes to add ${newChanges.length}`),
-      );
+      log.info(`pass to add the new changes make by the developer, total changes to add ${newChanges.length}`);
       renderTableOfCommits({
         title: 'New changes to add',
         emptyMessage: 'No commits found to add',
@@ -103,7 +101,7 @@ export class ChangelogUtils {
 
       this.writeChangelogToUpdateUnReleasedChanges(changelogContent, unReleasedChanges, newChangelogContent);
     } else {
-      log.info(chalk.green('No have new changes to add to CHANGELOG'));
+      log.warn('No have new changes to add to CHANGELOG');
     }
 
     return;
@@ -130,7 +128,7 @@ ${commitList.map((commit) => `${commit}`).join('\n')}`;
     try {
       writeSync(file, bufferedText, 0, bufferedText.length, position);
       close(file);
-      log.info(`updated CHANGELOG`);
+      log.info(`successfully added the new changes to the CHANGELOG.md file.`);
     } catch (e) {
       throw new Error(`Error writing file: ${e}`);
     }
@@ -155,7 +153,7 @@ ${commitList.map((commit) => `${commit}`).join('\n')}`;
     try {
       writeSync(file, bufferedText, 0, bufferedText.length);
       close(file);
-      console.log(chalk.green('Successfully updated the CHANGELOG with commit messages.'));
+      log.info('successfully updated the CHANGELOG with commit messages.');
     } catch (e) {
       throw new Error(`Error writing file: ${e}`);
     }

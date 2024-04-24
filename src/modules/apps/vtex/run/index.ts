@@ -5,7 +5,7 @@ let commandToUse = '';
 
 export const vtexRunCommand = async function (command: string | undefined) {
   if (command === undefined) {
-    return log.error('No command to execute');
+    return log.error('no command to execute');
   }
 
   // Capturo el flag para saber si empleo la ultima versión siempre o no.
@@ -18,7 +18,7 @@ export const vtexRunCommand = async function (command: string | undefined) {
     commandToUse = commandToUse.replace(/\@AND+/g, '&&');
   }
 
-  log.debug(`Command to execute: ${commandToUse}`);
-  log.info('Loading execute component process');
+  log.warn(`command to execute: ${commandToUse}`);
+  log.info('executing command...');
   executeCommand(commandToUse);
 };

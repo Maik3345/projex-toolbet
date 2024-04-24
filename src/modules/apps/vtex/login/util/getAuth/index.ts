@@ -18,7 +18,7 @@ import axios from 'axios';
 export const serviceGetAuth = async (account: string, apiKey: string, apiToken: string) => {
   try {
     if (!apiToken || !apiKey || !account) {
-      log.error('No account, apiToken or apiKey');
+      log.error('no account, apiToken or apiKey');
       return;
     }
 
@@ -41,6 +41,6 @@ export const serviceGetAuth = async (account: string, apiKey: string, apiToken: 
     return axios(config);
   } catch (error) {
     log.debug(error);
-    log.error('Error on get auth token');
+    log.error('error on get auth token');
   }
 };

@@ -1,5 +1,6 @@
-import { getCurrentDirectory } from '@api';
+import { Colors, getCurrentDirectory } from '@api';
 import { log, runCommand } from '@shared';
+import chalk from 'chalk';
 
 const fs = require('fs');
 
@@ -14,11 +15,11 @@ export class CloneUtils {
 
   public cloneRepository = (repository: string) => {
     try {
-      log.info(`Cloning repository: ${repository}`);
+      log.info(`cloning repository ${chalk.bold(repository)}...`);
       return runCommand(`git clone ${this.repositoryUrl}${repository}`, this.root, 'Cloned');
     } catch (e: any) {
-      log.error(`Clone repository ${repository} failed: ${e.message}`);
-      log.verbose(e);
+      log.error(`${Colors.ERROR('an error occurred while cloning the repository')} ${chalk.bold(repository)}.`);
+      log.error(e);
     }
   };
 

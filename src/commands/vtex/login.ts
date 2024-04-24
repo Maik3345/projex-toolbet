@@ -1,15 +1,13 @@
 import { Colors } from '@api';
 import { login } from '@modules';
 import { Args, Command } from '@oclif/core';
-import { CLI_NAME } from '@shared';
+import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Login extends Command {
   static description = `Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI.`;
 
   static examples = [
-    `${Colors.COMMAND_OR_RELEASE_REF(
-      `${CLI_NAME} vtex login [YourAccount] [YourEmail] [YourWorkspace] [YourApiKey] [YourApiToken]`,
-    )}`,
+    `${Colors.PINK(`${CLI_NAME} vtex login [YourAccount] [YourEmail] [YourWorkspace] [YourApiKey] [YourApiToken]`)}`,
   ];
 
   static args = {
@@ -28,6 +26,10 @@ export default class Login extends Command {
     apiToken: Args.string({
       description: `Specify your API token to use in the process.`,
     }),
+  };
+
+  static flags = {
+    ...globalFlags,
   };
 
   async run() {

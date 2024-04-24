@@ -12,7 +12,7 @@ export const clone = async (repositoryUrl: string, repositoryList: string) => {
     if (!exist) {
       await utils.cloneRepository(name);
     } else {
-      log.info(`The repository ${Colors.COMMAND_OR_RELEASE_REF(name)} already exists`);
+      log.info(`repository ${Colors.GREEN(name)} already exists.`);
     }
   });
 

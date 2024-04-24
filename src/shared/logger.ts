@@ -1,9 +1,25 @@
-import { createLogger, format, transports } from 'winston';
+import { LogLevelColors } from '@api';
+import { join } from 'path';
 import { formatWithOptions } from 'util';
+import { createLogger, format, transports } from 'winston';
+import { LOGS_FOLDER } from './constants/paths';
 import { isVerbose } from './verbose';
 const chalk = require('chalk');
-import { join } from 'path';
-import { LOGS_FOLDER } from './constants/paths';
+
+enum LogLevelIcons {
+  'info' = '✔',
+  'warn' = '▲',
+  'error' = '✖',
+  'debug' = 'i',
+  'silly' = '✖',
+  'verbose' = 'i',
+}
+
+const getLevelIcon = (level: string) => {
+  const color = LogLevelColors[level as keyof typeof LogLevelColors];
+  const icon = LogLevelIcons[level as keyof typeof LogLevelIcons];
+  return icon ? chalk.hex(color)(icon) : '';
+};
 
 // The debug file is likely to be on ~/.config/configstore/pco_debug.txt
 export const DEBUG_LOG_FILE_PATH = join(LOGS_FOLDER, 'debug.json');
@@ -16,9 +32,10 @@ const addArgs = format((info: any) => {
 });
 
 const messageFormatter = format.printf((info: any) => {
-  const { timestamp: timeString = '', sender = '', message, args = [] } = info as any;
+  const { sender = '', message, args = [] } = info as any;
   const formattedMsgWithArgs = formatWithOptions({ colors: true }, message, ...args);
-  const msg = `${chalk.gray(timeString)} - ${info.level}: ${formattedMsgWithArgs}  ${chalk.gray(sender)}`;
+  const logIcon = getLevelIcon(info.level);
+  const msg = `${logIcon} ${formattedMsgWithArgs}  ${chalk.gray(sender)}`;
   return msg;
 });
 
@@ -62,7 +79,7 @@ const logger = createLogger({
   format: format.combine(addArgs(), format.timestamp({ format: 'HH:mm:ss.SSS' })),
   transports: [
     new transports.Console({
-      format: format.combine(format.colorize(), messageFormatter),
+      format: messageFormatter,
       level: consoleLoggerLevel(),
     }),
     new transports.File({
@@ -80,7 +97,7 @@ levels.forEach((level: any) => {
   // @ts-ignore
   logger[level] = (msg: any, ...remains: any[]) => {
     if (remains.length > 0 && isObject(remains[0]) && remains[0].message) {
-      msg = `${msg} `;
+      msg = `${msg}`;
     }
 
     if (typeof msg !== 'string') {

@@ -1,3 +1,4 @@
+import { Colors } from '@api';
 import { Commands, Endpoints, getAccountName, log, runOnlyCommand } from '@shared';
 import axios from 'axios';
 const ora = require('ora');
@@ -8,7 +9,7 @@ let directory: string = '';
 
 export const backup = async (site: string | undefined) => {
   if (!site) {
-    log.error('You must specify the site to make the backup');
+    log.error(Colors.ERROR('you must specify the site to make the backup'));
     process.exit(1);
   }
 
@@ -32,19 +33,19 @@ export const backup = async (site: string | undefined) => {
     token: token.replace(/\s/g, ''),
     url,
   });
-  log.verbose('All directories found in vtex');
+  log.verbose('all directories found in vtex');
   log.verbose(allDirectories);
   if (allDirectories.length) {
     const filterDirectory = allDirectories.filter((item) => {
       if ((!item.endsWith('.map') && item.endsWith('.css')) || item.endsWith('.js')) return item;
     });
     log.verbose(
-      'We removed all the directories that cannot be downloaded, Only download files with the extensión .css and js',
+      'we removed all the directories that cannot be downloaded, Only download files with the extensión .css and js',
     );
     log.verbose(filterDirectory);
     await downloadFiles(filterDirectory, account.replace(/\s/g, ''));
     spinner.succeed();
-  } else log.error('No files found');
+  } else log.error(Colors.ERROR('no files found'));
 };
 
 const downloadFiles = async (directories: string[], account: string) => {
@@ -62,7 +63,7 @@ const downloadFiles = async (directories: string[], account: string) => {
     if (request.data) {
       request.data.pipe(fs.createWriteStream('./backup/' + item));
     } else {
-      log.error(`Error on download the file ${item} with the url ${urlGetFiles}`);
+      log.error(Colors.ERROR(`error on download the file ${item} with the url ${urlGetFiles}`));
     }
   });
 

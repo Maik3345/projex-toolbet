@@ -8,12 +8,12 @@ export class FilesUtils {
     try {
       if (!existsSync(dir)) {
         await fs.writeFile(dir, content);
-        log.info(`File ${Colors.ID(dir.split('/').pop() ?? '')} created successfully.`);
+        log.info(`file ${Colors.GREEN(dir.split('/').pop() ?? '')} created successfully.`);
       } else {
-        log.info(`File ${Colors.ID(dir.split('/').pop() ?? '')} already exists.`);
+        log.info(`file ${Colors.GREEN(dir.split('/').pop() ?? '')} already exists.`);
       }
     } catch (err) {
-      log.error('An error occurred while creating the file:', err);
+      log.error('an error occurred while creating the file:', err);
     }
   };
 
@@ -21,14 +21,14 @@ export class FilesUtils {
     try {
       if (!existsSync(dir)) {
         await fs.mkdir(dir);
-        log.info(`Directory ${Colors.ID(dir.split('/').pop() ?? '')} created.`);
+        log.info(`directory ${Colors.GREEN(dir.split('/').pop() ?? '')} created.`);
         return true;
       } else {
-        log.info(`Directory ${Colors.ID(dir.split('/').pop() ?? '')} already exists.`);
+        log.info(`directory ${Colors.GREEN(dir.split('/').pop() ?? '')} already exists.`);
         return false;
       }
     } catch (error) {
-      log.error('An error occurred while creating the directory:', error);
+      log.error('an error occurred while creating the directory:', error);
     }
   };
 }

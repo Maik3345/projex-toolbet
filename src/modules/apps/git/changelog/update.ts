@@ -1,12 +1,16 @@
-import { log } from '@shared';
+import { Colors } from '@api';
+import { checkGit, checkIfInGitRepo, log } from '@shared';
 import { ChangelogUtils } from './changelog';
 
 export const changelogUpdate = async (changeLogReleaseType = 'Changed', changelogContent = '') => {
-  const changelogUtils = new ChangelogUtils(changeLogReleaseType, changelogContent);
+  const utils = new ChangelogUtils(changeLogReleaseType, changelogContent);
+
+  checkGit();
+  checkIfInGitRepo();
 
   try {
-    await changelogUtils.writeGitLogCommits();
+    await utils.writeGitLogCommits();
   } catch (e) {
-    log.error(`Failed to update changelog file \n${e}`);
+    log.error(Colors.ERROR('failed to update changelog file'));
   }
 };
