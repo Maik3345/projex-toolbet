@@ -65,9 +65,9 @@ export const saveVtexConfig = async (configuration: ConfigVtexJson) => {
       { configPath: SESSION_STORE_PATH },
     );
 
-    log.info('vtex json save successfully');
+    log.info('VTEX credentials saved successfully.');
   } catch (error) {
-    log.error('Error on save the vtex file', error);
+    log.error('An error occurred while saving VTEX credentials.', error);
     process.exit(1);
   }
 };

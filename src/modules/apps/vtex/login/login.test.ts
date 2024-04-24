@@ -38,7 +38,7 @@ describe('login', () => {
       env: 'prod',
     });
     expect(serviceGetAuthMock).toHaveBeenCalledWith(account, apiKey, apiToken);
-    expect(log.info).toHaveBeenCalledWith('vtex json save successfully');
+    expect(log.info).toHaveBeenCalledWith('Saving the authentication token in the VTEX config file...');
   });
 
   it('should log an error message and exit if no token information is found', async () => {
