@@ -1,26 +1,15 @@
-import { homedir } from "os";
-import { join } from "path";
-import { TOOLBET_NAME } from "./commands";
-const os_1 = require("os");
-const path_1 = require("path");
+import { CLI_NAME } from '@shared';
+import { homedir } from 'os';
+import { join } from 'path';
 
 export class PathConstants {
-  private static readonly PCO_FOLDER = join(homedir(), `.${TOOLBET_NAME}`);
+  private static readonly PCO_FOLDER = join(homedir(), `.${CLI_NAME}`);
 
-  public static readonly PRETASKS_FOLDER = join(
-    PathConstants.PCO_FOLDER,
-    "pretasks"
-  );
-  public static readonly TELEMETRY_FOLDER = join(
-    PathConstants.PCO_FOLDER,
-    "telemetry"
-  );
-  public static readonly LOGS_FOLDER = join(PathConstants.PCO_FOLDER, "logs");
-  public static readonly SESSION_FOLDER = join(
-    PathConstants.PCO_FOLDER,
-    "session"
-  );
+  public static readonly PRETASKS_FOLDER = join(PathConstants.PCO_FOLDER, 'pretasks');
+  public static readonly TELEMETRY_FOLDER = join(PathConstants.PCO_FOLDER, 'telemetry');
+  public static readonly LOGS_FOLDER = join(PathConstants.PCO_FOLDER, 'logs');
+  public static readonly SESSION_FOLDER = join(PathConstants.PCO_FOLDER, 'session');
 }
 
-export const PC_FOLDER = path_1.join(os_1.homedir(), `.${TOOLBET_NAME}`);
-export const LOGS_FOLDER = path_1.join(PC_FOLDER, "logs");
+export const PC_FOLDER = join(homedir(), `.${CLI_NAME}`);
+export const LOGS_FOLDER = join(PC_FOLDER, 'logs');

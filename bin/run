@@ -1,10 +1,7 @@
 #!/usr/bin/env node
-
-exports.initTimeStartTime = process.hrtime();
-
-if (require.main === module) {
-  require("@oclif/command")
-    .run()
-    .then(require("@oclif/command/flush"))
-    .catch(require("@oclif/errors/handle"));
-}
+// process.env.DEBUG = '*';
+// eslint-disable-next-line unicorn/prefer-top-level-await
+(async () => {
+  const oclif = await import('@oclif/core');
+  await oclif.execute({ development: false, dir: __dirname });
+})();

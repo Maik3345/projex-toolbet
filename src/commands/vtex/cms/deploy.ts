@@ -1,49 +1,44 @@
-import { flags as oclifFlags } from "@oclif/command";
-import { ColorifyConstants, CustomCommand } from "../../../api";
-import { deploy } from "../../../modules";
-import { DEFAULT_SITE_TO_UPLOAD, TOOLBET_NAME } from "../../../shared";
+import { Colors } from '@api';
+import { deploy } from '@modules';
+import { Args, Command, Flags } from '@oclif/core';
+import { VTEX_CMS_DEFAULT_SITE, CLI_NAME, globalFlags } from '@shared';
 
-export default class Deploy extends CustomCommand {
-  static description = `Deploy a local files in the checkout of the current account`;
+export default class Deploy extends Command {
+  static description = `Deploy local files in the checkout of the current account`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex cms backup`
-    )}`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex cms backup`
-    )} my-site`,
+    `${Colors.PINK(`${CLI_NAME} vtex cms deploy`)}`,
+    `${Colors.PINK(`${CLI_NAME} vtex cms deploy`)} my-site`,
   ];
 
-  static args = [
-    {
-      name: "extension",
-      description: `Define the account location to use, for default use ${ColorifyConstants.ID(
-        "default"
-      )} account of vtex, this is used when the account have multiple sub hosts`,
-    },
-    {
-      name: "site",
-      description: `Define the account location to use, for default use ${ColorifyConstants.ID(
-        "default"
-      )} account of vtex, this is used when the account have multiple sub hosts`,
-    },
-  ];
+  static args = {
+    extension: Args.string({
+      description: `Specify the account location to use. By default, the ${Colors.GREEN(
+        'default',
+      )} account of VTEX is used. This is used when the account has multiple sub hosts.`,
+    }),
+    site: Args.string({
+      description: `Specify the site to deploy to. By default, the ${Colors.GREEN(
+        'default',
+      )} site is used. This is used when the account has multiple sites.`,
+    }),
+  };
 
   static flags = {
-    ...CustomCommand.globalFlags,
-    yes: oclifFlags.boolean({
-      description: "Answers yes to all prompts.",
-      char: "y",
+    ...globalFlags,
+    yes: Flags.boolean({
+      description: 'Answer yes to all prompts.',
+      char: 'y',
       default: false,
+      required: false,
     }),
   };
 
   async run() {
-    const {
-      flags: { yes },
-      args: { site = DEFAULT_SITE_TO_UPLOAD, extension },
-    } = this.parse(Deploy);
+    const { args, flags } = await this.parse(Deploy);
+    const { yes } = flags;
+    const { site = VTEX_CMS_DEFAULT_SITE, extension } = args;
+
     await deploy(extension, site, { yes });
   }
 }

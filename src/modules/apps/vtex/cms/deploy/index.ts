@@ -1,10 +1,13 @@
-import { DEFAULT_SITE_TO_UPLOAD } from "../../../../../shared";
-import { DeployUtils } from "./utils";
+import { VTEX_CMS_DEFAULT_SITE } from '@shared';
+import { DeployUtils } from './utils';
 
 export const deploy = async (
-  extension: string,
-  site = DEFAULT_SITE_TO_UPLOAD,
-  options
+  extension: string | undefined,
+  site = VTEX_CMS_DEFAULT_SITE,
+  options: {
+    y?: boolean;
+    yes: boolean;
+  },
 ) => {
   const preConfirm = options.y || options.yes;
   const deployUtils = new DeployUtils(site, preConfirm);

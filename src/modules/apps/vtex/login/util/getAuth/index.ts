@@ -1,6 +1,6 @@
-import axios from "axios";
-import type { Method } from "axios";
-import { Endpoints, log } from "../../../../../../shared";
+import { Endpoints, log } from '@shared';
+import type { Method } from 'axios';
+import axios from 'axios';
 
 /**
  * The function `serviceGetAuth` is an asynchronous function that sends a POST request to a VTEX API
@@ -15,14 +15,10 @@ import { Endpoints, log } from "../../../../../../shared";
  * user making the request.
  * @returns the result of the axios request.
  */
-export const serviceGetAuth = async (
-  account: string,
-  apiKey: string,
-  apiToken: string
-) => {
+export const serviceGetAuth = async (account: string, apiKey: string, apiToken: string) => {
   try {
     if (!apiToken || !apiKey || !account) {
-      log.error("No account, apiToken or apiKey");
+      log.error('no account, apiToken or apiKey');
       return;
     }
 
@@ -32,11 +28,11 @@ export const serviceGetAuth = async (
       apptoken: apiToken,
     });
     const headers = {
-      Referer: "",
-      "Content-Type": "application/json, application/json",
+      Referer: '',
+      'Content-Type': 'application/json, application/json',
     };
     const config = {
-      method: "post" as Method,
+      method: 'post' as Method,
       url,
       headers,
       data,
@@ -45,6 +41,6 @@ export const serviceGetAuth = async (
     return axios(config);
   } catch (error) {
     log.debug(error);
-    log.error("Error on get auth token");
+    log.error('error on get auth token');
   }
 };

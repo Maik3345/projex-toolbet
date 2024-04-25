@@ -1,1 +1,1 @@
-export * from "./manifestUtil";
+export * from "./manifestInformation";

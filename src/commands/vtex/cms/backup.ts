@@ -1,36 +1,30 @@
-import { ColorifyConstants, CustomCommand } from "../../../api";
-import { backup } from "../../../modules";
-import { DEFAULT_SITE_TO_UPLOAD, TOOLBET_NAME } from "../../../shared";
+import { Colors } from '@api';
+import { backup } from '@modules';
+import { Args, Command } from '@oclif/core';
+import { VTEX_CMS_DEFAULT_SITE, CLI_NAME, globalFlags } from '@shared';
 
-export default class Backup extends CustomCommand {
-  static description = `Download the files from the checkout files of vtex`;
+export default class Backup extends Command {
+  static description = `Download the files from the checkout files of a VTEX site`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex cms backup`
-    )}`,
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex cms backup`
-    )} my-site`,
+    `${Colors.PINK(`${CLI_NAME} vtex cms backup`)}`,
+    `${Colors.PINK(`${CLI_NAME} vtex cms backup`)} my-site`,
   ];
 
-  static args = [
-    {
-      name: "site",
-      description: `Define the account location to use, for default use ${ColorifyConstants.ID(
-        "default"
-      )} account of vtex, this is used when the account have multiple sub hosts`,
-    },
-  ];
+  static args = {
+    site: Args.string({
+      description: `Specify the account location to use. By default, the command uses the 'default' account of VTEX. This is useful when the account has multiple subhosts.`,
+    }),
+  };
 
   static flags = {
-    ...CustomCommand.globalFlags,
+    ...globalFlags,
   };
 
   async run() {
-    const {
-      args: { site = DEFAULT_SITE_TO_UPLOAD },
-    } = this.parse(Backup);
+    const { args } = await this.parse(Backup);
+    const { site = VTEX_CMS_DEFAULT_SITE } = args;
+
     await backup(site);
   }
 }

@@ -27,4 +27,4 @@ export const SUCCESS_EXECUTION = [
 
 export const PROMPT_CONTINUE = ["(Y/n)"];
 
-export const TOOLBET_NAME = "projex";
+export const CLI_NAME = "projex";

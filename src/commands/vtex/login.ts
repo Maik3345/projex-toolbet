@@ -1,48 +1,40 @@
-import { ColorifyConstants, CustomCommand } from "../../api";
-import { login } from "../../modules";
-import { TOOLBET_NAME } from "../../shared";
+import { Colors } from '@api';
+import { login } from '@modules';
+import { Args, Command } from '@oclif/core';
+import { CLI_NAME, globalFlags } from '@shared';
 
-export default class Login extends CustomCommand {
-  static description = `Command to make login in VTEX, this command use the api key and api token to get the auth token and save in the config file of vtex to allow the process to use the vtex cli`;
+export default class Login extends Command {
+  static description = `Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI.`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex login [YourAccount] user@email.com master [YourApiKey] [YourApiToken]]`
-    )}`,
-    ,
+    `${Colors.PINK(`${CLI_NAME} vtex login [YourAccount] [YourEmail] [YourWorkspace] [YourApiKey] [YourApiToken]`)}`,
   ];
 
-  static flags = {
-    ...CustomCommand.globalFlags,
+  static args = {
+    account: Args.string({
+      description: `Specify the account to set in the config file.`,
+    }),
+    email: Args.string({
+      description: `Specify the user email to set in the config file.`,
+    }),
+    workspace: Args.string({
+      description: `Specify the workspace to use in the process.`,
+    }),
+    apiKey: Args.string({
+      description: `Specify your API key to use in the process.`,
+    }),
+    apiToken: Args.string({
+      description: `Specify your API token to use in the process.`,
+    }),
   };
 
-  static args = [
-    {
-      name: "account",
-      description: `Define the account to set in the config file`,
-    },
-    {
-      name: "email",
-      description: `Define the user email to set in the config file`,
-    },
-    {
-      name: "workspace",
-      description: `Define the workspace to use in the process`,
-    },
-    {
-      name: "apiKey",
-      description: `Pass your api key to use in the process`,
-    },
-    {
-      name: "apiToken",
-      description: `Pass your api token to use in the process`,
-    },
-  ];
+  static flags = {
+    ...globalFlags,
+  };
 
   async run() {
-    const {
-      args: { account, email, workspace, apiKey, apiToken },
-    } = this.parse(Login);
+    const { args } = await this.parse(Login);
+    const { account, email, workspace, apiKey, apiToken } = args;
     await login(account, email, workspace, apiKey, apiToken);
   }
 }

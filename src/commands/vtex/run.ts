@@ -1,35 +1,30 @@
-import { ColorifyConstants, CustomCommand } from "../../api";
-import { vtexRunCommand } from "../../modules";
-import { TOOLBET_NAME } from "../../shared";
+import { Colors } from '@api';
+import { vtexRunCommand } from '@modules';
+import { Args, Command } from '@oclif/core';
+import { CLI_NAME, globalFlags } from '@shared';
 
-export default class Browse extends CustomCommand {
-  static description = `Run a command and accept the ask question by default with yes "y"`;
+export default class Browse extends Command {
+  static description = `Run a command and automatically accept any "Yes/No" questions by default.`;
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex run`
-    )} 'vtex release minor stable' or ${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} vtex run`
-    )} 'git status'`,
+    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex release minor stable'`,
+    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'git status'`,
   ];
 
   static flags = {
-    ...CustomCommand.globalFlags,
+    ...globalFlags,
   };
 
-  static args = [
-    {
-      name: "command",
-      description: `Define the command to run ${ColorifyConstants.ID(
-        "vtex release minor stable"
-      )}, when you use this command we detect any message with the question "Yes/Not" and we response "y" automatically or if the command finish with errors whe finish with a Throw error to finish all process`,
-    },
-  ];
+  static args = {
+    command: Args.string({
+      description: `Specify the command to run. When using this command, we detect any prompts with the question "Yes/No" and automatically respond with "Yes". If the command finishes with errors, we throw an error to terminate the process.`,
+    }),
+  };
 
   async run() {
     const {
       args: { command },
-    } = this.parse(Browse);
+    } = await this.parse(Browse);
     await vtexRunCommand(command);
   }
 }

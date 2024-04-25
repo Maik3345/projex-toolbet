@@ -1,23 +1,22 @@
-import { flags as oclifFlags } from "@oclif/command";
-import { TOOLBET_NAME } from "../../..//shared";
-import { ColorifyConstants, CustomCommand } from "../../../api";
-import { setupHusky } from "../../../modules";
+import { Command, Flags } from '@oclif/core';
+import { Colors } from '../../../api';
+import { CLI_NAME } from '../../../shared/constants/commands';
+import { setupHusky } from '../../../modules/apps/git/setup/husky';
+import { globalFlags } from '@shared';
 
-export default class Release extends CustomCommand {
-  static description =
-    "(Only for git users) Add the husky setup to the selected repositories";
+export default class Release extends Command {
+  static description = 'Set up Husky for selected repositories (only for Git users)';
 
   static examples = [
-    `${ColorifyConstants.COMMAND_OR_RELEASE_REF(
-      `${TOOLBET_NAME} git setup husky`
-    )}`,
+    `${Colors.PINK(`${CLI_NAME} git setup husky`)}`,
+    `${Colors.PINK(`${CLI_NAME} git setup husky -l`)}`,
   ];
 
   static flags = {
-    ...CustomCommand.globalFlags,
-    list: oclifFlags.boolean({
-      description: "List all projects to select to setup husky.",
-      char: "l",
+    ...globalFlags,
+    list: Flags.boolean({
+      description: 'List all projects to select for Husky setup',
+      char: 'l',
       default: false,
     }),
   };
@@ -25,7 +24,7 @@ export default class Release extends CustomCommand {
   async run() {
     const {
       flags: { list },
-    } = this.parse(Release);
+    } = await this.parse(Release);
 
     await setupHusky({
       list,
