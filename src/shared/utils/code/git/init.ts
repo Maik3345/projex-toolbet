@@ -25,11 +25,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 `;
 
 export const GIT_IGNORE_TEMPLATE_CODE = `node_modules/
-.vscode/
-.eslintrc
-react/node_modules/
-react/coverage
-react/.scannerwork
-react/*-lock.json
-react/__tests__/__snapshots__/*
-react/__tests__/*/__snapshots__/*`;
+dist/
+build/
+.cache/
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+*.pnp.js`;
