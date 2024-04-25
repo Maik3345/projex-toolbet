@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- feat: :sparkles: update .gitignore file to exclude build artifacts and logs
+- feat: :sparkles: update the README.md content
+
 ## [1.25.0] - 2024-04-24
 
 ### Added
