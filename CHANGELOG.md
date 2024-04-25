@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.25.0] - 2024-04-24
+
+### Added
+
+- feat: ✨ Update the oclif version to the last version and update the dependencies for the last version without vulnerabilities
+
 ## [1.24.1] - 2024-04-18
 
 ### Fixed
