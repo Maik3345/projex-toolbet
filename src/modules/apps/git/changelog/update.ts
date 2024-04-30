@@ -11,6 +11,7 @@ export const changelogUpdate = async (changeLogReleaseType = 'Changed', changelo
   try {
     await utils.writeGitLogCommits();
   } catch (e) {
+    log.verbose(e);
     log.error(Colors.ERROR('failed to update changelog file'));
   }
 };

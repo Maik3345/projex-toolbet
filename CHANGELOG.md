@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.0] - 2024-04-29
+
+### Changed
+
+- feat: ✨ update the command `projex git update changelog` for add the logic to remove the branch name in the commit message and add the commit link in the commit item added when is execute the command
+
+Example
+
+- fix: ⬆️ update dependencies in package.json ([d025ea03](https://github.com/Maik3345/azure-devops-vtex-extension/commit/d025ea03460e72a9992160d9e23e5405d8557494))
+
+The cli generate the message with the commit link and the commit message without the branch name
+
 ## [1.26.0] - 2024-04-24
 
 ### Changed

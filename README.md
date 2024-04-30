@@ -8,6 +8,11 @@
   <br>
 </h1>
 
+![Projex](https://img.shields.io/badge/projex-grey?style=for-the-badge&logo=oclif)
+![NPM Version](https://img.shields.io/npm/v/projex)
+
+---
+
 A command line to manage the workflow of the projects with git, vtex and bash commands
 
 ## Installation

@@ -10,27 +10,15 @@ export class ChangelogUtils {
   private changelogPath: string;
   private changeLogReleaseType: string;
   private changelogContent: string;
+  private originUrl: string;
 
   constructor(changeLogReleaseType: string, changelogContent: string) {
     this.changeLogReleaseType = changeLogReleaseType;
     this.changelogContent = changelogContent;
     this.root = getAppRoot();
     this.changelogPath = resolve(this.root, 'CHANGELOG.md');
+    this.originUrl = this.getOriginUrl();
   }
-
-  private getOriginBranchName = () => {
-    return runCommand(`git remote show origin | grep "HEAD branch" | cut -d ":" -f 2 | xargs`, this.root, '', true);
-  };
-
-  private gitLog = (): string => {
-    const originBranch = this.getOriginBranchName().toString().trim();
-    return runCommand(
-      `git rev-list --abbrev-commit HEAD --not ${originBranch} --format=short --pretty=oneline`,
-      this.root,
-      '',
-      true,
-    );
-  };
 
   public writeGitLogCommits = () => {
     const comments = this.changelogContent && this.changelogContent !== '' ? this.changelogContent : null;
@@ -43,13 +31,12 @@ export class ChangelogUtils {
         .toString()
         .split('\n')
         .filter((commit) => commit !== '')
-        .map((commit) => `- ${commit.slice(8)}`)
+        .map((commit) => this.removeBranchNameInText(commit))
         .reverse();
     } else {
       commitList = comments
         .split('\\n')
         .filter((commit) => commit !== '')
-        .map((commit) => `- ${commit}`)
         .reverse();
     }
 
@@ -75,22 +62,28 @@ export class ChangelogUtils {
     const haveUnReleasedContent = this.checkIfHaveUnReleasedChanges(changelogContent);
 
     if (!haveUnReleasedContent) {
-      const unReleasedContent = this.getNewUnReleasedText(commitList);
+      const unReleasedChanges = this.getNewUnReleasedText(this.addCommitIdInText(commitList));
 
-      this.writeChangelogToAddUnReleasedChanges(changelogContent, unReleasedContent);
+      this.writeChangelogToAddUnReleasedChanges(changelogContent, unReleasedChanges);
       return;
     }
 
     const currentChanges = this.getCurrentChangesInChangelog(changelogContent);
-    const unReleasedChanges = currentChanges[0].text;
+
+    if (!currentChanges) {
+      log.error(Colors.ERROR('no have Unreleased changes in the CHANGELOG.md file'));
+      return;
+    }
+
+    const unReleasedChanges = currentChanges?.replace(/\n+$/, '');
 
     // Check if the new changes are already in the changelog
-    const newChanges = this.checkNewChangesToAdd(changelogContent, commitList);
+    const newChanges = this.checkNewChangesToAdd(unReleasedChanges, commitList);
     // Join the new changes to add to the changelog
-    newCommitsListMessages = newChanges.join('\n');
+    newCommitsListMessages = newChanges.map((change) => `- ${change}`).join('\n');
+
     // Join the new changes with the current changes in the changelog
     const newChangelogContent = `${unReleasedChanges}\n${newCommitsListMessages}`;
-
     if (newChanges.length) {
       log.info(`pass to add the new changes make by the developer, total changes to add ${newChanges.length}`);
       renderTableOfCommits({
@@ -107,12 +100,46 @@ export class ChangelogUtils {
     return;
   };
 
+  private addCommitIdInText = (commitList: string[]) => {
+    return commitList.map((commit) => {
+      const commitId = commit.slice(0, 40);
+      const commitMessage = commit.slice(41);
+      return `${commitMessage} ([${commitId.slice(0, 8)}](${this.originUrl}/commit/${commitId}))`;
+    });
+  };
+
+  private removeBranchNameInText = (text: string) => {
+    const ramas = ['master', 'main', 'dev', 'uat', 'develop', 'feature/', 'hotfix/', 'release/', 'bugfix/', 'support/'];
+    // Crear la expresión regular para buscar los nombres de las ramas
+    const regexRamas = new RegExp(ramas.map((r) => `(${r}.*?):\\s*`).join('|'), 'g');
+    // Reemplazar los textos que coinciden con los nombres de las ramas por una cadena vacía
+    return text.replace(regexRamas, '');
+  };
+
+  private getOriginBranchName = () => {
+    return runCommand(`git remote show origin | grep "HEAD branch" | cut -d ":" -f 2 | xargs`, this.root, '', true);
+  };
+
+  private getOriginUrl = () => {
+    const url = runCommand(`git config --get remote.origin.url`, this.root, '', true)
+      ?.toString()
+      .replace('\n', '')
+      .replace('.git', '');
+
+    return url.replace(/https?:\/\/[^@]*@/, 'https://');
+  };
+
+  private gitLog = (): string => {
+    const originBranch = this.getOriginBranchName().toString().trim();
+    return runCommand(`git rev-list HEAD --not ${originBranch} --pretty=oneline`, this.root, '', true);
+  };
+
   private getNewUnReleasedText = (commitList: string[]) => {
     const unReleasedContent = `
 
 ### ${this.changeLogReleaseType}
 
-${commitList.map((commit) => `${commit}`).join('\n')}`;
+${commitList.map((commit) => `- ${commit}`).join('\n')}`;
     return unReleasedContent;
   };
 
@@ -173,37 +200,26 @@ ${commitList.map((commit) => `${commit}`).join('\n')}`;
   };
 
   private checkNewChangesToAdd = (changelogText: string, newChanges: string[]) => {
+    const regex = /## \[\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2}/;
+    const match = changelogText.match(regex);
+    const changelogUnReleasedText = match ? changelogText.substring(0, match.index) : changelogText;
     const changesToAdd: string[] = [];
     newChanges.forEach((change) => {
-      if (!changelogText.includes(change)) {
+      if (!changelogUnReleasedText.includes(change.substring(41))) {
         changesToAdd.push(change);
       }
     });
-    return changesToAdd;
+    return this.addCommitIdInText(changesToAdd);
   };
 
   private getCurrentChangesInChangelog = (changelogText: string) => {
     // Expresión regular para buscar el texto que sigue después de las secciones de cambio específicas
-    const regexCheckTheLasMessagesUnreleased =
-      /#{2,3}\s+(Added|Changed|Fixed|Major)\s+(.+?)(?=\n\n## \[\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2}|$)/gs;
-
-    // Buscar todas las coincidencias en el texto del changelog
-    let matchUnReleasedContent;
-    const currentChanges: {
-      type: string;
-      text: string;
-    }[] = [];
-    while (
-      (matchUnReleasedContent = regexCheckTheLasMessagesUnreleased.exec(changelogText)) !== null &&
-      !currentChanges.length
-    ) {
-      // match[1] contiene el tipo de cambio (Added, Changed, Fixed, Major)
-      // match[2] contiene el texto del cambio
-      currentChanges.push({
-        type: matchUnReleasedContent[1],
-        text: matchUnReleasedContent[2].trim(),
-      });
+    const regexCheckTheLasMessagesUnreleased = /.*?(?=## \[\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2})/s;
+    const result = regexCheckTheLasMessagesUnreleased.exec(changelogText);
+    if (!result) {
+      return null;
     }
-    return currentChanges;
+
+    return result[0];
   };
 }
