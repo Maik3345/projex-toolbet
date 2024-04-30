@@ -101,5 +101,6 @@ export const release = async (
   } catch (e) {
     log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
     log.error(e);
+    process.exit(1);
   }
 };

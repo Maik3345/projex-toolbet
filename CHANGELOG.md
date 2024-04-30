@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.1] - 2024-04-29
+
+### Fixed
+
+- fix: 🐛 add the failed execution in the release command, add `process.exit(1)` when fail the process
+
 ## [1.27.0] - 2024-04-29
 
 ### Changed
