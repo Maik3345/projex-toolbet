@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.3] - 2024-05-02
+
+### Fixed
+
+- fix: :bug: refactor success validation in childProcessRunCommandRun function
+
 ## [1.27.2] - 2024-05-02
 
 ### Fixed
