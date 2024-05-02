@@ -1,6 +1,5 @@
-import { ERROR_EXECUTION, ERROR_TO_EXCLUDE, log } from '@shared';
+import { ERROR_EXECUTION, ERROR_TO_EXCLUDE, SUCCESS_EXECUTION, log } from '@shared';
 import { spawn } from 'child_process';
-const _ = require('lodash');
 
 export const executeCommand = (commandToUse: string | undefined) => {
   if (!commandToUse) {
@@ -10,35 +9,57 @@ export const executeCommand = (commandToUse: string | undefined) => {
   childProcessRunCommandRun(commandToUse);
 };
 
-const debouncedError = _.debounce(() => {
-  log.error(`finish with errors on run the command`);
-  throw new Error('finish execution with errors');
-}, 20000);
-
-const debouncedSuccess = _.debounce(() => {
-  log.info(`finish successfully on run the command`);
-  process.exit(0);
-}, 20000);
-
 export const childProcessRunCommandRun = function (command: string) {
   const task = spawn(`${command}`, [], {
     shell: true,
   });
 
   const validateErrors = (data: any) => {
-    ERROR_EXECUTION.map((item) => {
+    const ignoreError = () => {
+      let excludeError = false;
+
       ERROR_TO_EXCLUDE.map((exclude) => {
-        if (data.toString('utf8').includes(item) && !data.toString('utf8').includes(exclude)) {
-          debouncedError.cancel();
-          debouncedError();
+        if (data.toString('utf8').includes(exclude) && !excludeError) {
+          log.debug('Ignore error', {
+            data: data.toString('utf8'),
+            exclude,
+          });
+          excludeError = true;
         }
       });
-    });
+      return excludeError;
+    };
+
+    const checkErrors = () => {
+      let haveError = false;
+
+      ERROR_EXECUTION.map((item) => {
+        if (data.toString('utf8').includes(item) && !haveError) {
+          log.debug('Fail with error', {
+            data: data.toString('utf8'),
+            item,
+          });
+          haveError = true;
+        }
+      });
+      return haveError;
+    };
+
+    let excludeError = ignoreError();
+
+    if (excludeError) return;
+
+    if (checkErrors()) {
+      log.error(`finish with errors on run the command`);
+      throw new Error('finish execution with errors');
+    }
   };
 
-  const validateSuccess = () => {
-    debouncedSuccess.cancel();
-    debouncedSuccess();
+  const validateSuccess = (data: any) => {
+    if (data.toString('utf8').includes(SUCCESS_EXECUTION)) {
+      log.info(`finish successfully on run the command`);
+      process.exit(0);
+    }
   };
 
   const acceptPrompt = () => {
@@ -50,7 +71,7 @@ export const childProcessRunCommandRun = function (command: string) {
   task.stdout!.on('data', (data: any) => {
     console.log(data.toString('utf8'));
     validateErrors(data);
-    validateSuccess();
+    validateSuccess(data);
     acceptPrompt();
   });
 
