@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.2] - 2024-05-02
+
 ### Fixed
 
 - fix: :bug: fix error handling in executeCommand function, change the logic to determine the error when make the execution of the command of vtex
