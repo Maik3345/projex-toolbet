@@ -17,7 +17,7 @@ export const ERROR_TO_EXCLUDE = [
   'ErrorID:',
 ];
 
-export const SUCCESS_EXECUTION = 'You can deploy it with:';
+export const SUCCESS_EXECUTION = ['Successfully deployed', 'You can deploy it with:'];
 
 export const PROMPT_CONTINUE = ['(Y/n)'];
 

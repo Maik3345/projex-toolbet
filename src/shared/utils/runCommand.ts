@@ -39,11 +39,11 @@ export const runCommand = (
       cwd,
     });
     if (!hideSuccessMessage) {
-      log.warn(Colors.WARNING(`running command: ${chalk.bold(cmd)}`));
+      log.warn(Colors.BLUE(`running command: ${Colors.WARNING(chalk.bold(cmd))}`));
     }
     return output;
   } catch (e: any) {
-    log.error(`${Colors.ERROR('error running command:')} ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
+    log.error(`${Colors.ERROR('error running command:')} ${Colors.WHITE(`${chalk.bold(cmd)} in ${chalk.bold(cwd)}`)}`);
     if (retries <= 0) {
       throw e;
     }

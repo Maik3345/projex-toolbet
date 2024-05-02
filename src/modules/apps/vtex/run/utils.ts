@@ -56,10 +56,12 @@ export const childProcessRunCommandRun = function (command: string) {
   };
 
   const validateSuccess = (data: any) => {
-    if (data.toString('utf8').includes(SUCCESS_EXECUTION)) {
-      log.info(`finish successfully on run the command`);
-      process.exit(0);
-    }
+    SUCCESS_EXECUTION.map((success) => {
+      if (data.toString('utf8').includes(success)) {
+        log.info(`finish successfully on run the command when detect ${success}`);
+        process.exit(0);
+      }
+    });
   };
 
   const acceptPrompt = () => {
