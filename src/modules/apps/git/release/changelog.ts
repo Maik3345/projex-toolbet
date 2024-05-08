@@ -100,6 +100,11 @@ const getUnReleasedChanges = (changelogContent: string) => {
     result += line + '\n';
   }
 
+  if (!result || result == '') {
+    log.error(Colors.ERROR('no unreleased changes found, please check your commits.'));
+    process.exit(1);
+  }
+
   return result;
 };
 
