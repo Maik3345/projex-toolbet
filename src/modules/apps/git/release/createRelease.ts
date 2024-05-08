@@ -1,14 +1,10 @@
-import { Colors, renderTableOfReleaseVersions } from '@api';
+import { Colors } from '@api';
 import { checkGit, checkIfInGitRepo, log, pushCommand, tag } from '@shared';
-import { ReleaseType } from 'semver';
-import { getNewAndOldVersions, shouldUpdateChangelog } from './changelog';
-import { releaseTypeAliases } from './constants';
+import { shouldUpdateChangelog } from './changelog';
 import { ReleaseUtils } from './utils';
 const chalk = require('chalk');
 
 export const release = async (
-  releaseType: ReleaseType = 'patch', // This arg. can also be a valid (semver) version.
-  tagName = 'beta',
   options: {
     y?: boolean;
     yes?: boolean;
@@ -18,6 +14,7 @@ export const release = async (
     noTag?: boolean;
     getVersion?: boolean;
   },
+  tagName: string,
 ) => {
   const preConfirm = options.y || options.yes;
   const pushAutomatic = options.noPush;
@@ -31,60 +28,27 @@ export const release = async (
   checkGit();
   checkIfInGitRepo();
 
-  const normalizedReleaseType =
-    releaseTypeAliases[releaseType as keyof typeof releaseTypeAliases] || (releaseType as ReleaseType); // Cast normalizedReleaseType to ReleaseType
-  const [oldVersion, newVersion] = getNewAndOldVersions(utils, normalizedReleaseType, tagName);
-  // Pachamama v2 requires that version tags start with a 'v' character.
-  const tagText = `v${newVersion}`;
+  const { releaseType, oldVersion, newVersion, tagText, changelogVersion, changelog } = utils.getRelease(tagName);
+  const pushCommandText = pushCommand(tagText, noTag);
 
   if (getVersion) {
-    return console.log(
-      `old_version:${oldVersion},new_version:${newVersion},app_name:${utils.readAppName()},push:${pushCommand(
-        tagText,
-        noTag,
-      )}`,
-    );
-  } else {
-    renderTableOfReleaseVersions({
-      emptyMessage: 'No commits found',
-      listArray: [
-        {
-          text: 'Old version',
-          value: String(oldVersion),
-        },
-        {
-          text: 'New version',
-          value: chalk.yellow(newVersion),
-        },
-      ],
-    });
+    return console.log(utils.versionText(oldVersion, newVersion, pushCommandText));
   }
 
-  const [month, day, year] = new Date()
-    .toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-    .split('/');
-
-  const changelogVersion = `\n\n## [${newVersion}] - ${year}-${month}-${day}`;
-
   if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {
-    // Abort release.
     log.verbose('aborted release.');
     return;
   }
 
   try {
-    log.warn(`to push the commit and tag manually, use: ${chalk.bold.blue(pushCommand(tagText, noTag))}`);
-    if (!checkPreRelease) {
-      await utils.preRelease();
+    if (!checkPreRelease) await utils.preRelease();
+
+    await utils.bump(newVersion);
+
+    if (shouldUpdateChangelog(releaseType, tagName)) {
+      utils.updateChangelog(changelogVersion, changelog);
     }
-    await utils.bump(String(newVersion));
-    if (shouldUpdateChangelog(normalizedReleaseType, tagName)) {
-      utils.updateChangelog(changelogVersion);
-    }
+
     if (!pushAutomatic) {
       await utils.add();
       await utils.commit(tagText, releaseType);

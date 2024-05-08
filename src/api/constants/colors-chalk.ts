@@ -1,13 +1,13 @@
 const chalk = require('chalk');
 
 export enum COLORS {
-  GREEN = '#55d6c2',
-  PINK = '#e27396',
-  BLUE = '#a0c4ff',
-  ERROR = '#f49097',
-  WHITE = '#FFFFFF',
-  YELLOW = '#f5e960',
-  WARNING_TERMINAL = '#dfb2f4',
+  GREEN = '#8fd19e',
+  PINK = '#ffb6c1',
+  BLUE = '#add8e6',
+  ERROR = '#ff7f7f',
+  WHITE = '#ffffff',
+  YELLOW = '#fffacd',
+  WARNING_TERMINAL = '#e6e6fa',
 }
 
 export enum LogLevelColors {
