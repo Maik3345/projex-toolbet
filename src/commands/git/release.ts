@@ -11,10 +11,8 @@ export default class Release extends Command {
 
   static examples = [
     `${Colors.PINK(`${CLI_NAME} git release`)}`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} patch`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} patch beta`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} minor stable`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} pre`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} beta`,
+    `${Colors.PINK(`${CLI_NAME} git release`)} stable`,
   ];
 
   static flags = {
@@ -47,15 +45,9 @@ export default class Release extends Command {
   };
 
   static args = {
-    releaseType: Args.string({
-      required: false,
-      default: 'patch',
-      options: [...Object.keys(releaseTypeAliases), ...Object.keys(supportedReleaseTypes)],
-      description: 'The type of release. Defaults to "patch".',
-    }),
     tagName: Args.string({
       required: false,
-      default: 'beta',
+      default: '',
       options: Object.keys(supportedTagNames),
       description: 'The name of the tag. Defaults to "beta".',
     }),
@@ -65,16 +57,19 @@ export default class Release extends Command {
     const {
       flags: { yes },
       flags,
-      args: { releaseType, tagName },
+      args: { tagName },
     } = await this.parse(Release);
 
-    await release(releaseType as ReleaseType, tagName, {
-      yes,
-      noDeploy: flags['no-deploy'],
-      noPush: flags['no-push'],
-      noCheckRelease: flags['no-check-release'],
-      noTag: flags['no-tag'],
-      getVersion: flags['get-version'],
-    });
+    await release(
+      {
+        yes,
+        noDeploy: flags['no-deploy'],
+        noPush: flags['no-push'],
+        noCheckRelease: flags['no-check-release'],
+        noTag: flags['no-tag'],
+        getVersion: flags['get-version'],
+      },
+      tagName,
+    );
   }
 }

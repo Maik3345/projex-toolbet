@@ -31,6 +31,7 @@ export const runCommand = (
   hideOutput = false,
   retries = 0,
   hideSuccessMessage = false,
+  makeThrow = true,
 ): any => {
   let output;
   try {
@@ -44,6 +45,10 @@ export const runCommand = (
     return output;
   } catch (e: any) {
     log.error(`${Colors.ERROR('error running command:')} ${Colors.WHITE(`${chalk.bold(cmd)} in ${chalk.bold(cwd)}`)}`);
+    if (!makeThrow) {
+      return;
+    }
+
     if (retries <= 0) {
       throw e;
     }

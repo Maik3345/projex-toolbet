@@ -1,9 +1,18 @@
 import { Colors, getAppRoot, promptConfirm } from '@api';
-import { gitStatus, log, pushCommand, runCommand, unreleased } from '@shared';
+import {
+  getGitCommits,
+  getOriginUrl,
+  getTheLastTag,
+  gitStatus,
+  log,
+  pushCommand,
+  runCommand,
+  unreleased,
+} from '@shared';
 import { close, existsSync, openSync, readFileSync, readJsonSync, writeJsonSync, writeSync } from 'fs-extra';
 import { resolve } from 'path';
 import { ReleaseType, inc, valid } from 'semver';
-const cp = require('child-process-es6-promise');
+import { validateVersion, organizeCommitsToChangelog } from './changelog';
 const fs = require('fs');
 const chalk = require('chalk');
 
@@ -41,7 +50,7 @@ export class ReleaseUtils {
       log.error(
         `${Colors.ERROR('version file not found:')} ${this.manifestVersionFile} or ${this.packageVersionFile}.`,
       );
-      throw new Error(`Manifest or package.json not found in ${this.root} directory`);
+      process.exit(1);
     }
   };
 
@@ -52,12 +61,13 @@ export class ReleaseUtils {
   public readVersion = () => {
     const version = valid(this.readVersionFile().version, true);
     if (!version) {
-      throw new Error(`Invalid app version: ${version}`);
+      log.error(Colors.ERROR(`invalid app version: ${version}`));
+      process.exit(1);
     }
     return version;
   };
 
-  public incrementVersion = (rawOldVersion: string, releaseType: ReleaseType, tagName: string) => {
+  public incrementVersion = (rawOldVersion: string, releaseType: ReleaseType, tagName?: string) => {
     const oldVersion = valid(rawOldVersion, true);
     if (tagName !== 'stable' && releaseType !== 'prerelease') {
       return inc(String(oldVersion), `pre${releaseType}` as ReleaseType, false, tagName);
@@ -66,9 +76,9 @@ export class ReleaseUtils {
   };
 
   public commit = (tagName: string, releaseType: string) => {
-    const commitIcon =
-      releaseType === 'prerelease' || releaseType === 'pre' ? ':construction: beta release' : ':rocket: release';
-    const commitMessage = `build: ${commitIcon} ${tagName}`;
+    const beta = releaseType === 'prerelease' || releaseType === 'pre';
+    const commitIcon = beta ? 'chore(beta): beta release' : 'chore(main): release';
+    const commitMessage = `${commitIcon} ${tagName}`;
     let successMessage = `file(s) ${this.versionFile} committed`;
     if (existsSync(this.changelogPath)) {
       successMessage = `files ${this.versionFile} ${this.changelogPath} committed`;
@@ -95,15 +105,13 @@ export class ReleaseUtils {
     try {
       runCommand('git push', this.root, '', true, 2, true);
     } catch (e) {
-      log.error(Colors.ERROR(`failed pushing to remote.`));
-      throw e;
+      log.error(Colors.ERROR(`failed pushing to remote. ${e}`));
     }
   };
 
   /* The `preRelease` method is a function that is used to perform pre-release tasks before creating a
   new release. Here is a breakdown of what it does: */
   public preRelease = () => {
-    const msg = 'Pre release';
     if (!this.checkNothingToCommit()) {
       log.warn(
         chalk.red(
@@ -111,13 +119,6 @@ export class ReleaseUtils {
         ),
       );
       process.exit(1);
-    }
-    this.checkIfGitPushWorks();
-    const key = 'prereleasy';
-    this.runScript(key, msg);
-    if (!this.checkNothingToCommit()) {
-      const commitMessage = `pre release commit\n\n ${this.getScript(key)}`;
-      return this.commit(commitMessage, 'prerelease');
     }
   };
 
@@ -154,16 +155,18 @@ export class ReleaseUtils {
 
   public readAppName = () => {
     const vendor = this.readVersionFile().vendor;
-    return `${vendor ? `${vendor}.` : ''}${this.readVersionFile().name}`;
+    const name = this.readVersionFile().name;
+    return `${vendor ? `${vendor}.` : ''}${name}`;
   };
 
-  public updateChangelog = (changelogVersion: any) => {
+  public updateChangelog = (changelogVersion: string, changelog: string) => {
     if (existsSync(this.changelogPath)) {
       let data: string;
       try {
         data = readFileSync(this.changelogPath).toString();
       } catch (e) {
-        throw new Error(`Error reading file: ${e}`);
+        log.error(`error reading file: ${e}`);
+        process.exit(1);
       }
       if (data.indexOf(unreleased) < 0) {
         log.info(
@@ -175,23 +178,24 @@ export class ReleaseUtils {
         );
       } else {
         const position = data.indexOf(unreleased) + unreleased.length;
-        const bufferedText = Buffer.from(`${changelogVersion}${data.substring(position)}`);
+        const bufferedText = Buffer.from(`${changelogVersion}\n${changelog}${data.substring(position)}`);
         const file = openSync(this.changelogPath, 'r+');
         try {
           writeSync(file, bufferedText, 0, bufferedText.length, position);
           close(file);
           log.info(`successfully added the new changes to the CHANGELOG.md file.`);
         } catch (e) {
-          throw new Error(`error writing file: ${e}`);
+          log.error(`error writing file: ${e}`);
+          process.exit(1);
         }
       }
     }
   };
 
   public bump = (newVersion: string) => {
-    const manifest = this.readVersionFile();
-    manifest.version = newVersion;
-    this.writeVersionFile(manifest);
+    const content = this.readVersionFile();
+    content.version = newVersion;
+    this.writeVersionFile(content);
     log.info(`bumped version to ${chalk.bold.green(newVersion)}`);
   };
 
@@ -203,5 +207,75 @@ export class ReleaseUtils {
   private runScript = (key: string, msg: string) => {
     const cmd: string = this.getScript(key);
     return cmd ? runCommand(cmd, this.root, msg, false) : undefined;
+  };
+
+  private getChangelogDate = (newVersion: string) => {
+    const lastTag = getTheLastTag(this.root);
+    const originUrl = getOriginUrl(this.root);
+    let compareTagUrl = '';
+
+    if (lastTag) {
+      // Support for Azure DevOps and GitHub only for now
+      if (originUrl.includes('https://dev.azure.com')) {
+        compareTagUrl = `${originUrl}/branchCompare?baseVersion=GT${lastTag?.replace(
+          /\n+$/,
+          '',
+        )}&targetVersion=GTv${newVersion}`;
+      } else {
+        compareTagUrl = `${originUrl}/compare/${lastTag?.replace(/\n+$/, '')}...v${newVersion}`;
+      }
+    } else {
+      if (originUrl.includes('https://dev.azure.com')) {
+        compareTagUrl = `${originUrl}?version=GTv${newVersion}`;
+      } else {
+        compareTagUrl = `${originUrl}/releases/tag/v${newVersion}`;
+      }
+    }
+
+    const [month, day, year] = new Date()
+      .toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .split('/');
+
+    return `\n\n## [${newVersion}](${compareTagUrl}) - (${year}-${month}-${day})`;
+  };
+
+  public getRelease = (tagName: string) => {
+    let releaseType: ReleaseType | null = tagName !== 'stable' ? 'prerelease' : null;
+    let changelog: string = '';
+    if (tagName === 'stable') {
+      const commits = getGitCommits(this.root).toString();
+      const changelogContent = organizeCommitsToChangelog(commits, getOriginUrl(this.root));
+      releaseType = releaseType ? releaseType : changelogContent.releaseType;
+      changelog = changelogContent.changelog;
+    }
+
+    if (!releaseType) {
+      log.error(Colors.ERROR(`invalid release type: ${tagName}`));
+      process.exit(1);
+    }
+    const oldVersion = this.readVersion();
+    const newVersion = this.incrementVersion(oldVersion, releaseType, tagName);
+    // validate version
+    validateVersion(oldVersion, releaseType, tagName);
+    const tagText = `v${newVersion}`;
+    const changelogVersion = this.getChangelogDate(String(newVersion));
+
+    return {
+      releaseType,
+      oldVersion,
+      newVersion: String(newVersion),
+      tagText,
+      changelogVersion,
+      changelog,
+    };
+  };
+
+  public versionText = (oldVersion: string, newVersion: string, pushCommandText: string) => {
+    const versionText = `old_version:${oldVersion},new_version:${newVersion},app_name:${this.readAppName()},push:${pushCommandText}`;
+    return versionText;
   };
 }

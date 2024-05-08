@@ -50,3 +50,30 @@ export const pushCommand = (tagName: string, noTag: boolean | undefined) => {
 export const gitStatus = (root: string) => {
   return runCommand('git status --porcelain', root, '', true);
 };
+
+export const getGitCommits = (root: string) => {
+  return runCommand(`git rev-list HEAD --pretty=oneline`, root, '', true);
+};
+
+export const getTheLastTag = (root: string) => {
+  try {
+    const tags = runCommand('git describe --tags --abbrev=0', root, '', true, 0, false, false);
+    if (tags) {
+      return tags.toString();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    log.error(Colors.ERROR('no tags found'));
+    return null;
+  }
+};
+
+export const getOriginUrl = (root: string) => {
+  const url = runCommand(`git config --get remote.origin.url`, root, '', true)
+    ?.toString()
+    .replace('\n', '')
+    .replace('.git', '');
+
+  return url.replace(/https?:\/\/[^@]*@/, 'https://');
+};
