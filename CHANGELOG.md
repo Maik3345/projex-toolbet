@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.28.0](https://github.com/Maik3345/projex-toolbet/compare/v1.27.3...v1.28.0) - (2024-05-08)
+
+### Features
+
+* ✨ update the release command and remove the command `git update changelog` ([#8](https://github.com/Maik3345/projex-toolbet/pull/8)) ([5e315b79](https://github.com/Maik3345/projex-toolbet/commit/5e315b79f205690567544f7c4699c185234e9e26))
+* add pull request template to github ([629e3186](https://github.com/Maik3345/projex-toolbet/commit/629e31862d73e61d2985af8ff0fd407b049ff8c0))
+* ✨ update the release command and remove the command git update changelog ([9eef4a78](https://github.com/Maik3345/projex-toolbet/commit/9eef4a78ce2ee5648680b99995f387658c38e64c))
+
+
 ## [1.27.3] - 2024-05-02
 
 ### Fixed
