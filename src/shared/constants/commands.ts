@@ -14,6 +14,8 @@ export const ERROR_TO_EXCLUDE = [
   'failed to install dependencies through yarn',
   'Connection to debug log server has failed with status',
   'Connection to event server has failed with',
+  'Error publishing app: Status 500 (try: 1)',
+  "Error publishing app: Status 500 (try: 2)",
   'ErrorID:',
 ];
 

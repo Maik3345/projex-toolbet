@@ -246,6 +246,7 @@ export class ReleaseUtils {
   public getRelease = (tagName: string) => {
     let releaseType: ReleaseType | null = tagName !== 'stable' ? 'prerelease' : null;
     let changelog: string = '';
+
     if (tagName === 'stable') {
       const commits = getGitCommits(this.root).toString();
       const changelogContent = organizeCommitsToChangelog(commits, getOriginUrl(this.root));
@@ -257,6 +258,7 @@ export class ReleaseUtils {
       log.error(Colors.ERROR(`invalid release type: ${tagName}`));
       process.exit(1);
     }
+
     const oldVersion = this.readVersion();
     const newVersion = this.incrementVersion(oldVersion, releaseType, tagName);
     // validate version
@@ -274,8 +276,12 @@ export class ReleaseUtils {
     };
   };
 
-  public versionText = (oldVersion: string, newVersion: string, pushCommandText: string) => {
-    const versionText = `old_version:${oldVersion},new_version:${newVersion},app_name:${this.readAppName()},push:${pushCommandText}`;
-    return versionText;
+  public getVersionInformation = (oldVersion: string, newVersion: string, pushCommandText: string) => {
+    return {
+      oldVersion,
+      newVersion,
+      pushCommandText,
+      appName: this.readAppName(),
+    };
   };
 }

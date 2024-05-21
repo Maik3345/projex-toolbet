@@ -52,12 +52,12 @@ export const gitStatus = (root: string) => {
 };
 
 export const getGitCommits = (root: string) => {
-  return runCommand(`git rev-list HEAD --pretty=oneline`, root, '', true);
+  return runCommand(`git rev-list HEAD --pretty=oneline`, root, '', true, 0, true);
 };
 
 export const getTheLastTag = (root: string) => {
   try {
-    const tags = runCommand('git describe --tags --abbrev=0', root, '', true, 0, false, false);
+    const tags = runCommand('git describe --tags --abbrev=0', root, '', true, 0, true, false);
     if (tags) {
       return tags.toString();
     } else {
@@ -70,7 +70,7 @@ export const getTheLastTag = (root: string) => {
 };
 
 export const getOriginUrl = (root: string) => {
-  const url = runCommand(`git config --get remote.origin.url`, root, '', true)
+  const url = runCommand(`git config --get remote.origin.url`, root, '', true, 0, true)
     ?.toString()
     .replace('\n', '')
     .replace('.git', '');
