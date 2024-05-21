@@ -32,7 +32,7 @@ export const release = async (
   const pushCommandText = pushCommand(tagText, noTag);
 
   if (getVersion) {
-    return console.log(utils.versionText(oldVersion, newVersion, pushCommandText));
+    return console.log(utils.getVersionInformation(oldVersion, newVersion, pushCommandText));
   }
 
   if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {

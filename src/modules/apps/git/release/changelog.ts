@@ -65,7 +65,7 @@ const getScopeInCommit = (commit: string) => {
 
   if (match) {
     const scope = match[0];
-    return scope ? `**${scope.replace(/[\(\)]/g, '')}**:` : '';
+    return scope ? `**${scope.replace(/[\(\)]/g, '')}**: ` : '';
   } else {
     return '';
   }
@@ -118,14 +118,17 @@ export const organizeCommitsToChangelog = (commits: string, originUrl: string) =
   unReleasedCommits.split('\n').forEach((commit) => {
     if (commit === '') return;
 
+    commit = commit.toLowerCase();
+
     const typeFixed = () => {
       let regex = /(fix)(\([\w\s]*\))?:\s*/;
       let match = commit.match(regex);
 
       if (match) {
+        const type = match[0];
         const scope = getScopeInCommit(commit);
         const commitWithPullRequestId = getPullRequestId(commit, originUrl);
-        fixes.push(commitWithPullRequestId.replace(match[0], scope));
+        fixes.push(commitWithPullRequestId.replace(type, scope));
         return true;
       }
       return false;
@@ -136,16 +139,17 @@ export const organizeCommitsToChangelog = (commits: string, originUrl: string) =
       let match = commit.match(regex);
 
       if (match) {
+        const type = match[0];
         const scope = getScopeInCommit(commit);
         const commitWithPullRequestId = getPullRequestId(commit, originUrl);
-        features.push(commitWithPullRequestId.replace(match[0], scope));
+        features.push(commitWithPullRequestId.replace(type, scope));
         return true;
       }
       return false;
     };
 
     const typeBreakingChange = () => {
-      let regex = /(fix|feat|build|ci|chore|docs|style|refactor|perf|test)(\([\w\s]*\))(!):\s*/;
+      let regex = /(fix|feat|build|ci|chore|docs|style|refactor|perf|test)(\([\w\s]*\))?(!):\s*/;
       let match = commit.match(regex);
 
       if (match) {
