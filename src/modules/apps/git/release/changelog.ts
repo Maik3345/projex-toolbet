@@ -5,7 +5,6 @@ import {
   supportedTagNamesList,
   tagNamesToUpdateChangelog,
 } from './constants';
-import { ReleaseUtils } from './utils';
 import { log } from '@shared';
 import { Colors } from '@api';
 import chalk from 'chalk';
@@ -51,11 +50,47 @@ export const validateVersion = (oldVersion: string, releaseType: ReleaseType, ta
   }
 };
 
-const normalizeCommit = (commits: string[], originUrl: string) => {
+enum ChangelogSection {
+  BreakingChanges = '⚠ BREAKING CHANGES',
+  Features = 'Features',
+  BugFixes = 'Bug Fixes',
+  PerformanceImprovements = 'Performance Improvements',
+  Reverts = 'Reverts',
+  MiscellaneousChores = 'Miscellaneous Chores',
+  Documentation = 'Documentation',
+  Styles = 'Styles',
+  CodeRefactoring = 'Code Refactoring',
+  Tests = 'Tests',
+  BuildSystem = 'Build System',
+  ContinuousIntegration = 'Continuous Integration',
+}
+
+const CHANGELOG_SECTIONS = [
+  { type: 'feat', section: ChangelogSection.Features },
+  { type: 'fix', section: ChangelogSection.BugFixes },
+  { type: 'perf', section: ChangelogSection.PerformanceImprovements },
+  { type: 'revert', section: ChangelogSection.Reverts },
+  { type: 'chore', section: ChangelogSection.MiscellaneousChores },
+  { type: 'docs', section: ChangelogSection.Documentation },
+  { type: 'style', section: ChangelogSection.Styles },
+  { type: 'refactor', section: ChangelogSection.CodeRefactoring },
+  { type: 'test', section: ChangelogSection.Tests },
+  { type: 'build', section: ChangelogSection.BuildSystem },
+  { type: 'ci', section: ChangelogSection.ContinuousIntegration },
+  { type: 'breaking', section: ChangelogSection.BreakingChanges },
+];
+
+const normalizeCommit = (commits: string[], originUrl: string, section: ChangelogSection) => {
   return commits.map((commit) => {
-    const commitId = commit.slice(0, 40);
     const commitMessage = commit.slice(41);
-    return `* ${commitMessage} ([${commitId.slice(0, 8)}](${originUrl}/commit/${commitId}))`;
+    const message = `* ${commitMessage}`;
+
+    if (section === ChangelogSection.BreakingChanges) {
+      return message;
+    }
+
+    const commitId = commit.slice(0, 40);
+    return `${message} ([${commitId.slice(0, 8)}](${originUrl}/commit/${commitId}))`;
   });
 };
 
@@ -71,7 +106,34 @@ const getScopeInCommit = (commit: string) => {
   }
 };
 
-const getPullRequestId = (commit: string, originUrl: string) => {
+const getPullRequestLink = (originUrl: string, pullRequestId: string) => {
+  let page = '';
+  if (originUrl.includes('github')) {
+    return 'pull';
+  } else {
+    page = 'pullrequest';
+  }
+
+  return `${originUrl}/${page}/${pullRequestId}`;
+};
+
+const getPullRequestIdFromAzure = (commit: string, originUrl: string) => {
+  let regex = /merged pr\s+(\d+)/;
+  let match = commit.match(regex);
+  if (match) {
+    const text = match[0];
+    const pullRequestId = match[1];
+
+    // Remove "Merged PR" text
+    const withoutMergedText = commit.replace(text, '');
+    const url = getPullRequestLink(originUrl, pullRequestId);
+    return `${withoutMergedText} ([#${pullRequestId}](${url}))`;
+  } else {
+    return commit;
+  }
+};
+
+const getPullRequestIdFromGithub = (commit: string, originUrl: string) => {
   let regex = /\(#(\d+)\)/;
   let match = commit.match(regex);
   if (match) {
@@ -80,16 +142,21 @@ const getPullRequestId = (commit: string, originUrl: string) => {
     const withoutParentheses = text.replace(/[\(\)]/g, '');
     // remove # symbol
     const pullRequestId = withoutParentheses.replace('#', '');
-    const page = originUrl.startsWith('https://github.com') ? 'pull' : 'pullrequest';
-    const path = `${originUrl}/${page}/${pullRequestId}`;
-    return commit.replace(text, `([${withoutParentheses}](${path}))`);
+    const url = getPullRequestLink(originUrl, pullRequestId);
+    return commit.replace(text, `([${withoutParentheses}](${url}))`);
   } else {
     return commit;
   }
 };
 
+const getPullRequestCommit = (commit: string, originUrl: string) => {
+  commit = getPullRequestIdFromGithub(commit, originUrl);
+  commit = getPullRequestIdFromAzure(commit, originUrl);
+  return commit;
+};
+
 const getUnReleasedChanges = (changelogContent: string) => {
-  let regex = /chore\(main\):|master: build:|build:|main: chore\(main\)|master: chore\(main\)|main: build/;
+  let regex = /:\s*release\s*(\d+\.\d+\.\d+)\s*/;
   let lines = changelogContent.split('\n');
   let result = '';
 
@@ -108,100 +175,120 @@ const getUnReleasedChanges = (changelogContent: string) => {
   return result;
 };
 
+const generateChangelogSectionForTitle = (section: ChangelogSection, commits: string[], originUrl: string) => {
+  const normalizedCommits = normalizeCommit(commits, originUrl, section).join('\n');
+  return `
+### ${section}
+
+${normalizedCommits}
+`;
+};
+
+const generateChangelogSection = (
+  changes: {
+    commit: string;
+    section: ChangelogSection;
+  }[],
+  originUrl: string,
+): string => {
+  const sections = new Map<ChangelogSection, string[]>();
+  CHANGELOG_SECTIONS.forEach((section) => sections.set(section.section, []));
+
+  changes.forEach((change) => {
+    const section = sections.get(change.section);
+    if (section) {
+      section.push(change.commit);
+    }
+  });
+
+  let changelog = '';
+
+  sections.forEach((commits, section) => {
+    if (commits.length > 0) {
+      changelog += generateChangelogSectionForTitle(section, commits, originUrl);
+    }
+  });
+
+  return changelog;
+};
+
+const determineTypeChange = (commit: string) => {
+  const changes: {
+    commit: string;
+    section: ChangelogSection;
+  }[] = [];
+
+  for (let section of CHANGELOG_SECTIONS) {
+    // Get the type of the commit
+    let regex = new RegExp(`(${section.type})(\\([\\w\\s]*\\))?:\\s*`);
+    let match = commit.match(regex);
+
+    // Get the breaking change
+    let breakingChangeRegex = new RegExp(`(${section.type})(\\([\\w\\s]*\\))?!:\\s*`);
+    let breakingChangeMatch = commit.match(breakingChangeRegex);
+    const scope = getScopeInCommit(commit);
+
+    if (match) {
+      changes.push({
+        section: section.section,
+        commit: commit.replace(match[0], scope),
+      });
+    }
+    if (breakingChangeMatch) {
+      changes.push({
+        commit: commit.replace(breakingChangeMatch[0], scope),
+        section: ChangelogSection.BreakingChanges,
+      });
+
+      const typeChange = breakingChangeMatch[1];
+      const typeBreakingChange = CHANGELOG_SECTIONS.find((section) => section.type === typeChange);
+
+      if (typeBreakingChange) {
+        changes.push({
+          commit: commit.replace(breakingChangeMatch[0], scope),
+          section: typeBreakingChange.section,
+        });
+      }
+    }
+  }
+
+  if (!changes.length) {
+    changes.push({
+      commit,
+      section: ChangelogSection.Features,
+    });
+  }
+
+  return changes;
+};
+
+const determineReleaseType = (changes: { section: ChangelogSection }[]): ReleaseType => {
+  const haveBreakingChanges = changes.some((change) => change.section === ChangelogSection.BreakingChanges);
+  const haveFeatures = changes.some((change) => change.section === ChangelogSection.Features);
+  return haveBreakingChanges ? 'major' : haveFeatures ? 'minor' : 'patch';
+};
+
 export const organizeCommitsToChangelog = (commits: string, originUrl: string) => {
   const unReleasedCommits = getUnReleasedChanges(commits);
-  const features: string[] = [];
-  const fixes: string[] = [];
-  const breakingChanges: string[] = [];
+
+  const changes: {
+    commit: string;
+    section: ChangelogSection;
+    breakingChange?: boolean | undefined;
+  }[] = [];
 
   // Split commits by line and group them by type
   unReleasedCommits.split('\n').forEach((commit) => {
     if (commit === '') return;
 
     commit = commit.toLowerCase();
+    commit = getPullRequestCommit(commit, originUrl);
 
-    const typeFixed = () => {
-      let regex = /(fix)(\([\w\s]*\))?:\s*/;
-      let match = commit.match(regex);
-
-      if (match) {
-        const type = match[0];
-        const scope = getScopeInCommit(commit);
-        const commitWithPullRequestId = getPullRequestId(commit, originUrl);
-        fixes.push(commitWithPullRequestId.replace(type, scope));
-        return true;
-      }
-      return false;
-    };
-
-    const typeFeature = () => {
-      let regex = /(feat|build|ci|chore|docs|style|refactor|perf|test)(\([\w\s]*\))?:\s*/;
-      let match = commit.match(regex);
-
-      if (match) {
-        const type = match[0];
-        const scope = getScopeInCommit(commit);
-        const commitWithPullRequestId = getPullRequestId(commit, originUrl);
-        features.push(commitWithPullRequestId.replace(type, scope));
-        return true;
-      }
-      return false;
-    };
-
-    const typeBreakingChange = () => {
-      let regex = /(fix|feat|build|ci|chore|docs|style|refactor|perf|test)(\([\w\s]*\))?(!):\s*/;
-      let match = commit.match(regex);
-
-      if (match) {
-        const type = match[0];
-        const scope = getScopeInCommit(commit);
-        const commitWithPullRequestId = getPullRequestId(commit, originUrl);
-        breakingChanges.push(commitWithPullRequestId.replace(type, scope));
-        if (type.includes('fix')) {
-          fixes.push(commitWithPullRequestId.replace(type, scope));
-        } else {
-          features.push(commitWithPullRequestId.replace(type, scope));
-        }
-        return true;
-      }
-      return false;
-    };
-
-    if (!typeBreakingChange() && !typeFeature() && !typeFixed()) {
-      features.push(commit);
-    }
+    changes.push(...determineTypeChange(commit));
   });
 
-  // Normalize commits
-  const featuresChanges =
-    features.length === 0
-      ? ''
-      : `
-### Features
-
-${normalizeCommit(features, originUrl).join('\n')}
-`;
-
-  const fixesChanges =
-    fixes.length === 0
-      ? ''
-      : `
-### Bug Fixes
-
-${normalizeCommit(fixes, originUrl).join('\n')}
-`;
-
-  const breakingChangesChanges =
-    breakingChanges.length === 0
-      ? ''
-      : `
-### ⚠ BREAKING CHANGES
-
-${normalizeCommit(breakingChanges, originUrl).join('\n')}
-  `;
-
-  const changelog = `${featuresChanges}${fixesChanges}${breakingChangesChanges}`;
-  const releaseType: ReleaseType = breakingChanges.length > 0 ? 'major' : features.length > 0 ? 'minor' : 'patch';
+  const changelog = generateChangelogSection(changes, originUrl);
+  const releaseType = determineReleaseType(changes);
 
   return {
     changelog,
