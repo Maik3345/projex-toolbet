@@ -156,7 +156,7 @@ const getPullRequestCommit = (commit: string, originUrl: string) => {
 };
 
 const getUnReleasedChanges = (changelogContent: string) => {
-  let regex = /:\s*release\s*(\d+\.\d+\.\d+)\s*/;
+  let regex = /.*:\s*release\s*(v\d+\.\d+\.\d+)(\s+.*|$)/;
   let lines = changelogContent.split('\n');
   let result = '';
 
