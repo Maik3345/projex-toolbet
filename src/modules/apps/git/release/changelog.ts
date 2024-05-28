@@ -268,8 +268,8 @@ const determineTypeChange = (commit: string) => {
 
 const determineReleaseType = (changes: { section: ChangelogSection }[]): ReleaseType => {
   const haveBreakingChanges = changes.some((change) => change.section === ChangelogSection.BreakingChanges);
-  const haveFeatures = changes.some((change) => change.section === ChangelogSection.Features);
-  return haveBreakingChanges ? 'major' : haveFeatures ? 'minor' : 'patch';
+  const haveBugFix = changes.some((change) => change.section === ChangelogSection.BugFixes);
+  return haveBreakingChanges ? 'major' : haveBugFix ? 'patch' : 'minor';
 };
 
 export const organizeCommitsToChangelog = (commits: string, originUrl: string) => {
