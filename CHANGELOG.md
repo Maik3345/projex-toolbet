@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.33.0](https://github.com/Maik3345/projex-toolbet/compare/v1.32.0...v1.33.0) - (2024-05-27)
+
+### Code Refactoring
+
+* improve determinereleasetype logic to consider bug fixes for patch releases ([ce8ed370](https://github.com/Maik3345/projex-toolbet/commit/ce8ed37051b443dd753df454a4be52116daddcc4))
+
+
 ## [1.32.0](https://github.com/Maik3345/projex-toolbet/compare/v1.31.0...v1.32.0) - (2024-05-27)
 
 ### Code Refactoring
