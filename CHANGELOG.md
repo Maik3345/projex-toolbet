@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.31.0](https://github.com/Maik3345/projex-toolbet/compare/v1.30.1...v1.31.0) - (2024-05-27)
+
+### Miscellaneous Chores
+
+* update determinereleasetype logic to consider bug fixes for patch releases ([122d20ae](https://github.com/Maik3345/projex-toolbet/commit/122d20aee73e9b31c2ec60abc715b170524bf4c6))
+
+### Code Refactoring
+
+* improve getpullrequestcommit function logic ([cbbfc7b8](https://github.com/Maik3345/projex-toolbet/commit/cbbfc7b8cd5e054d8dacc6e177330b13fe3cdff0))
+
+
 ## [1.30.1](https://github.com/Maik3345/projex-toolbet/compare/v1.30.0...v1.30.1) - (2024-05-27)
 
 ### Bug Fixes
