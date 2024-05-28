@@ -118,7 +118,7 @@ const getPullRequestLink = (originUrl: string, pullRequestId: string) => {
 };
 
 const getPullRequestIdFromAzure = (commit: string, originUrl: string) => {
-  let regex = /merged pr\s+(\d+)/;
+  let regex = /merged pr\s+(\d+)(\s|:\s)/;
   let match = commit.match(regex);
   if (match) {
     const text = match[0];
