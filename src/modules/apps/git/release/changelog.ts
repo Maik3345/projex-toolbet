@@ -150,9 +150,13 @@ const getPullRequestIdFromGithub = (commit: string, originUrl: string) => {
 };
 
 const getPullRequestCommit = (commit: string, originUrl: string) => {
-  commit = getPullRequestIdFromGithub(commit, originUrl);
-  commit = getPullRequestIdFromAzure(commit, originUrl);
-  return commit;
+  const commitWithGithubId = getPullRequestIdFromGithub(commit, originUrl);
+
+  if (commitWithGithubId != commit) {
+    return commitWithGithubId;
+  } else {
+    return getPullRequestIdFromAzure(commit, originUrl);
+  }
 };
 
 const getUnReleasedChanges = (changelogContent: string) => {
