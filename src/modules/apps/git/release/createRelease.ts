@@ -13,6 +13,10 @@ export const release = async (
     noCheckRelease?: boolean;
     noTag?: boolean;
     getVersion?: boolean;
+    noPreRelease?: boolean;
+    noPostRelease?: boolean;
+    getReleaseType?: boolean;
+    getOnlyVersionNumber?: boolean;
   },
   tagName: string,
 ) => {
@@ -22,6 +26,10 @@ export const release = async (
   const checkPreRelease = options.noCheckRelease;
   const noTag = options.noTag;
   const getVersion = options.getVersion;
+  const noPreRelease = options.noPreRelease;
+  const noPostRelease = options.noPostRelease;
+  const getReleaseType = options.getReleaseType;
+  const getOnlyVersionNumber = options.getOnlyVersionNumber;
 
   const utils = new ReleaseUtils();
 
@@ -31,40 +39,44 @@ export const release = async (
   const { releaseType, oldVersion, newVersion, tagText, changelogVersion, changelog } = utils.getRelease(tagName);
   const pushCommandText = pushCommand(tagText, noTag);
 
-  if (getVersion) {
-    return console.log(utils.getVersionInformation(oldVersion, newVersion, pushCommandText));
-  }
-
-  if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {
-    log.verbose('aborted release.');
-    return;
-  }
-
-  try {
-    if (!checkPreRelease) await utils.preRelease();
-
-    await utils.bump(newVersion);
-
-    if (shouldUpdateChangelog(releaseType, tagName)) {
-      utils.updateChangelog(changelogVersion, changelog);
+  if (getOnlyVersionNumber) {
+    return console.log(newVersion);
+  } else if (getReleaseType) {
+    return console.log(releaseType);
+  } else if (getVersion) {
+    return console.log(utils.versionFileUtils.getVersionInformation(oldVersion, newVersion, pushCommandText));
+  } else {
+    if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {
+      log.verbose('aborted release.');
+      return;
     }
 
-    if (!pushAutomatic) {
-      await utils.add();
-      await utils.commit(tagText, releaseType);
+    try {
+      await utils.preRelease({ noPreRelease, checkPreRelease });
+
+      await utils.versionFileUtils.bump(newVersion);
+
+      if (shouldUpdateChangelog(releaseType, tagName)) {
+        utils.updateChangelog(changelogVersion, changelog);
+      }
+
+      if (!pushAutomatic) {
+        await utils.versionFileUtils.add();
+        await utils.commit(tagText, releaseType);
+      }
+      if (!noTag) {
+        await tag(tagText, utils.versionFileUtils.root);
+      }
+      if (!pushAutomatic) {
+        await utils.push(tagText, noTag);
+      }
+      if (!automaticDeploy) {
+        await utils.postRelease(noPostRelease);
+      }
+    } catch (e) {
+      log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
+      log.error(e);
+      process.exit(1);
     }
-    if (!noTag) {
-      await tag(tagText, utils.root);
-    }
-    if (!pushAutomatic) {
-      await utils.push(tagText, noTag);
-    }
-    if (!automaticDeploy) {
-      await utils.postRelease();
-    }
-  } catch (e) {
-    log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
-    log.error(e);
-    process.exit(1);
   }
 };

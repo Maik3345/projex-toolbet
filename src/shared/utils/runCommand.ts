@@ -40,11 +40,11 @@ export const runCommand = (
       cwd,
     });
     if (!hideSuccessMessage) {
-      log.warn(Colors.BLUE(`running command: ${Colors.WARNING(chalk.bold(cmd))}`));
+      log.verbose(Colors.BLUE(`running command: ${Colors.WARNING(chalk.bold(cmd))}`));
     }
     return output;
   } catch (e: any) {
-    log.error(`${Colors.ERROR('error running command:')} ${Colors.WHITE(`${chalk.bold(cmd)} in ${chalk.bold(cwd)}`)}`);
+    log.verbose(`${Colors.ERROR('error:')} ${Colors.WHITE(`${chalk.bold(cmd)} in ${chalk.bold(cwd)}`)}`);
     if (!makeThrow) {
       return;
     }
@@ -52,7 +52,7 @@ export const runCommand = (
     if (retries <= 0) {
       throw e;
     }
-    log.info(`retrying command: ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
+    log.verbose(`retrying command: ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
 
     return runCommand(cmd, cwd, successMessage, hideOutput, retries - 1, hideSuccessMessage);
   }
