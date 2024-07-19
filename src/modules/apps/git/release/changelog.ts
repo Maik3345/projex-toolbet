@@ -95,12 +95,12 @@ const normalizeCommit = (commits: string[], originUrl: string, section: Changelo
 };
 
 const getScopeInCommit = (commit: string) => {
-  let regex = /\(([\w\s]*)\)/;
+  let regex = /\(([\w\s-]*)\)/;
   let match = commit.match(regex);
 
   if (match) {
-    const scope = match[0];
-    return scope ? `**${scope.replace(/[\(\)]/g, '')}**: ` : '';
+    const scope = match[1];
+    return scope ? `**${scope}**: ` : '';
   } else {
     return '';
   }
@@ -109,7 +109,7 @@ const getScopeInCommit = (commit: string) => {
 const getPullRequestLink = (originUrl: string, pullRequestId: string) => {
   let page = '';
   if (originUrl.includes('github')) {
-    return 'pull';
+    page = 'pull';
   } else {
     page = 'pullrequest';
   }
