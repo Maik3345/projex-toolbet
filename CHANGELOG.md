@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.34.0](https://github.com/Maik3345/projex-toolbet/compare/v1.33.0...v1.34.0) - (2024-07-19)
+
+### Miscellaneous Chores
+
+* **pull**: add run-script command to execute scripts from manifest.json and change release process ([#11](pull)) ([4d637218](https://github.com/Maik3345/projex-toolbet/commit/4d6372184f255e0cc2795a8cce8c63c504df5eab))
+
+
 ## [1.33.0](https://github.com/Maik3345/projex-toolbet/compare/v1.32.0...v1.33.0) - (2024-05-27)
 
 ### Code Refactoring
