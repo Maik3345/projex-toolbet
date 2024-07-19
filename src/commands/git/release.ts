@@ -34,6 +34,14 @@ export default class Release extends Command {
       description: 'Do not automatically check if the release is valid and does not have local changes.',
       default: false,
     }),
+    'no-pre-release': Flags.boolean({
+      description: 'Do not automatically run the preRelease script from the manifest file.',
+      default: false,
+    }),
+    'no-post-release': Flags.boolean({
+      description: 'Do not automatically run the postRelease script from the manifest file.',
+      default: false,
+    }),
     'no-tag': Flags.boolean({
       description: 'Do not automatically tag the release.',
       default: false,
@@ -68,6 +76,8 @@ export default class Release extends Command {
         noCheckRelease: flags['no-check-release'],
         noTag: flags['no-tag'],
         getVersion: flags['get-version'],
+        noPreRelease: flags['no-pre-release'],
+        noPostRelease: flags['no-post-release'],
       },
       tagName,
     );

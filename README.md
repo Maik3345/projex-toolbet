@@ -76,6 +76,7 @@ You can see the list of commands with the command `projex --help` and you can se
 | `projex vtex cms backup`           | Download the files from the checkout files of a VTEX site                                                                                                                                |
 | `projex vtex cms deploy`           | Deploy local files in the checkout of the current account                                                                                                                                |
 | `projex vtex run`                  | Run a command and automatically accept any "Yes/No" questions by default.                                                                                                                |
+| `projex vtex run-script`           | Run a command from the manifest.json file, if the command not exist in this file pass to search in the package.json file default.                                                        |
 
 ## Manage the release version of your project
 
@@ -99,6 +100,8 @@ FLAGS
       --get-version       Only get the current version without performing any release actions.
       --no-check-release  Do not automatically check if the release is valid and does not have local changes.
       --no-deploy         Do not automatically run the preRelease script from the manifest file.
+      --no-post-release   Do not automatically run the postRelease script from the manifest file.
+      --no-pre-release    Do not automatically run the preRelease script from the manifest file.
       --no-push           Do not automatically push all changes to the remote repository.
       --no-tag            Do not automatically tag the release.
 

@@ -13,6 +13,8 @@ export const release = async (
     noCheckRelease?: boolean;
     noTag?: boolean;
     getVersion?: boolean;
+    noPreRelease?: boolean;
+    noPostRelease?: boolean;
   },
   tagName: string,
 ) => {
@@ -22,6 +24,8 @@ export const release = async (
   const checkPreRelease = options.noCheckRelease;
   const noTag = options.noTag;
   const getVersion = options.getVersion;
+  const noPreRelease = options.noPreRelease;
+  const noPostRelease = options.noPostRelease;
 
   const utils = new ReleaseUtils();
 
@@ -32,7 +36,7 @@ export const release = async (
   const pushCommandText = pushCommand(tagText, noTag);
 
   if (getVersion) {
-    return console.log(utils.getVersionInformation(oldVersion, newVersion, pushCommandText));
+    return console.log(utils.versionFileUtils.getVersionInformation(oldVersion, newVersion, pushCommandText));
   }
 
   if (!preConfirm && !(await utils.confirmRelease(String(newVersion)))) {
@@ -41,26 +45,26 @@ export const release = async (
   }
 
   try {
-    if (!checkPreRelease) await utils.preRelease();
+    await utils.preRelease({ noPreRelease, checkPreRelease });
 
-    await utils.bump(newVersion);
+    await utils.versionFileUtils.bump(newVersion);
 
     if (shouldUpdateChangelog(releaseType, tagName)) {
       utils.updateChangelog(changelogVersion, changelog);
     }
 
     if (!pushAutomatic) {
-      await utils.add();
+      await utils.versionFileUtils.add();
       await utils.commit(tagText, releaseType);
     }
     if (!noTag) {
-      await tag(tagText, utils.root);
+      await tag(tagText, utils.versionFileUtils.root);
     }
     if (!pushAutomatic) {
       await utils.push(tagText, noTag);
     }
     if (!automaticDeploy) {
-      await utils.postRelease();
+      await utils.postRelease(noPostRelease);
     }
   } catch (e) {
     log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
