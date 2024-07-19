@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.35.0](https://github.com/Maik3345/projex-toolbet/compare/v1.34.0...v1.35.0) - (2024-07-19)
+
+### Code Refactoring
+
+* **pull**: improve regex to capture merged pull request id with optional colon ([#12](pull)) ([1ed1ac94](https://github.com/Maik3345/projex-toolbet/commit/1ed1ac94f7f089ff4748ba3812c3297ac806bddc))
+
+
 ## [1.34.0](https://github.com/Maik3345/projex-toolbet/compare/v1.33.0...v1.34.0) - (2024-07-19)
 
 ### Miscellaneous Chores

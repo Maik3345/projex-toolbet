@@ -224,11 +224,11 @@ const determineTypeChange = (commit: string) => {
 
   for (let section of CHANGELOG_SECTIONS) {
     // Get the type of the commit
-    let regex = new RegExp(`(${section.type})(\\([\\w\\s]*\\))?:\\s*`);
+    let regex = new RegExp(`(${section.type})(\\([\\w\\s-]*\\))?:\\s*`);
     let match = commit.match(regex);
 
     // Get the breaking change
-    let breakingChangeRegex = new RegExp(`(${section.type})(\\([\\w\\s]*\\))?!:\\s*`);
+    let breakingChangeRegex = new RegExp(`(${section.type})(\\([\\w\\s-]*\\))?!:\\s*`);
     let breakingChangeMatch = commit.match(breakingChangeRegex);
     const scope = getScopeInCommit(commit);
 
