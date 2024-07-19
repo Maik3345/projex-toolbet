@@ -50,6 +50,14 @@ export default class Release extends Command {
       description: 'Only get the current version without performing any release actions.',
       default: false,
     }),
+    'get-release-type': Flags.boolean({
+      description: 'Get the release type of the current version.',
+      default: false,
+    }),
+    'get-only-version-number': Flags.boolean({
+      description: 'Get the version number only.',
+      default: false,
+    }),
   };
 
   static args = {
@@ -78,6 +86,8 @@ export default class Release extends Command {
         getVersion: flags['get-version'],
         noPreRelease: flags['no-pre-release'],
         noPostRelease: flags['no-post-release'],
+        getReleaseType: flags['get-release-type'],
+        getOnlyVersionNumber: flags['get-only-version-number'],
       },
       tagName,
     );

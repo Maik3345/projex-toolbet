@@ -97,13 +97,15 @@ FLAGS
   -h, --help              Shows this help message.
   -v, --verbose           Shows debug level logs.
   -y, --yes               Automatically answer yes to all prompts.
-      --get-version       Only get the current version without performing any release actions.
-      --no-check-release  Do not automatically check if the release is valid and does not have local changes.
-      --no-deploy         Do not automatically run the preRelease script from the manifest file.
-      --no-post-release   Do not automatically run the postRelease script from the manifest file.
-      --no-pre-release    Do not automatically run the preRelease script from the manifest file.
-      --no-push           Do not automatically push all changes to the remote repository.
-      --no-tag            Do not automatically tag the release.
+      --get-only-version-number  Get the version number only.
+      --get-release-type         Get the release type of the current version.
+      --get-version              Only get the current version without performing any release actions.
+      --no-check-release         Do not automatically check if the release is valid and does not have local changes.
+      --no-deploy                Do not automatically run the preRelease script from the manifest file.
+      --no-post-release          Do not automatically run the postRelease script from the manifest file.
+      --no-pre-release           Do not automatically run the preRelease script from the manifest file.
+      --no-push                  Do not automatically push all changes to the remote repository.
+      --no-tag                   Do not automatically tag the release.
 
 DESCRIPTION
   Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).
