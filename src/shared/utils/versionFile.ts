@@ -101,11 +101,15 @@ export class VersionFileUtils {
   };
 
   public add = () => {
-    let gitAddCommand = `git add "${this.versionFile}"`;
-    let successMessage = `file ${this.versionFile} added`;
+    let gitAddCommand = `git add "${this.manifestFile}"`;
+    let successMessage = `files added: ${this.manifestFile}`;
+    if (existsSync(this.packageFile)) {
+      gitAddCommand += ` "${this.packageFile}"`;
+      successMessage += ` ${this.packageFile}`;
+    }
     if (existsSync(this.changelogPath)) {
       gitAddCommand += ` "${this.changelogPath}"`;
-      successMessage = `files ${this.versionFile} ${this.changelogPath} added`;
+      successMessage = ` ${this.changelogPath}`;
     }
     return runCommand(gitAddCommand, this.root, successMessage, true);
   };
