@@ -63,18 +63,28 @@ export class VersionFileUtils {
     this.versionContent = this.manifestContent || this.packageJsonContent;
   };
 
-  public writeVersionFile = (newVersion: string) => {
+  public writeVersionFile = (newVersion: string, oldVersion: string) => {
     const contentPackageJson = this.packageJsonContent;
     const contentManifest = this.manifestContent;
 
     if (contentPackageJson) {
       contentPackageJson.version = newVersion;
       writeJsonSync(this.packageFile, contentPackageJson, { spaces: 2 });
+      log.info(
+        `bumped version ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(newVersion)} in ${chalk.bold.blue(
+          this.packageFile,
+        )}`,
+      );
     }
 
     if (contentManifest) {
       contentManifest.version = newVersion;
       writeJsonSync(this.manifestFile, contentManifest, { spaces: 2 });
+      log.info(
+        `bumped version ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(newVersion)} in ${chalk.bold.blue(
+          this.manifestFile,
+        )}`,
+      );
     }
   };
 
@@ -95,9 +105,8 @@ export class VersionFileUtils {
     return inc(String(oldVersion), releaseType);
   };
 
-  public bump = (newVersion: string) => {
-    this.writeVersionFile(newVersion);
-    log.info(`bumped version to ${chalk.bold.green(newVersion)}`);
+  public bump = (newVersion: string, oldVersion: string) => {
+    this.writeVersionFile(newVersion, oldVersion);
   };
 
   public add = () => {

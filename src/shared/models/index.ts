@@ -31,3 +31,13 @@ export interface ContentDependencies {
   value: string;
   level: number;
 }
+
+export enum ReleaseTypeEnums {
+  Major = 'major',
+  Premajor = 'premajor',
+  Minor = 'minor',
+  Preminor = 'preminor',
+  Patch = 'patch',
+  Prepatch = 'prepatch',
+  Prerelease = 'prerelease',
+}
