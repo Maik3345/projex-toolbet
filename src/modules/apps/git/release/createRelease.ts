@@ -52,9 +52,9 @@ export const release = async (
     }
 
     try {
-      await utils.preRelease({ noPreRelease, checkPreRelease });
+      await utils.preRelease({ noPreRelease, checkPreRelease, releaseType });
 
-      await utils.versionFileUtils.bump(newVersion);
+      await utils.versionFileUtils.bump(newVersion, oldVersion);
 
       if (shouldUpdateChangelog(releaseType, tagName)) {
         utils.updateChangelog(changelogVersion, changelog);

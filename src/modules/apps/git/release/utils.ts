@@ -1,4 +1,4 @@
-import { Colors, getAppRoot, promptConfirm } from '@api';
+import { Colors, promptConfirm } from '@api';
 import {
   getGitCommits,
   getOriginUrl,
@@ -6,6 +6,7 @@ import {
   gitStatus,
   log,
   pushCommand,
+  ReleaseTypeEnums,
   runCommand,
   unreleased,
   VersionFileUtils,
@@ -57,9 +58,11 @@ export class ReleaseUtils {
   public preRelease = async ({
     checkPreRelease,
     noPreRelease,
+    releaseType,
   }: {
     noPreRelease?: boolean;
     checkPreRelease?: boolean;
+    releaseType: ReleaseType;
   }) => {
     if (!checkPreRelease) {
       if (!this.checkNothingToCommit()) {
@@ -73,6 +76,10 @@ export class ReleaseUtils {
     }
 
     if (noPreRelease) return;
+
+    if (releaseType === ReleaseTypeEnums.Prerelease && this.versionFileUtils.findScript('prerelease-beta')) {
+      return await this.versionFileUtils.runFindScript('prerelease-beta', 'beta release');
+    }
 
     if (this.versionFileUtils.findScript('prerelease')) {
       return await this.versionFileUtils.runFindScript('prerelease', 'pre release');
