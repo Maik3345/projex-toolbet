@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.39.0](https://github.com/Maik3345/projex-toolbet/compare/v1.38.0...v1.39.0) - (2024-07-22)
+
+### Code Refactoring
+
+* remove inquirer library to use only prompts package ([#16](https://github.com/Maik3345/projex-toolbet/pull/16)) ([7a1b635f](https://github.com/Maik3345/projex-toolbet/commit/7a1b635f6d8a99dab5b59806ac50fffa1c998e75))
+
+
 ## [1.38.0](https://github.com/Maik3345/projex-toolbet/compare/v1.37.0...v1.38.0) - (2024-07-22)
 
 ### Code Refactoring
