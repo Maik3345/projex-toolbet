@@ -1,10 +1,10 @@
-const inquirer = require('inquirer');
 import { Colors, getCurrentDirectory } from '@api';
 import { log } from '../logger';
 import { Folders, IFile } from '../models';
 import chalk from 'chalk';
 const path = require('path');
 const fs = require('fs');
+const prompts = require('prompts');
 
 export class DirectoryUtils {
   private root: string;
@@ -20,17 +20,23 @@ export class DirectoryUtils {
   choose from, `message`, which is a string representing the message to display to the user, and
   `action`, which is a string representing the action being performed. */
   public chooseFolders = async (folderList: IFile[], message: string, action: string): Promise<Folders> => {
-    let folders = [new inquirer.Separator(`${chalk.whiteBright(action)} \n`), ...folderList];
-
-    const promptCommands: Folders = await inquirer.prompt([
+    const questions = [
       {
-        type: 'checkbox',
-        message: `${chalk.redBright(message)}`,
-        name: 'folders',
-        choices: folders,
+        type: 'multiselect',
+        name: 'choices',
+
+        message: message,
+        choices: folderList.map((folder) => {
+          return {
+            title: folder.name,
+            value: folder.name,
+          };
+        }),
       },
-    ]);
-    return promptCommands;
+    ];
+
+    const response = await prompts(questions);
+    return response as Folders;
   };
 
   /* The `getDirectories` method is a public method of the `DirectoryUtils` class. It takes in a `srcpath`
@@ -74,8 +80,8 @@ export class DirectoryUtils {
     message: string = 'Select the files to upload',
     action: string = 'Select the project',
   ) => {
-    let choose = await this.chooseFolders(files, message, action);
-    const selectedFolders = choose.folders;
+    let selection = await this.chooseFolders(files, message, action);
+    const selectedFolders = selection.choices;
     const numSelectedFolders = selectedFolders.length;
     log.info(`number of selected folders: ${chalk.bold.whiteBright(numSelectedFolders)}`);
     return selectedFolders;

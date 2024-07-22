@@ -1,20 +1,21 @@
-import { log } from '../logger';
-
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 
 export class PromptsUtils {
   /* The `continuePrompt` function is a method of the `PromptsUtils` class. It takes a `message`
   parameter of type string. */
   continuePrompt = async (message: string) => {
-    const prompt = await inquirer.prompt({
-      name: 'proceed',
-      message: message,
-      type: 'confirm',
-    });
-    const proceed = prompt.proceed;
+    const questions = [
+      {
+        type: 'confirm',
+        name: 'value',
+        message: message,
+        initial: false,
+      },
+    ];
 
-    if (!proceed) {
-      log.info('process finished successfully.');
+    const prompt = await prompts(questions);
+
+    if (!prompt.value) {
       process.exit();
     }
   };
