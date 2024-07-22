@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.38.0](https://github.com/Maik3345/projex-toolbet/compare/v1.37.0...v1.38.0) - (2024-07-22)
+
+### Code Refactoring
+
+* update dependencies and change the run dev command to use `--incremental` ([#15](https://github.com/Maik3345/projex-toolbet/pull/15)) ([1a918f1b](https://github.com/Maik3345/projex-toolbet/commit/1a918f1b1af86b87c40913a6944c47fe819ce2be))
+
+
 ## [1.37.0](https://github.com/Maik3345/projex-toolbet/compare/v1.35.1...v1.37.0) - (2024-07-19)
 
 ### Code Refactoring
