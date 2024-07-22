@@ -165,12 +165,12 @@ export class VersionFileUtils {
 
   public runFindScript = (key: string, msg: string) => {
     const cmd = this.findScript(key);
-    return cmd ? runCommand(cmd, this.root, msg, false) : log.warn(`no script found for ${key}`);
+    return cmd ? runCommand(cmd, this.root, msg, false) : log.verbose(`no script found for ${key}`);
   };
 
   public runScript = (key: string, msg: string) => {
     const cmd: string = this.getScript(key);
-    return cmd ? runCommand(cmd, this.root, msg, false) : log.warn(`no script found for ${key}`);
+    return cmd ? runCommand(cmd, this.root, msg, false) : log.verbose(`no script found for ${key}`);
   };
 
   public getVersionInformation = (oldVersion: string, newVersion: string, pushCommandText: string) => {

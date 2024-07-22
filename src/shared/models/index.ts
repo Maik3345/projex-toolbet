@@ -4,7 +4,7 @@ export interface IFile {
 }
 
 export interface Folders {
-  folders: Array<string>;
+  choices: Array<string>;
 }
 
 export interface ConfigVtexJson {

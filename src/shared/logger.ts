@@ -73,8 +73,6 @@ const errorJsonReplacer = (key: any, value: any) => {
 };
 
 // create formatter for dates used as timestamps  HH:mm:ss.SSS
-// const tsFormat = () => chalk.whiteBright(moment().format("HH:mm").trim());
-
 const logger = createLogger({
   format: format.combine(addArgs(), format.timestamp({ format: 'HH:mm:ss.SSS' })),
   transports: [

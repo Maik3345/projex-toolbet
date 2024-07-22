@@ -66,7 +66,11 @@ export class DeployUtils {
 
     // 2 Select the files to use
     if (!preConfirm) {
-      const selected = await this.directoryUtils.promptSelectElements(Object.assign([], files));
+      const selected = await this.directoryUtils.promptSelectElements(
+        Object.assign([], files),
+        'Select the files to upload',
+        'Choose the files to upload',
+      );
       files = await this.directoryUtils.getSelectedElements(files, selected);
     }
 
