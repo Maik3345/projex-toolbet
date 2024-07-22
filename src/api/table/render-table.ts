@@ -1,5 +1,6 @@
-const chalk = require('chalk');
-import { createTable } from "./table";
+import chalk from 'chalk';
+
+import { createTable } from './table';
 
 export const renderTableOfCommits = ({
   title,
@@ -15,7 +16,7 @@ export const renderTableOfCommits = ({
   }
 
   const table = createTable({
-    head: ["#", title],
+    head: ['#', title],
   });
 
   listArray.forEach((text: string, index: number) => {
@@ -37,7 +38,7 @@ export const renderTableOfReleaseVersions = ({
   }
 
   const table = createTable({
-    head: ["Version", "Value"],
+    head: ['Version', 'Value'],
   });
 
   listArray.forEach((item) => {

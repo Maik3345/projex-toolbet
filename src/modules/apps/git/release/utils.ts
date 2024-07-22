@@ -14,7 +14,8 @@ import {
 import { close, existsSync, openSync, readFileSync, writeSync } from 'fs-extra';
 import { ReleaseType } from 'semver';
 import { organizeCommitsToChangelog, validateVersion } from './changelog';
-const chalk = require('chalk');
+import chalk from 'chalk';
+
 
 export class ReleaseUtils {
   public versionFileUtils = new VersionFileUtils();
