@@ -1,8 +1,7 @@
 import { Colors } from '@api';
 import { Commands, DirectoryUtils, Endpoints, IFile, PromptsUtils, getAccountName, log, runOnlyCommand } from '@shared';
 import axios from 'axios';
-const ora = require('ora');
-const fs = require('fs');
+import fs from 'fs';
 
 export class DeployUtils {
   private directoryUtils = new DirectoryUtils();
@@ -38,11 +37,11 @@ export class DeployUtils {
         )} with de site configuration ${Colors.WARNING(this.site)}. Do you want to continue?`,
       ));
 
-    const spinner = ora('uploading files...').start();
+    log.info('uploading files...');
     const results = files.map(async (item) => {
       const url = Endpoints.UPLOAD_FILE(this.account.replace(/\s/g, ''), item.name, this.site);
       const data = await fs.readFileSync(item.path, 'utf8');
-      spinner.text = `Uploading ${item.name}`;
+      log.info(`Uploading the file ${item.name}`);
       await this.uploadFile({
         data,
         url,
@@ -52,8 +51,7 @@ export class DeployUtils {
     });
 
     Promise.all(results).then(() => {
-      log.info('files uploaded successfully');
-      spinner.stop();
+      log.info('files uploaded successfully to the account', this.account);
     });
   };
 

@@ -4,7 +4,7 @@ import { formatWithOptions } from 'util';
 import { createLogger, format, transports } from 'winston';
 import { LOGS_FOLDER } from './constants/paths';
 import { isVerbose } from './verbose';
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 enum LogLevelIcons {
   'info' = '✔',

@@ -5,7 +5,7 @@ import { inc, ReleaseType, valid } from 'semver';
 
 import { resolve } from 'path';
 const fs = require('fs');
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 interface VersionFileContent {
   version: string;

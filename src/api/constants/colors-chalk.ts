@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 export enum COLORS {
   GREEN = '#8fd19e',

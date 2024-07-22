@@ -2,7 +2,7 @@ import { Colors } from '@api';
 import { checkGit, checkIfInGitRepo, log, pushCommand, tag } from '@shared';
 import { shouldUpdateChangelog } from './changelog';
 import { ReleaseUtils } from './utils';
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 export const release = async (
   options: {
