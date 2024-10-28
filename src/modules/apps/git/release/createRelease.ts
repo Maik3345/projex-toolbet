@@ -54,13 +54,15 @@ export const release = async (
     try {
       await utils.preRelease({ noPreRelease, checkPreRelease, releaseType });
 
-      await utils.versionFileUtils.bump(newVersion, oldVersion);
+      await utils.versionFileUtils.updateReleaseFilesVersion(newVersion);
+      await utils.versionFileUtils.bump(newVersion);
 
       if (shouldUpdateChangelog(releaseType, tagName)) {
         utils.updateChangelog(changelogVersion, changelog);
       }
 
       if (!pushAutomatic) {
+        await utils.versionFileUtils.addReleaseFiles();
         await utils.versionFileUtils.add();
         await utils.commit(tagText, releaseType);
       }

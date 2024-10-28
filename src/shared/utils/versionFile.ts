@@ -12,6 +12,9 @@ interface VersionFileContent {
   scripts: {
     [key: string]: string;
   };
+  projex: {
+    releaseFiles: string[];
+  };
 }
 
 export class VersionFileUtils {
@@ -63,12 +66,58 @@ export class VersionFileUtils {
     this.versionContent = this.manifestContent || this.packageJsonContent;
   };
 
-  public writeVersionFile = (newVersion: string, oldVersion: string) => {
+  public getReleaseFilesFromConfig = (): string[] => {
+    const contentPackageJson = this.packageJsonContent;
+    const contentManifest = this.manifestContent;
+
+    let releaseFiles: string[] = [];
+
+    if (contentPackageJson && contentPackageJson.projex && contentPackageJson.projex.releaseFiles) {
+      releaseFiles = contentPackageJson.projex.releaseFiles;
+    } else if (contentManifest && contentManifest.projex && contentManifest.projex.releaseFiles) {
+      releaseFiles = contentManifest.projex.releaseFiles;
+    }
+
+    return releaseFiles;
+  };
+
+  public updateReleaseFilesVersion = (newVersion: string): void => {
+    const releaseFiles = this.getReleaseFilesFromConfig();
+
+    releaseFiles.forEach((file) => {
+      const resolveFile = resolve(this.root, file);
+      const content = readJsonSync(resolveFile);
+      const oldVersion = content.version;
+      content.version = newVersion;
+      writeJsonSync(file, content, { spaces: 2 });
+      log.info(
+        `bumped version ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(newVersion)} in ${chalk.bold.blue(
+          file,
+        )}`,
+      );
+    });
+  };
+
+  public addReleaseFiles = (): void => {
+    const releaseFiles = this.getReleaseFilesFromConfig();
+    let gitAddCommand = 'git add ';
+    let successMessage = 'files added:';
+    releaseFiles.forEach((file) => {
+      const resolveFile = resolve(this.root, file);
+      gitAddCommand += ` "${resolveFile}"`;
+      successMessage += ` ${resolveFile}`;
+    });
+    return runCommand(gitAddCommand, this.root, successMessage, true);
+  };
+
+  public writeVersionFile = (newVersion: string) => {
     const contentPackageJson = this.packageJsonContent;
     const contentManifest = this.manifestContent;
 
     if (contentPackageJson) {
+      const oldVersion = contentPackageJson.version;
       contentPackageJson.version = newVersion;
+
       writeJsonSync(this.packageFile, contentPackageJson, { spaces: 2 });
       log.info(
         `bumped version ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(newVersion)} in ${chalk.bold.blue(
@@ -78,6 +127,7 @@ export class VersionFileUtils {
     }
 
     if (contentManifest) {
+      const oldVersion = contentManifest.version;
       contentManifest.version = newVersion;
       writeJsonSync(this.manifestFile, contentManifest, { spaces: 2 });
       log.info(
@@ -105,13 +155,13 @@ export class VersionFileUtils {
     return inc(String(oldVersion), releaseType);
   };
 
-  public bump = (newVersion: string, oldVersion: string) => {
-    this.writeVersionFile(newVersion, oldVersion);
+  public bump = (newVersion: string) => {
+    this.writeVersionFile(newVersion);
   };
 
   public add = () => {
-    let gitAddCommand = `git add `;
-    let successMessage = `files added:`;
+    let gitAddCommand = 'git add ';
+    let successMessage = 'files added:';
 
     if (existsSync(this.manifestFile)) {
       gitAddCommand += ` "${this.manifestFile}"`;
