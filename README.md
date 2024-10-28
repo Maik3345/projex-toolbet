@@ -2,7 +2,7 @@
   <br>
     <img align="center" src="img/logo.png" width="200">
   <br>
-	<br>
+ <br>
   Projex CLI
   <br>
   <br>
@@ -78,9 +78,7 @@ You can see the list of commands with the command `projex --help` and you can se
 | `projex vtex run`                  | Run a command and automatically accept any "Yes/No" questions by default.                                                                                                                |
 | `projex vtex run-script`           | Run a command from the manifest.json file, if the command not exist in this file pass to search in the package.json file default.                                                        |
 
-## Manage the release version of your project
-
-The command `projex git release` allows you to manage the release version of your project, check the usage of the command:
+## Commands
 
 ```bash
 Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).
@@ -123,7 +121,24 @@ EXAMPLES
 
 ```
 
+## Manage the release version of your project
+
+The command `projex git release` allows you to manage the release version of your project
+
 To use the command you need to have the `package.json` file in the root of the project and the `version` field in the file, the command will update the version of the project in the `package.json` file and create a tag with the version in the git repository.
+
+You can make the actualization of the version in another files creating the attribute `projex.releaseFiles` in the `package.json` file with the list of files that you want to update with the new version, for example:
+
+```json
+  "projex": {
+    "releaseFiles": [
+      "library/package.json",
+       "react/package.json",
+       "node/package.json"
+    ]
+  }
+
+```
 
 When make the update of the version, the command will update the `CHANGELOG.md` file with the new version making a release section with the structure:
 
