@@ -50,7 +50,7 @@ export class ReleaseUtils {
 
   public checkIfGitPushWorks = () => {
     try {
-      runCommand('git push', this.versionFileUtils.root, '', true, 2, true);
+      runCommand('git push --force', this.versionFileUtils.root, '', true, 2, true);
     } catch (e) {
       log.error(Colors.ERROR(`failed pushing to remote. ${e}`));
     }

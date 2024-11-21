@@ -44,7 +44,7 @@ export const tag = (tagName: string, root: string) => {
 };
 
 export const pushCommand = (tagName: string, noTag: boolean | undefined) => {
-  return `git push ${noTag ? '' : `&& git push origin ${tagName}`}`;
+  return `git push --force ${noTag ? '' : `&& git push origin ${tagName} --force`}`;
 };
 
 export const gitStatus = (root: string) => {
