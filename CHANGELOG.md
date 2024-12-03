@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.42.0](https://github.com/Maik3345/projex-toolbet/compare/v1.41.0...v1.42.0) - (2024-12-03)
+
+### Miscellaneous Chores
+
+* **beta**: beta release v1.41.1-0 ([#20](https://github.com/Maik3345/projex-toolbet/pull/20)) ([7ab2b4a7](https://github.com/Maik3345/projex-toolbet/commit/7ab2b4a7a0d192da8e72aa2d81c956f6ed08527b))
+* replace license.md with updated license file ([eafec898](https://github.com/Maik3345/projex-toolbet/commit/eafec8988ba7666566815c104758bffba3ab98a7))
+
+
 ## [1.41.0](https://github.com/Maik3345/projex-toolbet/compare/v1.40.0...v1.41.0) - (2024-11-21)
 
 ### Code Refactoring
