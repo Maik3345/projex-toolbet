@@ -8,7 +8,8 @@ export default class Browse extends Command {
 
   static examples = [
     `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex release minor stable'`,
-    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'git status'`,
+    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex publish'`,
+    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex deploy'`,
   ];
 
   static flags = {

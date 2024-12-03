@@ -50,8 +50,11 @@ export const childProcessRunCommandRun = function (command: string) {
     if (excludeError) return;
 
     if (checkErrors()) {
-      log.error(`finish with errors on run the command`);
-      throw new Error('finish execution with errors');
+      setTimeout(() => {
+        log.error(`finish with errors on run the command`);
+        throw new Error('finish execution with errors');
+      }, 5000);
+      return;
     }
   };
 
