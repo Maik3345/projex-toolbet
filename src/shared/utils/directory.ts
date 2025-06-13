@@ -162,7 +162,7 @@ export class DirectoryUtils {
   }
 
   async runCommandInFolders(folders: (IFile | undefined)[], method: (root: string) => Promise<void>) {
-    const setupHusky = folders.map(async (folder) => {
+    const folderOperations = folders.map(async (folder) => {
       if (!folder) {
         return;
       }
@@ -172,6 +172,6 @@ export class DirectoryUtils {
       log.info(`setup complete for: ${Colors.PINK(folder.name)}`);
     });
 
-    await Promise.all(setupHusky);
+    await Promise.all(folderOperations);
   }
 }

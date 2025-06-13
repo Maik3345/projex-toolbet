@@ -312,7 +312,7 @@ main: fix: 🐛 Update ChangelogUtils to use h3 headers for release type
   `README.md` file for save all information of the project
   `.gitignore` file for ignore the next files and folders:
 - feat: add the command `projex git setup devops template` for create the `.azuredevops/pull_request_template/PULL_REQUEST_TEMPALTE.md` file, this file is used for create the template of the pull request in the azure devops
-- feat: add the command `projex git setup husky` for create the `husky` configuration in the project with `commitlint` and the `commit-msg` hook for add the name of the current branch in the commit message
+- feat: add the command `projex git setup conventional` for create the conventional commit environment with `husky` configuration, `commitlint` setup, `commit-msg` hook for adding the name of the current branch in the commit message, and a `CHANGELOG.md` file
 - add the unit test for:
   ````bash
   RUNS  src/modules/apps/vtex/login/util/getAuth/getAuth.test.ts

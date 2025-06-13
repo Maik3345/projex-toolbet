@@ -66,7 +66,7 @@ You can see the list of commands with the command `projex --help` and you can se
 | Command                            | Description                                                                                                                                                                              |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `projex git init`                  | Initialize base files for managing documentation and versioning in a Git repository                                                                                                      |
-| `projex git setup husky`           | Set up Husky for selected repositories (only for Git users)                                                                                                                              |
+| `projex git setup conventional`    | Set up conventional commits with Husky and Commitlint for selected repositories (only for Git users)                                                                                      |
 | `projex git setup devops template` | Add necessary files and folders for Azure DevOps setup                                                                                                                                   |
 | `projex git update changelog`      | Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)                                                               |
 | `projex git clone`                 | Clone the specified repositories (Only for git users)                                                                                                                                    |
@@ -193,9 +193,9 @@ EXAMPLES
 
 To use the command you need to have the `CHANGELOG.md` file in the root of the project, the command will update the changelog file with the latest changes in the current branch or with the provided content.
 
-## Setup husky in your project
+## Setup conventional commits in your project
 
-The command `projex git setup husky` allows you to setup husky in your project, check the usage of the command:
+The command `projex git setup conventional` allows you to setup conventional commits with Husky, Commitlint, and a CHANGELOG.md file in your project. Check the usage of the command:
 
 ### Create a basic git files
 

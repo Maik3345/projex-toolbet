@@ -1,21 +1,21 @@
 import { FilesUtils, runCommand, COMMIT_LINT_SETTINGS_CODE, HUSKY_COMMIT_MESSAGE_CODE } from '@shared';
 
-export class SetupHuskyUtil {
+export class SetupConventionalUtil {
   private filesUtils: FilesUtils;
 
   constructor() {
     this.filesUtils = new FilesUtils();
   }
 
-  /* The `setupHusky` function is responsible for setting up Husky and Commitlint in a given project
+  /* The `setupConventional` function is responsible for setting up Husky, Commitlint and CHANGELOG.md in a given project
   directory. Here's a breakdown of what it does: */
-  async setupHusky(root: string) {
+  async setupConventional(root: string) {
     // install husky
     await runCommand('npm install husky -D', root, 'install husky package');
 
     // configure husky prepare
     await runCommand(
-      'npm pkg set scripts.prepare="npx husky install"',
+      'npm pkg set scripts.prepare="npx husky"',
       root,
       'husky prepare script added in the package.json',
     );

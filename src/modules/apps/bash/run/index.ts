@@ -1,11 +1,12 @@
 import { DirectoryUtils, log } from '@shared';
 import { BashRunCommandUtils } from './utils';
 import { Colors } from '@api';
-
 /**
- * The `setupHusky` function sets up Husky, a Git hook tool, in a specified directory or in the current
- * directory.
+ * The `bashRunCommand` function runs a specified bash command in all folders of the current directory
+ * or in the selected folders, depending on the options provided.
+ * @param command - The bash command to run.
  * @param options - An object that contains two properties:
+ *   - `l` or `list`: If true, lists all projects to select for running the command.
  */
 export const bashRunCommand = async (
   command: string | undefined,
