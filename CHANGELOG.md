@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.43.0](https://github.com/Maik3345/projex-toolbet/compare/v1.42.0...v1.43.0) - (2025-06-12)
+
+### Features
+
+* replace husky setup with conventional commit setup ([5ef6405f](https://github.com/Maik3345/projex-toolbet/commit/5ef6405fdffd557f5a705c40b3b7de69fe47ae69))
+
+### Code Refactoring
+
+* refactor code structure for improved readability and maintainability ([ec40ea93](https://github.com/Maik3345/projex-toolbet/commit/ec40ea93501cbe420ed4aa98a4b3233f9ccdf3d7))
+
+
 ## [1.42.0](https://github.com/Maik3345/projex-toolbet/compare/v1.41.0...v1.42.0) - (2024-12-03)
 
 ### Miscellaneous Chores
