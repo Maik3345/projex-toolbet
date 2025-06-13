@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.43.1](https://github.com/Maik3345/projex-toolbet/compare/v1.43.0...v1.43.1) - (2025-06-12)
+
+### Bug Fixes
+
+* fix the build version ([e14dca1c](https://github.com/Maik3345/projex-toolbet/commit/e14dca1cb5cbbd45caa1d73bce86ac2bdb60eb66))
+
+
 ## [1.43.0](https://github.com/Maik3345/projex-toolbet/compare/v1.42.0...v1.43.0) - (2025-06-12)
 
 ### Features
