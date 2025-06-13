@@ -20,13 +20,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Maik3345/projex-toolbet"
+    "url": "git+https://github.com/Maik3345/projex-toolbet.git"
   },
   "license": "MIT",
   "author": "Maik Restrepo",
   "main": "dist/api/index.js",
   "types": "dist/index.d.ts",
-  "bin": "bin/run",
+  "bin": {
+    "projex": "bin/run"
+  },
   "files": [
     "/bin",
     "/dist",
