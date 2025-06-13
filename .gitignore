@@ -1,12 +1,30 @@
+# Logs
 *-debug.log
 *-error.log
-/.nyc_output
+
+# Build outputs
 /dist
 /lib
+
+# Dependencies
+/node_modules
 /package-lock.json
+
+# Testing
+/.nyc_output
+
+# Temporary files
 /tmp
-node_modules
+
+# OCLIF specific
 oclif.manifest.json
 oclif.lock
+
+# OS specific files
 **/.DS_Store
+
+# IDE files
 /.idea
+
+# Lock files
+yarn.lock
