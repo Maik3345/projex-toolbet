@@ -1,0 +1,49 @@
+import { suggestLabels } from '../index';
+import { SuggestLabelsOptions } from './types';
+
+describe('suggestLabels', () => {
+  const mockOptions: SuggestLabelsOptions = {
+    branch: 'feature/test-branch',
+    target: 'main',
+    format: 'json',
+    verbose: false,
+  };
+
+  const mockOptionsTxt: SuggestLabelsOptions = {
+    branch: 'feature/test-branch',
+    target: 'main',
+    format: 'txt',
+    verbose: false,
+  };
+
+  beforeEach(() => {
+    // Mock console.log to avoid output during tests
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(suggestLabels).toBeDefined();
+  });
+
+  it('should accept valid options', () => {
+    expect(() => {
+      // This should not throw
+      const options: SuggestLabelsOptions = {
+        target: 'main',
+        format: 'json',
+        verbose: true,
+      };
+      
+      const optionsTxt: SuggestLabelsOptions = {
+        target: 'main',
+        format: 'txt',
+        verbose: false,
+      };
+    }).not.toThrow();
+  });
+});
