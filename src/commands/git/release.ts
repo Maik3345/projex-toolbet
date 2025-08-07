@@ -1,9 +1,7 @@
 import { Colors } from '@api';
-import { release, releaseTypeAliases, supportedReleaseTypes, supportedTagNames } from '@modules';
+import { release, supportedTagNames } from '@modules';
 import { Args, Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
-
-import { ReleaseType } from 'semver';
 
 export default class Release extends Command {
   static description =

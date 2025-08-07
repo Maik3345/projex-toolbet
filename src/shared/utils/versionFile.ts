@@ -40,7 +40,7 @@ export class VersionFileUtils {
   public checkDirectory = (repository: string) => {
     try {
       return fs.existsSync(repository);
-    } catch (error) {
+    } catch {
       return false;
     }
   };

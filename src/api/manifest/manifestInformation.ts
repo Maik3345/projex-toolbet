@@ -8,7 +8,7 @@ const fileExists = (filePath: string) => {
   try {
     accessSync(filePath);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };

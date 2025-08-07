@@ -26,7 +26,7 @@ export class CloneUtils {
   public checkDirectory = (repository: string) => {
     try {
       return fs.existsSync(repository);
-    } catch (error) {
+    } catch {
       return false;
     }
   };

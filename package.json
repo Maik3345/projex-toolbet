@@ -38,6 +38,7 @@
     "dev": "npx nodemon",
     "clean": "shx rm -f oclif.manifest.json npm-shrinkwrap.json",
     "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "build": "shx rm -rf dist && tsc -b && tsc-alias",
     "build-dev": "tsc -b --incremental && tsc-alias",
     "prepublish": "npm run build",
@@ -61,7 +62,6 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "husky": "^9.1.7",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@oclif/prettier-config": "^0.2.1",
@@ -72,6 +72,12 @@
     "@types/node": "^20.19.0",
     "@types/ramda": "^0.30.2",
     "@types/semver": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "eslint": "^8.57.1",
+    "eslint-config-oclif": "^5.2.2",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "jest": "30.0.0",
     "nodemon": "^3.1.10",
     "ts-jest": "^29.4.0",

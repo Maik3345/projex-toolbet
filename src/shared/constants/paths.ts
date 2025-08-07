@@ -11,5 +11,4 @@ export class PathConstants {
   public static readonly SESSION_FOLDER = join(PathConstants.PCO_FOLDER, 'session');
 }
 
-export const PC_FOLDER = join(homedir(), `.${CLI_NAME}`);
-export const LOGS_FOLDER = join(PC_FOLDER, 'logs');
+export const LOGS_FOLDER = join(homedir(), `.${CLI_NAME}`, 'logs');

@@ -1,7 +1,7 @@
 import { Colors } from '@api';
 import { bashRunCommand } from '@modules';
 import { Args, Command, Flags } from '@oclif/core';
-import { CLI_NAME, globalFlags, log } from '@shared';
+import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Browse extends Command {
   static description = `Run a command in the current directory or select multiple directories`;

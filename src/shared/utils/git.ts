@@ -63,7 +63,7 @@ export const getTheLastTag = (root: string) => {
     } else {
       return null;
     }
-  } catch (e) {
+  } catch {
     log.error(Colors.ERROR('no tags found'));
     return null;
   }
