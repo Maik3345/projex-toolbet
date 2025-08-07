@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { globalFlags } from './oclif';
 import { Flags } from '@oclif/core';
 
