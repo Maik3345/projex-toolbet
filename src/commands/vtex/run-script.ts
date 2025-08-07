@@ -22,6 +22,6 @@ export default class Browse extends Command {
     const {
       args: { script },
     } = await this.parse(Browse);
-    vtexRunScript(script);
+    await vtexRunScript(script);
   }
 }

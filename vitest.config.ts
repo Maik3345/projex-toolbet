@@ -20,7 +20,23 @@ export default defineConfig({
         'src/**/*.d.ts',
         'src/**/*.test.ts',
         'src/**/*.spec.ts',
+        // Configuration files
+        '.prettierrc.js',
+        'commitlint.config.js',
+        'vitest.config.ts',
+        // Entry points
+        'src/index.ts',
+        // Type definitions only
+        'src/modules/apps/pull-request/labels/suggest/types.ts',
       ],
+      thresholds: {
+        global: {
+          statements: 87,
+          branches: 87,
+          functions: 87,
+          lines: 87
+        }
+      }
     },
   },
   resolve: {
