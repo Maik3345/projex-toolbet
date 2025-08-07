@@ -61,6 +61,7 @@ const formatAsTable = async (suggestions: SuggestedLabels, verbose: boolean): Pr
     'Type': getLabelType(label.name),
     'Confidence': `${label.confidence}%`,
     'Description': label.description,
+    'Evidence': label.evidenceCommit ? `${label.evidenceCommit.commitId}: ${label.evidenceCommit.message}` : 'N/A',
   }));
 
   if (verbose) {
@@ -68,11 +69,11 @@ const formatAsTable = async (suggestions: SuggestedLabels, verbose: boolean): Pr
   }
 
   const table = createTable({
-    head: ['Label', 'Type', 'Confidence', 'Description'],
+    head: ['Label', 'Type', 'Confidence', 'Description', 'Evidence'],
   });
 
   tableData.forEach(row => {
-    table.push([row.Label, row.Type, row.Confidence, row.Description]);
+    table.push([row.Label, row.Type, row.Confidence, row.Description, row.Evidence]);
   });
 
   console.log(table.toString());
@@ -104,7 +105,10 @@ const formatAsList = async (suggestions: SuggestedLabels, verbose: boolean): Pro
       log.info(Colors.BLUE(`\n${type.toUpperCase()}:`));
       labels.forEach(label => {
         const confidenceColor = getConfidenceColor(label.confidence);
-        log.info(`  • ${Colors.WHITE(label.name)} ${confidenceColor(`(${label.confidence}%)`)} - ${label.description}`);
+        const evidenceText = label.evidenceCommit 
+          ? ` [${Colors.YELLOW(label.evidenceCommit.commitId)}: ${label.evidenceCommit.message}]`
+          : '';
+        log.info(`  • ${Colors.WHITE(label.name)} ${confidenceColor(`(${label.confidence}%)`)} - ${label.description}${evidenceText}`);
       });
     }
   }
@@ -139,7 +143,10 @@ const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean): Prom
     if (labels.length > 0) {
       output += `${type.toUpperCase()}:\n`;
       labels.forEach(label => {
-        output += `  - ${label.name} (${label.confidence}%): ${label.description}\n`;
+        const evidenceText = label.evidenceCommit 
+          ? ` [${label.evidenceCommit.commitId}: ${label.evidenceCommit.message}]`
+          : '';
+        output += `  - ${label.name} (${label.confidence}%): ${label.description}${evidenceText}\n`;
       });
       output += '\n';
     }
@@ -217,6 +224,13 @@ const buildOutputObject = (suggestions: SuggestedLabels) => {
       color: label.color,
       description: label.description,
       confidence: label.confidence,
+      ...(label.evidenceCommit && {
+        evidence: {
+          commitId: label.evidenceCommit.commitId,
+          message: label.evidenceCommit.message,
+          matchedPattern: label.evidenceCommit.matchedPattern,
+        }
+      })
     })),
     flags: {
       breakingChange: suggestions.breakingChange,
@@ -245,7 +259,7 @@ const getAllLabels = (suggestions: SuggestedLabels): LabelSuggestion[] => {
   }
   
   labels.push(...suggestions.type);
-  labels.push(...suggestions.scope);
+  labels.push(...suggestions.release);
   
   return labels.sort((a, b) => b.confidence - a.confidence);
 };

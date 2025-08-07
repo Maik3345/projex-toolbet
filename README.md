@@ -58,6 +58,7 @@ Comprehensive documentation is available in the [`docs/`](docs/) folder:
 
 - **[Architecture Overview](docs/architecture.md)** - System architecture and design patterns
 - **[Pull Request Labels](docs/pull-request-labels.md)** - Automated label suggestion for PRs
+- **[Azure DevOps Usage](docs/azure-devops-usage.md)** - CI/CD integration and troubleshooting
 - **[Git Release Management](docs/git-release-management.md)** - Automated versioning and changelog
 - **[VTEX Workflows](docs/vtex-workflows.md)** - VTEX platform automation
 - **[Bash Automation](docs/bash-automation.md)** - Multi-directory command execution
@@ -233,14 +234,14 @@ The command `projex pull-request labels suggest` automatically analyzes git chan
 ```bash
 projex pull-request labels suggest
 projex pull-request labels suggest --branch feature/my-feature
-projex pull-request labels suggest --target main --format table
+projex pull-request labels suggest --target master --format table
 projex pull-request labels suggest --format csv
 ```
 
 ### Options
 
 - `--branch, -b`: Branch to analyze (defaults to current branch)
-- `--target, -t`: Target branch to compare against (defaults to main)
+- `--target, -t`: Target branch to compare against (auto-detects main branch: `main`, `master`, `develop`, `dev`)
 - `--format, -f`: Output format: json, table, list, txt, csv (defaults to json)
 - `--verbose, -v`: Show detailed analysis information
 

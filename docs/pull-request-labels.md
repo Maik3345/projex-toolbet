@@ -213,8 +213,23 @@ done
 
 El comando detecta automáticamente:
 - **Rama actual** si no se especifica `--branch`
-- **Rama objetivo** por defecto `main`, configurable con `--target`
+- **Rama objetivo** con auto-detección inteligente (busca `main`, `master`, `develop`, `dev` en ese orden) o configurable con `--target`
 - **Formato de salida** personalizable según el caso de uso
+
+### Auto-detección de Rama Principal
+
+El comando utiliza un algoritmo inteligente para detectar la rama principal del repositorio:
+
+1. **Búsqueda local**: Verifica si existen ramas comunes (`main`, `master`, `develop`, `dev`) localmente
+2. **Búsqueda remota**: Si no encuentra localmente, busca en `origin` remoto
+3. **HEAD remoto**: Intenta obtener la rama por defecto desde `refs/remotes/origin/HEAD`
+4. **Fallback**: Usa `main` como último recurso
+
+Esto asegura compatibilidad con diferentes convenciones de naming:
+- Repositorios modernos que usan `main`
+- Repositorios legacy que usan `master`
+- Flujos de trabajo que usan `develop` como rama principal
+- Configuraciones personalizadas
 
 ## Consideraciones de Rendimiento
 

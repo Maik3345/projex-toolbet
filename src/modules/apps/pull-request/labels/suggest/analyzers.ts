@@ -1,4 +1,4 @@
-import { AnalysisContext, LabelSuggestion } from './types';
+import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
 
 /**
  * Determines the size of the change based on files and lines modified
@@ -38,107 +38,397 @@ export const determineSizeLabel = (context: AnalysisContext): LabelSuggestion | 
  * Determines the type of change based on commit messages
  */
 export const determineTypeLabels = (context: AnalysisContext): LabelSuggestion[] => {
-  const typePatterns = {
-    bug: {
-      patterns: [/\b(fix|bug|hotfix|patch)\b/i, /\b(resolve|close|fixes)\s+#?\d+/i],
-      color: '#d73a49',
-      description: 'Bug fix or error correction',
-    },
-    feature: {
-      patterns: [/\b(feat|feature|add|new)\b/i, /\b(implement|introduce)\b/i],
-      color: '#0075ca',
-      description: 'New feature or enhancement',
-    },
-    docs: {
-      patterns: [/\b(docs?|documentation|readme)\b/i, /\b(comment|javadoc)\b/i],
-      color: '#0366d6',
-      description: 'Documentation changes',
-    },
-    refactor: {
-      patterns: [/\b(refactor|restructure|reorganize)\b/i, /\b(cleanup|clean)\b/i],
-      color: '#28a745',
-      description: 'Code refactoring without functional changes',
-    },
-    test: {
-      patterns: [/\b(test|spec|coverage)\b/i, /\b(unit|integration|e2e)\b/i],
-      color: '#6f42c1',
-      description: 'Testing related changes',
-    },
-    chore: {
-      patterns: [/\b(chore|maintenance|update)\b/i, /\b(deps|dependencies|version)\b/i],
-      color: '#586069',
-      description: 'Maintenance and housekeeping',
-    },
-  };
-
-  const allMessages = context.commitMessages.join(' ').toLowerCase();
-  const suggestions: LabelSuggestion[] = [];
-
-  for (const [type, config] of Object.entries(typePatterns)) {
-    const matches = config.patterns.some(pattern => pattern.test(allMessages));
-    if (matches) {
-      const confidence = calculateTypeConfidence(type, allMessages, context);
-      suggestions.push({
-        name: `type:${type}`,
-        color: config.color,
-        description: config.description,
-        confidence,
-      });
-    }
+  // Priority-based type determination following conventional commits
+  const primaryType = determinePrimaryConventionalType(context);
+  
+  if (primaryType) {
+    return [primaryType];
   }
-
-  return suggestions;
+  
+  return [];
 };
 
 /**
- * Determines the scope based on modified files
+ * Determines the release type based on git release logic
  */
-export const determineScopeLabels = (context: AnalysisContext): LabelSuggestion[] => {
-  const scopePatterns = {
-    api: {
-      patterns: [/\bapi\b/i, /\bendpoint/i, /\bcontroller/i, /\broute/i, /\bservice/i],
-      color: '#f9d71c',
-      description: 'API related changes',
+export const determineReleaseLabels = (context: AnalysisContext): LabelSuggestion[] => {
+  const releaseType = determinePrimaryReleaseType(context);
+  
+  if (releaseType) {
+    return [releaseType];
+  }
+  
+  return [];
+};
+
+/**
+ * Determines the primary conventional commit type based on priority:
+ * Breaking changes (!) > feat > fix > perf > refactor > docs > test > build > ci > chore
+ */
+const determinePrimaryConventionalType = (context: AnalysisContext): LabelSuggestion | null => {
+  const allMessages = context.commitMessages.join(' ').toLowerCase();
+  const changedFiles = context.changedFiles.join(' ').toLowerCase();
+  const allContent = `${allMessages} ${changedFiles}`;
+
+  // Define conventional commit types with priority order (highest to lowest)
+  const typeDefinitions: TypeDefinition[] = [
+    // BREAKING CHANGES (Highest Priority) - Any type with !
+    {
+      type: 'breaking',
+      patterns: [
+        /\bbreaking\s+change/i,
+        /\bbreaking:/i,
+        /!:/,  // feat!: or fix!: pattern
+        /\bmajor\s+change/i,
+        /\bincompatible/i,
+      ],
+      color: '#d73a49',
+      description: 'Breaking change',
+      confidence: 95,
     },
-    ui: {
-      patterns: [/\bui\b/i, /\bcomponent/i, /\bview/i, /\bpage/i, /\btemplate/i, /\.(vue|jsx?|tsx?)$/i, /\.(css|scss|sass|less)$/i],
-      color: '#ff6b6b',
-      description: 'User interface changes',
+    
+    // FEAT (High Priority)
+    {
+      type: 'feat',
+      patterns: [
+        /\bfeat:/i,
+        /\bfeat\(/i,
+        /\b(feature|add|new)\b/i,
+        /\b(implement|introduce)\b/i,
+        /\b(enhance|improvement)\b/i,
+      ],
+      color: '#0075ca',
+      description: 'New feature',
+      confidence: 85,
     },
-    docs: {
-      patterns: [/\bdocs?\b/i, /\breadme/i, /\.md$/i, /\bchangelog/i],
-      color: '#0366d6',
-      description: 'Documentation changes',
+
+    // FIX (High Priority)
+    {
+      type: 'fix',
+      patterns: [
+        /\bfix:/i,
+        /\bfix\(/i,
+        /\b(fix|bug|hotfix|patch)\b/i,
+        /\b(resolve|close|fixes)\s+#?\d+/i,
+        /\b(correct|repair)\b/i,
+      ],
+      color: '#d73a49',
+      description: 'Bug fix',
+      confidence: 85,
     },
-    tests: {
-      patterns: [/\btest/i, /\bspec/i, /\.(test|spec)\./i, /__tests__/i],
-      color: '#6f42c1',
-      description: 'Test related changes',
-    },
-    ci: {
-      patterns: [/\.github/i, /\bci\b/i, /\bcd\b/i, /\bworkflow/i, /\baction/i, /\bjenkins/i, /\bdocker/i],
+    
+    // PERF (Medium Priority)
+    {
+      type: 'perf',
+      patterns: [
+        /\bperf:/i,
+        /\bperf\(/i,
+        /\b(performance|optimize|faster)\b/i,
+        /\b(speed|efficiency)\b/i,
+      ],
       color: '#28a745',
-      description: 'CI/CD related changes',
+      description: 'Performance improvement',
+      confidence: 80,
     },
-  };
 
-  const suggestions: LabelSuggestion[] = [];
-  const allPaths = context.changedFiles.join(' ').toLowerCase();
+    // REFACTOR (Medium Priority)
+    {
+      type: 'refactor',
+      patterns: [
+        /\brefactor:/i,
+        /\brefactor\(/i,
+        /\b(refactor|restructure|reorganize)\b/i,
+        /\b(cleanup|clean)\b/i,
+        /\brewrite/i,
+      ],
+      color: '#28a745',
+      description: 'Code refactoring',
+      confidence: 75,
+    },
 
-  for (const [scope, config] of Object.entries(scopePatterns)) {
-    const matches = config.patterns.some(pattern => pattern.test(allPaths));
-    if (matches) {
-      const confidence = calculateScopeConfidence(scope, context);
-      suggestions.push({
-        name: `scope:${scope}`,
-        color: config.color,
-        description: config.description,
-        confidence,
-      });
+    // DOCS (Medium Priority)
+    {
+      type: 'docs',
+      patterns: [
+        /\bdocs:/i,
+        /\bdocs\(/i,
+        /\b(docs?|documentation|readme)\b/i,
+        /\b(comment|javadoc)\b/i,
+        /\.md$/i,
+      ],
+      color: '#0366d6',
+      description: 'Documentation',
+      confidence: 75,
+    },
+
+    // TEST (Medium Priority)
+    {
+      type: 'test',
+      patterns: [
+        /\btest:/i,
+        /\btest\(/i,
+        /\b(test|spec|coverage)\b/i,
+        /\b(unit|integration|e2e)\b/i,
+        /\.test\.|\.spec\./i,
+      ],
+      color: '#6f42c1',
+      description: 'Testing',
+      confidence: 75,
+    },
+
+    // BUILD (Lower Priority)
+    {
+      type: 'build',
+      patterns: [
+        /\bbuild:/i,
+        /\bbuild\(/i,
+        /package\.json$/i,
+        /package-lock\.json$/i,
+        /yarn\.lock$/i,
+        /pnpm-lock\.yaml$/i,
+        /\b(webpack|rollup|vite|gulp|grunt|broccoli)\.config\./i,
+        /\b(deps|dependencies|devdependencies)\b/i,
+        /\b(npm|yarn|pnpm)\b/i,
+        /\bbuild/i,
+      ],
+      color: '#1f883d',
+      description: 'Build system',
+      confidence: 70,
+    },
+
+    // CI (Lower Priority)
+    {
+      type: 'ci',
+      patterns: [
+        /\bci:/i,
+        /\bci\(/i,
+        /\.github\/workflows/i,
+        /\.github\/actions/i,
+        /\.travis\.yml$/i,
+        /\.circleci/i,
+        /jenkins/i,
+        /\b(travis|circle|browserstack|saucelabs)\b/i,
+        /\b(workflow|action|pipeline)\b/i,
+        /\bci\b/i,
+        /\bcd\b/i,
+      ],
+      color: '#0969da',
+      description: 'CI/CD',
+      confidence: 70,
+    },
+
+    // CHORE (Lowest Priority)
+    {
+      type: 'chore',
+      patterns: [
+        /\bchore:/i,
+        /\bchore\(/i,
+        /\b(chore|maintenance|update)\b/i,
+        /\b(version)\b/i,
+      ],
+      color: '#586069',
+      description: 'Maintenance',
+      confidence: 65,
+    },
+  ];
+
+  // Find the first type that matches (highest priority)
+  for (const typeDef of typeDefinitions) {
+    const evidence = findCommitEvidence(typeDef.patterns, context);
+    if (evidence) {
+      // Calculate enhanced confidence based on multiple factors
+      const enhancedConfidence = calculateEnhancedConfidence(typeDef, allContent, context);
+      
+      return {
+        name: `type:${typeDef.type}`,
+        color: typeDef.color,
+        description: typeDef.description,
+        confidence: enhancedConfidence,
+        evidenceCommit: evidence,
+      };
     }
   }
 
-  return suggestions;
+  // Default fallback if no specific pattern matches
+  // Analyze file changes to make an educated guess
+  if (context.changedFiles.length > 0) {
+    const hasTestFiles = context.changedFiles.some(file => /\.(test|spec)\./i.test(file));
+    const hasDocFiles = context.changedFiles.some(file => /\.(md|txt|rst)$/i.test(file));
+    
+    if (hasTestFiles) {
+      return {
+        name: 'type:test',
+        color: '#6f42c1',
+        description: 'Testing',
+        confidence: 60,
+      };
+    }
+    
+    if (hasDocFiles) {
+      return {
+        name: 'type:docs',
+        color: '#0366d6',
+        description: 'Documentation',
+        confidence: 60,
+      };
+    }
+  }
+
+  // Ultimate fallback
+  return {
+    name: 'type:chore',
+    color: '#586069',
+    description: 'Maintenance',
+    confidence: 50,
+  };
+};
+
+/**
+ * Determines the primary release type based on git release logic:
+ * 1. Breaking changes = breaking (highest priority)
+ * 2. Features/enhancements = minor 
+ * 3. Bug fixes = patch (lowest priority)
+ */
+const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion | null => {
+  const allMessages = context.commitMessages.join(' ').toLowerCase();
+  const changedFiles = context.changedFiles.join(' ').toLowerCase();
+  const allContent = `${allMessages} ${changedFiles}`;
+
+  // Check for breaking changes first (highest priority)
+  const breakingPatterns = [
+    /\bbreaking\s+change/i,
+    /\bbreaking:/i,
+    /!:/,  // feat!: or fix!: pattern
+    /\bmajor\s+change/i,
+    /\bincompatible/i,
+  ];
+  
+  const breakingEvidence = findCommitEvidence(breakingPatterns, context);
+  if (breakingEvidence) {
+    return {
+      name: 'release:breaking',
+      color: '#d73a49',
+      description: 'Breaking change requiring major version bump',
+      confidence: 95,
+      evidenceCommit: breakingEvidence,
+    };
+  }
+
+  // Check for features/non-bugfix changes (minor)
+  const minorPatterns = [
+    /\bfeat:/i,
+    /\bfeat\(/i,
+    /\b(feature|add|new)\b/i,
+    /\b(implement|introduce)\b/i,
+    /\b(enhance|improvement)\b/i,
+    /\bperf:/i,
+    /\bperf\(/i,
+    /\b(performance|optimize)\b/i,
+    /\brefactor:/i,
+    /\brefactor\(/i,
+    /\b(refactor|restructure)\b/i,
+  ];
+
+  const minorEvidence = findCommitEvidence(minorPatterns, context);
+  if (minorEvidence) {
+    return {
+      name: 'release:minor',
+      color: '#0075ca',
+      description: 'Minor version bump for new features',
+      confidence: 85,
+      evidenceCommit: minorEvidence,
+    };
+  }
+
+  // Everything else is patch (bug fixes, docs, tests, chores)
+  const patchEvidence = context.commits.length > 0 ? {
+    commitId: context.commits[0].id,
+    message: context.commits[0].message,
+    matchedPattern: 'default patch classification',
+  } : undefined;
+
+  return {
+    name: 'release:patch',
+    color: '#28a745',
+    description: 'Patch version bump for bug fixes and minor changes',
+    confidence: 75,
+    evidenceCommit: patchEvidence,
+  };
+};
+
+interface TypeDefinition {
+  type: string;
+  patterns: RegExp[];
+  color: string;
+  description: string;
+  confidence: number;
+}
+
+/**
+ * Finds commit evidence for the given patterns
+ */
+const findCommitEvidence = (patterns: RegExp[], context: AnalysisContext): CommitEvidence | undefined => {
+  // First check commits for direct matches
+  for (const commit of context.commits) {
+    for (const pattern of patterns) {
+      if (pattern.test(commit.message) || pattern.test(commit.fullMessage)) {
+        return {
+          commitId: commit.id,
+          message: commit.message,
+          matchedPattern: pattern.source,
+        };
+      }
+    }
+  }
+
+  // If no direct commit match, check file names
+  const changedFiles = context.changedFiles.join(' ').toLowerCase();
+  for (const pattern of patterns) {
+    if (pattern.test(changedFiles)) {
+      // Return the first commit as representative
+      if (context.commits.length > 0) {
+        return {
+          commitId: context.commits[0].id,
+          message: context.commits[0].message,
+          matchedPattern: `file pattern: ${pattern.source}`,
+        };
+      }
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * Calculates enhanced confidence based on multiple factors
+ */
+const calculateEnhancedConfidence = (typeDef: TypeDefinition, content: string, context: AnalysisContext): number => {
+  let confidence = typeDef.confidence;
+
+  // Boost confidence if multiple patterns match
+  const matchingPatterns = typeDef.patterns.filter((pattern: RegExp) => pattern.test(content));
+  if (matchingPatterns.length > 1) {
+    confidence += Math.min(matchingPatterns.length * 5, 15);
+  }
+
+  // Boost confidence based on file types
+  if (typeDef.type === 'test' && context.changedFiles.some((f) => /\.(test|spec)\./i.test(f))) {
+    confidence += 10;
+  }
+
+  if (typeDef.type === 'docs' && context.changedFiles.some((f) => /\.(md|txt|rst)$/i.test(f))) {
+    confidence += 10;
+  }
+
+  // Boost confidence for conventional commit format
+  const hasConventionalFormat = typeDef.patterns.some(
+    (pattern: RegExp) => pattern.toString().includes(':') && pattern.test(content),
+  );
+  if (hasConventionalFormat) {
+    confidence += 10;
+  }
+
+  return Math.min(confidence, 100);
 };
 
 /**
@@ -156,7 +446,7 @@ export const hasBreakingChanges = (context: AnalysisContext): boolean => {
   ];
 
   const allMessages = context.commitMessages.join(' ');
-  return breakingPatterns.some(pattern => pattern.test(allMessages));
+  return breakingPatterns.some((pattern) => pattern.test(allMessages));
 };
 
 /**
@@ -179,22 +469,19 @@ export const hasDependencyUpdates = (context: AnalysisContext): boolean => {
     'go.sum',
   ];
 
-  return context.changedFiles.some(file => 
-    depFiles.some(depFile => file.includes(depFile))
-  );
+  return context.changedFiles.some((file) => depFiles.some((depFile) => file.includes(depFile)));
 };
 
 /**
  * Checks if documentation is needed
  */
 export const needsDocumentation = (context: AnalysisContext): boolean => {
-  const hasCodeChanges = context.changedFiles.some(file => 
-    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file)
+  const hasCodeChanges = context.changedFiles.some((file) =>
+    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file),
   );
 
-  const hasDocChanges = context.changedFiles.some(file => 
-    /\.(md|txt|doc|docx|rst)$/i.test(file) || 
-    file.toLowerCase().includes('doc')
+  const hasDocChanges = context.changedFiles.some(
+    (file) => /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc'),
   );
 
   return hasCodeChanges && !hasDocChanges;
@@ -204,16 +491,13 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
  * Checks if tests are needed
  */
 export const needsTests = (context: AnalysisContext): boolean => {
-  const hasCodeChanges = context.changedFiles.some(file => 
-    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file) &&
-    !file.includes('test') && 
-    !file.includes('spec')
+  const hasCodeChanges = context.changedFiles.some(
+    (file) =>
+      /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file) && !file.includes('test') && !file.includes('spec'),
   );
 
-  const hasTestChanges = context.changedFiles.some(file => 
-    /\.(test|spec)\./i.test(file) || 
-    file.includes('__tests__') ||
-    file.includes('/test/')
+  const hasTestChanges = context.changedFiles.some(
+    (file) => /\.(test|spec)\./i.test(file) || file.includes('__tests__') || file.includes('/test/'),
   );
 
   return hasCodeChanges && !hasTestChanges;
@@ -223,48 +507,12 @@ export const needsTests = (context: AnalysisContext): boolean => {
  * Checks if README needs update
  */
 export const needsReadmeUpdate = (context: AnalysisContext): boolean => {
-  const hasNewDocumentation = context.changedFiles.some(file => 
-    /\.md$/i.test(file) && 
-    !file.toLowerCase().includes('readme') &&
-    context.addedLines > context.deletedLines // More additions than deletions (new content)
+  const hasNewDocumentation = context.changedFiles.some(
+    (file) =>
+      /\.md$/i.test(file) && !file.toLowerCase().includes('readme') && context.addedLines > context.deletedLines, // More additions than deletions (new content)
   );
 
-  const hasReadmeUpdate = context.changedFiles.some(file => 
-    file.toLowerCase().includes('readme')
-  );
+  const hasReadmeUpdate = context.changedFiles.some((file) => file.toLowerCase().includes('readme'));
 
   return hasNewDocumentation && !hasReadmeUpdate;
 };
-
-// Helper functions
-function calculateTypeConfidence(type: string, messages: string, context: AnalysisContext): number {
-  let confidence = 60;
-  
-  // Increase confidence based on file patterns
-  if (type === 'docs' && context.changedFiles.some(f => /\.md$/i.test(f))) confidence += 20;
-  if (type === 'test' && context.changedFiles.some(f => /\.(test|spec)\./i.test(f))) confidence += 20;
-  if (type === 'feature' && context.addedLines > context.deletedLines * 2) confidence += 15;
-  if (type === 'bug' && context.deletedLines > context.addedLines) confidence += 10;
-  
-  return Math.min(confidence, 95);
-}
-
-function calculateScopeConfidence(scope: string, context: AnalysisContext): number {
-  let confidence = 70;
-  
-  const relevantFiles = context.changedFiles.filter(file => {
-    switch (scope) {
-      case 'ui': return /\.(vue|jsx?|tsx?|css|scss|sass|less)$/i.test(file);
-      case 'api': return /\bapi\b/i.test(file) || /\b(controller|service|route)\b/i.test(file);
-      case 'docs': return /\.md$/i.test(file);
-      case 'tests': return /\.(test|spec)\./i.test(file);
-      case 'ci': return /\.github/i.test(file) || /\b(docker|jenkins)\b/i.test(file);
-      default: return false;
-    }
-  });
-  
-  const percentage = relevantFiles.length / context.changedFiles.length;
-  confidence += Math.round(percentage * 25);
-  
-  return Math.min(confidence, 95);
-}

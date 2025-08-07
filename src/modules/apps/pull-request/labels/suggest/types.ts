@@ -3,12 +3,19 @@ export interface LabelSuggestion {
   color: string;
   description: string;
   confidence: number; // 0-100
+  evidenceCommit?: CommitEvidence;
+}
+
+export interface CommitEvidence {
+  commitId: string;
+  message: string;
+  matchedPattern: string;
 }
 
 export interface SuggestedLabels {
   size: LabelSuggestion | null;
   type: LabelSuggestion[];
-  scope: LabelSuggestion[];
+  release: LabelSuggestion[];
   breakingChange: boolean;
   dependencies: boolean;
   documentationNeeded: boolean;
@@ -21,13 +28,21 @@ export interface AnalysisContext {
   addedLines: number;
   deletedLines: number;
   commitMessages: string[];
+  commits: CommitInfo[];
   branch: string;
   target: string;
 }
 
+export interface CommitInfo {
+  id: string;
+  message: string;
+  fullMessage: string;
+}
+
 export interface SuggestLabelsOptions {
   branch?: string;
-  target: string;
+  target?: string;
   format: 'json' | 'table' | 'list' | 'txt' | 'csv';
   verbose: boolean;
+  noFetch?: boolean;
 }

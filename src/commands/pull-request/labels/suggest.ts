@@ -10,10 +10,10 @@ export default class Suggest extends Command {
   static examples = [
     `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)}`,
     `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --branch feature/new-component`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --target main --verbose`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format txt`,
+    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --target master --verbose`,
+    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --target main --format txt`,
     `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format table --verbose`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format csv`,
+    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format csv --no-fetch`,
   ];
 
   static flags = {
@@ -24,10 +24,9 @@ export default class Suggest extends Command {
       required: false,
     }),
     target: Flags.string({
-      description: 'The target branch to compare against. Defaults to main.',
+      description: 'The target branch to compare against. If not specified, attempts to detect the default branch (main, master, develop, etc.).',
       char: 't',
       required: false,
-      default: 'main',
     }),
     format: Flags.string({
       description: 'Output format for the suggested labels.',
@@ -36,11 +35,16 @@ export default class Suggest extends Command {
       default: 'json',
       options: ['json', 'table', 'list', 'txt', 'csv'],
     }),
+    'no-fetch': Flags.boolean({
+      description: 'Skip automatic fetching of target branch from remote if not available locally.',
+      required: false,
+      default: false,
+    }),
   };
 
   async run() {
     const {
-      flags: { branch, target, format, verbose },
+      flags: { branch, target, format, verbose, 'no-fetch': noFetch },
     } = await this.parse(Suggest);
 
     await suggestLabels({
@@ -48,6 +52,7 @@ export default class Suggest extends Command {
       target,
       format: format as 'json' | 'table' | 'list' | 'txt' | 'csv',
       verbose,
+      noFetch,
     });
   }
 }
