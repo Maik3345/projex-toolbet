@@ -28,3 +28,6 @@ oclif.lock
 
 # Lock files
 yarn.lock
+
+# Coverage
+/coverage

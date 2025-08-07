@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest"],
+    "types": ["node"],
     "declaration": true,
     "module": "commonjs",
     "outDir": "dist",
@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "target": "es2022",
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "baseUrl": ".", // Esto permite que los módulos se resuelvan relativamente a la raíz del proyecto
     "paths": {
       "@shared": ["./src/shared/index"],
@@ -17,5 +18,6 @@
       "@commands": ["./src/commands/index"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["vitest.config.ts", "**/*.test.ts", "**/*.spec.ts"]
 }

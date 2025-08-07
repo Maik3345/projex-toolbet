@@ -48,9 +48,43 @@
 
 ## 🎯 Palabras Clave que Activan los Flujos de Trabajo
 
-Cuando el usuario escriba cualquiera de estas frases:
+Cuando el usuario escriba cualquiera de estas frases, Copilot debe activar automáticamente las instrucciones correspondientes:
 
-- "pr" usar instrucciones del archivo [pull-request-autofill.instructions.md](./pull-request-autofill.instructions.md)
-- "doc" usar instrucciones del archivo [documentation.instructions.md](./documentation.instructions.md)
-- "check doc" usar instrucciones del archivo [documentation-check.instructions.md](./documentation-check.instructions.md) y validar que se cumplan las reglas de documentación
-- "test-coverage" usar instrucciones del archivo [test-coverage.instructions.md](./test-coverage.instructions.md)
+### 📋 Pull Request y Control de Versiones
+- **"pr"** | **"pull request"** | **"crear pr"**  
+  → Usar instrucciones: [pull-request-autofill.instructions.md](./pull-request/pull-request-autofill.instructions.md)  
+  *Automatiza la generación del contenido de Pull Request basándose en el template y el historial de cambios de la rama actual, incluyendo título con Conventional Commits*
+
+- **"commit"** | **"conventional commit"** | **"formato commit"**  
+  → Usar instrucciones: [conventional-commit.instructions.md](./pull-request/conventional-commit.instructions.md)  
+  *Aplica las reglas de Conventional Commits 1.0.0 para estructurar mensajes de commit consistentes*
+
+### 📚 Documentación General
+- **"doc"** | **"documentación"** | **"generar docs"**  
+  → Usar instrucciones: [documentation.instructions.md](./documentation/documentation.instructions.md)  
+  *Genera documentación detallada en la carpeta docs con diagramas Mermaid, actualiza README.md y crea enlaces de navegación*
+
+### 🏪 Documentación VTEX IO
+- **"doc vtex"** | **"doc vtex io"** | **"vtex documentation"**  
+  → Usar instrucciones: [documentation-vtex-io.instructions.md](./documentation/documentation-vtex-io.instructions.md)  
+  *Especializada en documentación para proyectos VTEX IO, incluyendo componentes, props, configuración, APIs y rutas admin*
+
+### 🧪 QA y Testing
+- **"qa"** | **"qa-hu"** | **"resumen qa"** | **"testing guide"**  
+  → Usar instrucciones: [qa-hu-guide.instructions.md](./backlog/qa-hu-guide.instructions.md)  
+  *Genera resumen estructurado para QA con casos de prueba, puntos críticos y regresiones a verificar*
+
+- **"coverage"** | **"test-coverage"** | **"cobertura"** | **"sonar quality gate"**  
+  → Usar instrucciones: [test-coverage.instructions.md](./unit-testing/test-coverage.instructions.md)  
+  *Mejora sistemáticamente la cobertura de tests hasta alcanzar el 87% requerido por SonarQube Quality Gate B-2*
+
+### 🔍 Palabras Clave Adicionales Sugeridas
+
+Para futuras mejoras del sistema, considera agregar estos flujos:
+
+- **"review"** | **"code review"** → Para instrucciones de revisión de código
+- **"deploy"** | **"deployment"** → Para instrucciones de despliegue
+- **"refactor"** | **"clean code"** → Para instrucciones de refactorización
+- **"api"** | **"swagger"** | **"openapi"** → Para documentación de APIs
+- **"security"** | **"sec check"** → Para validaciones de seguridad
+- **"performance"** | **"perf"** → Para optimizaciones de rendimiento

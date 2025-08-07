@@ -1,17 +1,21 @@
 import { getDefaultBranch, ensureBranchAvailable } from './utils';
-import { runCommand } from '@shared';
+import { runCommand } from '../../../../../shared';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock the runCommand function
-jest.mock('@shared', () => ({
-  ...jest.requireActual('@shared'),
-  runCommand: jest.fn(),
-}));
+vi.mock('../../../../../shared', async () => {
+  const actual = await vi.importActual('../../../../../shared');
+  return {
+    ...actual,
+    runCommand: vi.fn(),
+  };
+});
 
-const mockedRunCommand = runCommand as jest.MockedFunction<typeof runCommand>;
+const mockedRunCommand = runCommand as any;
 
 describe('getDefaultBranch', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return main when main branch exists locally', () => {
@@ -92,7 +96,7 @@ describe('getDefaultBranch', () => {
 
 describe('ensureBranchAvailable', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should do nothing when branch exists locally', () => {

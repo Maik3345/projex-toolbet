@@ -110,30 +110,30 @@ Al finalizar la documentación, **valida el archivo `README.md` principal del pr
 
 ## Convención de colores y estilos para diagramas Mermaid
 
-Para mantener la coherencia visual y semántica en los diagramas Mermaid, utiliza las siguientes clases y colores modernos y accesibles:
+Para mantener la coherencia visual y semántica en los diagramas Mermaid, utiliza las siguientes clases y colores:
 
-- **statementClass**: Azul océano (`#2563eb`), texto blanco. Para procesos, acciones o pasos principales.
-- **conditionalClass**: Naranja vibrante (`#ea580c`), texto blanco. Para nodos de decisión o condicionales.
-- **inicioClass**: Verde esmeralda (`#059669`), texto blanco. Para nodos de inicio.
-- **finClass**: Gris carbón (`#374151`), texto blanco. Para nodos de fin o estados terminales.
-- **rejectClass**: Rojo carmesí (`#dc2626`), texto blanco. Para rechazos, errores o validaciones fallidas.
-- **dbClass**: Índigo profundo (`#4338ca`), texto blanco. Para bases de datos o almacenamiento persistente.
-- **amazonClass**: Púrpura real (`#7c3aed`), texto blanco. Para servicios externos, buses de eventos o integraciones.
-- **backendClass**: Teal oscuro (`#0f766e`), texto blanco. Para procesos internos de backend.
+- **statementClass**: Morado (`#7f56d9`), texto blanco. Para procesos, acciones o pasos principales.
+- **conditionalClass**: Fucsia (`#da0063`), texto blanco. Para nodos de decisión o condicionales.
+- **inicioClass**: Verde agua (`#00c2a8`), texto blanco. Para nodos de inicio.
+- **finClass**: Negro, texto blanco. Para nodos de fin o estados terminales.
+- **rejectClass**: Naranja (`#e36236`), texto blanco. Para rechazos, errores o validaciones fallidas.
+- **dbClass**: Azul (`#3578ff`), texto blanco. Para bases de datos o almacenamiento persistente.
+- **amazonClass**: Fucsia (`#da0063`), texto blanco. Para servicios externos, buses de eventos o integraciones.
+- **backendClass**: Morado (`#7f56d9`), texto blanco. Para procesos internos de backend.
 
 Ejemplo de inicialización y uso en Mermaid (solo para diagramas compatibles):
 
 ```mermaid
 %%{init: { "flowchart": { "defaultRenderer": "elk" } } }%%
 flowchart TB
-    classDef statementClass fill:#2563eb,color:white,stroke:#1d4ed8,stroke-width:2px
-    classDef conditionalClass fill:#ea580c,color:white,stroke:#c2410c,stroke-width:2px
-    classDef inicioClass fill:#059669,color:white,stroke:#047857,stroke-width:2px
-    classDef finClass fill:#374151,color:white,stroke:#1f2937,stroke-width:2px
-    classDef rejectClass fill:#dc2626,color:white,stroke:#b91c1c,stroke-width:2px
-    classDef dbClass fill:#4338ca,color:white,stroke:#3730a3,stroke-width:2px
-    classDef amazonClass fill:#7c3aed,color:white,stroke:#6d28d9,stroke-width:2px
-    classDef backendClass fill:#0f766e,color:white,stroke:#115e59,stroke-width:2px
+    classDef statementClass fill:#7f56d9,color:white,stroke:#5d3ba2,stroke-width:2px
+    classDef conditionalClass fill:#da0063,color:white,stroke:#b0004e,stroke-width:2px
+    classDef inicioClass fill:#00c2a8,color:white,stroke-width:2px,stroke:lightGreen
+    classDef finClass fill:black,color:white,stroke-width:2px
+    classDef rejectClass fill:#e36236,color:white,stroke:#b00000,stroke-width:2px
+    classDef dbClass fill:#3578ff,stroke:blue,stroke-width:2px
+    classDef amazonClass fill:#da0063,stroke:pink,color:white,stroke-width:2px
+    classDef backendClass fill:#7f56d9,color:white,stroke:#5d3ba2,stroke-width:2px
 
     inicio(("Inicio")):::inicioClass
     fin_ok(("Fin OK")):::finClass

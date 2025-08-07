@@ -1,13 +1,14 @@
 import { executeCommand } from './utils';
 import { vtexRunCommand } from './index';
-import { log } from '@shared';
+import { log } from '../../../../shared';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-jest.mock('@shared');
-jest.mock('./utils');
+vi.mock('../../../../shared');
+vi.mock('./utils');
 
 describe('executeComponentProcess', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should throw an error if no command is provided', () => {

@@ -1,5 +1,6 @@
 import { suggestLabels } from '../index';
 import { SuggestLabelsOptions } from './types';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('suggestLabels', () => {
   const mockOptions: SuggestLabelsOptions = {
@@ -18,12 +19,12 @@ describe('suggestLabels', () => {
 
   beforeEach(() => {
     // Mock console.log to avoid output during tests
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
