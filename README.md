@@ -52,6 +52,18 @@ Start `npm run dev`
 
 local `sudo npm link` ò `node npm link`
 
+## 📚 Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/) folder:
+
+- **[Architecture Overview](docs/architecture.md)** - System architecture and design patterns
+- **[Pull Request Labels](docs/pull-request-labels.md)** - Automated label suggestion for PRs
+- **[Git Release Management](docs/git-release-management.md)** - Automated versioning and changelog
+- **[VTEX Workflows](docs/vtex-workflows.md)** - VTEX platform automation
+- **[Bash Automation](docs/bash-automation.md)** - Multi-directory command execution
+- **[Git Setup & Conventional Commits](docs/git-setup-conventional.md)** - Repository setup and commit standards
+- **[Core APIs & Utilities](docs/core-apis-utilities.md)** - Internal APIs and shared utilities
+
 ## Post in npm
 
 Publish to npm `npm run postrelease`
