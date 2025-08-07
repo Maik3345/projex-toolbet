@@ -72,21 +72,6 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
 
   // Define conventional commit types with priority order (highest to lowest)
   const typeDefinitions: TypeDefinition[] = [
-    // BREAKING CHANGES (Highest Priority) - Any type with !
-    {
-      type: 'breaking',
-      patterns: [
-        /\bbreaking\s+change/i,
-        /\bbreaking:/i,
-        /!:/,  // feat!: or fix!: pattern
-        /\bmajor\s+change/i,
-        /\bincompatible/i,
-      ],
-      color: '#d73a49',
-      description: 'Breaking change',
-      confidence: 95,
-    },
-    
     // FEAT (High Priority)
     {
       type: 'feat',
@@ -236,14 +221,34 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
   for (const typeDef of typeDefinitions) {
     const evidence = findCommitEvidence(typeDef.patterns, context);
     if (evidence) {
+      // Check if this is a breaking change for this type
+      const breakingPatterns = [
+        /!:/,  // feat!: or fix!: pattern
+        /\bbreaking\s+change/i,
+        /\bbreaking:/i,
+        /\bmajor\s+change/i,
+        /\bincompatible/i,
+      ];
+      
+      const isBreaking = breakingPatterns.some(pattern => 
+        pattern.test(evidence.message) ||
+        context.commits.some(commit => 
+          pattern.test(commit.message) || pattern.test(commit.fullMessage)
+        )
+      );
+      
       // Calculate enhanced confidence based on multiple factors
       const enhancedConfidence = calculateEnhancedConfidence(typeDef, allContent, context);
       
+      const typeLabel = isBreaking ? `${typeDef.type}!` : typeDef.type;
+      const description = isBreaking ? `${typeDef.description} (breaking change)` : typeDef.description;
+      const color = isBreaking ? '#d73a49' : typeDef.color; // Red for breaking changes
+      
       return {
-        name: `type:${typeDef.type}`,
-        color: typeDef.color,
-        description: typeDef.description,
-        confidence: enhancedConfidence,
+        name: `type:${typeLabel}`,
+        color,
+        description,
+        confidence: isBreaking ? Math.min(enhancedConfidence + 10, 100) : enhancedConfidence,
         evidenceCommit: evidence,
       };
     }
@@ -306,7 +311,7 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   const breakingEvidence = findCommitEvidence(breakingPatterns, context);
   if (breakingEvidence) {
     return {
-      name: 'release:breaking',
+      name: 'release:breaking-change',
       color: '#d73a49',
       description: 'Breaking change requiring major version bump',
       confidence: 95,
