@@ -44,3 +44,13 @@
 
 ---
 **Feedback:** If any section is unclear or missing, please specify which workflows, conventions, or architectural details need further documentation.
+
+
+## 🎯 Palabras Clave que Activan los Flujos de Trabajo
+
+Cuando el usuario escriba cualquiera de estas frases:
+
+- "pr" usar instrucciones del archivo [pull-request-autofill.instructions.md](./pull-request-autofill.instructions.md)
+- "doc" usar instrucciones del archivo [documentation.instructions.md](./documentation.instructions.md)
+- "check doc" usar instrucciones del archivo [documentation-check.instructions.md](./documentation-check.instructions.md) y validar que se cumplan las reglas de documentación
+- "test-coverage" usar instrucciones del archivo [test-coverage.instructions.md](./test-coverage.instructions.md)
