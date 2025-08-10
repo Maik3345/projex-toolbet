@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.2.0](https://github.com/Maik3345/projex-toolbet/compare/v2.0.0...v2.2.0) - (2025-08-10)
+
+### Features
+
+* add build validation workflow for pull requests ([a98efdce](https://github.com/Maik3345/projex-toolbet/commit/a98efdce5b29dc94bb6f62766768a1cd705c8aac))
+* add github actions workflow for publishing to npm ([3e38d4d0](https://github.com/Maik3345/projex-toolbet/commit/3e38d4d00d930b42a234073667de9508c5de6e82))
+
+### Miscellaneous Chores
+
+* update version to 2.1.0 and reorganize git reset step in publish workflow ([f772ed64](https://github.com/Maik3345/projex-toolbet/commit/f772ed643707c96bad24f81424901cf40f276239))
+* remove outdated pull request template and pre-commit hook ([53c91589](https://github.com/Maik3345/projex-toolbet/commit/53c9158962e7981634d9c2c00efcece5285cd2f4))
+
+
 ## [2.0.0](https://github.com/Maik3345/projex-toolbet/compare/v1.43.1...v2.0.0) - (2025-08-10)
 
 ### Features
