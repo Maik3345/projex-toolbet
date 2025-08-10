@@ -21,7 +21,7 @@ const getLevelIcon = (level: string) => {
   return icon ? chalk.hex(color)(icon) : '';
 };
 
-// The debug file is likely to be on ~/.config/configstore/pco_debug.txt
+// The debug file is likely to be on ~/.config/configstore/debug.json
 export const DEBUG_LOG_FILE_PATH = join(LOGS_FOLDER, 'debug.json');
 
 const addArgs = format((info: any) => {

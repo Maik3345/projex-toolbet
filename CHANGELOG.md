@@ -362,7 +362,7 @@ main: fix: 🐛 Update ChangelogUtils to use h3 headers for release type
 
 ## Added
 
-- Create the command `projex git clone 'https://DevOpsPCO@dev.azure.com/DevOpsPCO/Marketplace/_git/' '${repoList}'` and `projex git setup hook '/Users/myuser/code/prepare-commit-msg'`
+- Create the command `projex git clone 'https://Project@dev.azure.com/Project/MyProject/_git/' '${repoList}'` and `projex git setup hook '/Users/myuser/code/prepare-commit-msg'`
 
 ## [1.3.4] - 2023-05-19
 

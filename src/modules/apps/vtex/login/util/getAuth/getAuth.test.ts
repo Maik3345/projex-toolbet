@@ -1,18 +1,19 @@
 import axios, { AxiosResponse } from 'axios';
 import { serviceGetAuth } from '.';
-import { log } from '@shared';
+import { log } from '../../../../../../shared';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-jest.mock('@shared');
-jest.mock('axios');
+vi.mock('../../../../../../shared');
+vi.mock('axios');
 
 describe('serviceGetAuth', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should send POST request and return status ok', async () => {
     // Mock axios
-    const axiosMock = axios as jest.MockedFunction<typeof axios>;
+    const axiosMock = axios as any;
     const mockResponse = {
       data: {},
       status: 200,
@@ -50,9 +51,9 @@ describe('serviceGetAuth', () => {
   });
 
   // Omitimos temporalmente esta prueba que está fallando
-  it.skip('should log error when there is an error in sending the POST request', async () => {
+  it('should log error when there is an error in sending the POST request', async () => {
     // Mock axios to reject with a string
-    const axiosMock = axios as jest.MockedFunction<typeof axios>;
+    const axiosMock = axios as any;
     axiosMock.mockRejectedValueOnce('Network error');
 
     // Call the function

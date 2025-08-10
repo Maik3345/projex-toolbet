@@ -19,7 +19,7 @@ export class DirectoryUtils {
   parameters: `folderList`, which is an array of `IFile` objects representing the list of folders to
   choose from, `message`, which is a string representing the message to display to the user, and
   `action`, which is a string representing the action being performed. */
-  public chooseFolders = async (folderList: IFile[], message: string, action: string): Promise<Folders> => {
+  public chooseFolders = async (folderList: IFile[], message: string): Promise<Folders> => {
     const questions = [
       {
         type: 'multiselect',
@@ -74,13 +74,12 @@ export class DirectoryUtils {
 
   /* The `promptSelectElements` method is a public method of the `DirectoryUtils` class. It takes in an
   array of `IFile` objects (`files`), a message string (default value is "Select the files to
-  upload"), and an action string (default value is "Select the project"). */
+  upload"). */
   public promptSelectElements = async (
     files: IFile[],
     message: string = 'Select the files to upload',
-    action: string = 'Select the project',
   ) => {
-    let selection = await this.chooseFolders(files, message, action);
+    let selection = await this.chooseFolders(files, message);
     const selectedFolders = selection.choices;
     const numSelectedFolders = selectedFolders.length;
     log.info(`number of selected folders: ${chalk.bold.whiteBright(numSelectedFolders)}`);

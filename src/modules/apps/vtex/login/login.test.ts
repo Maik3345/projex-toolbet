@@ -1,13 +1,14 @@
 import { login } from '../index';
 import { serviceGetAuth, saveVtexConfig } from './util';
-import { log } from '@shared';
+import { log } from '../../../../shared';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-jest.mock('@shared');
-jest.mock('./util');
+vi.mock('../../../../shared');
+vi.mock('./util');
 
 describe('login', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should save the credentials to the config file', async () => {
@@ -17,7 +18,7 @@ describe('login', () => {
     const apiKey = 'my-api-key';
     const apiToken = 'my-api-token';
     const authToken = 'my-auth-token';
-    const serviceGetAuthMock = serviceGetAuth as jest.MockedFunction<typeof serviceGetAuth>;
+    const serviceGetAuthMock = serviceGetAuth as any;
     serviceGetAuthMock.mockResolvedValueOnce({
       data: { token: authToken },
       status: 200,
@@ -48,7 +49,7 @@ describe('login', () => {
     const workspace = 'my-workspace';
     const apiKey = 'my-api-key';
     const apiToken = 'my-api-token';
-    const serviceGetAuthMock = serviceGetAuth as jest.MockedFunction<typeof serviceGetAuth>;
+    const serviceGetAuthMock = serviceGetAuth as any;
     serviceGetAuthMock.mockResolvedValueOnce(undefined as any);
 
     await expect(login(account, email, workspace, apiKey, apiToken, false))

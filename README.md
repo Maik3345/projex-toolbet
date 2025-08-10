@@ -31,15 +31,16 @@ $ projex
     A command line to manage the workflow
 
     VERSION
-      projex/1.26.0 darwin-x64 node-v18.20.1
+      projex/1.43.1 darwin-arm64 node-v20.19.0
 
     USAGE
       $ projex [COMMAND]
 
     TOPICS
-      bash  Utilities for manage the bash process and workflow
-      git   Utilities for manage the git repository
-      vtex  Utilities for manage the vtex process and workflow
+      bash          Utilities for manage the bash process and workflow
+      git           Utilities for manage the git repository
+      pull-request  Utilities for managing pull request labels and workflows
+      vtex          Utilities for manage the vtex process and workflow
 
     COMMANDS
       help     display help for projex
@@ -50,6 +51,19 @@ $ projex
 Start `npm run dev`
 
 local `sudo npm link` ò `node npm link`
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/) folder:
+
+- **[Architecture Overview](docs/architecture.md)** - System architecture and design patterns
+- **[Pull Request Labels](docs/pull-request-labels.md)** - Automated label suggestion for PRs
+- **[Azure DevOps Usage](docs/azure-devops-usage.md)** - CI/CD integration and troubleshooting
+- **[Git Release Management](docs/git-release-management.md)** - Automated versioning and changelog
+- **[VTEX Workflows](docs/vtex-workflows.md)** - VTEX platform automation
+- **[Bash Automation](docs/bash-automation.md)** - Multi-directory command execution
+- **[Git Setup & Conventional Commits](docs/git-setup-conventional.md)** - Repository setup and commit standards
+- **[Core APIs & Utilities](docs/core-apis-utilities.md)** - Internal APIs and shared utilities
 
 ## Post in npm
 
@@ -71,6 +85,7 @@ You can see the list of commands with the command `projex --help` and you can se
 | `projex git update changelog`      | Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)                                                               |
 | `projex git clone`                 | Clone the specified repositories (Only for git users)                                                                                                                                    |
 | `projex git release`               | Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).                                                                                        |
+| `projex pull-request labels suggest` | Suggests labels for pull requests based on git changes, commit messages, and modified files                                                                                           |
 | `projex bash run`                  | Run a command in the current directory or select multiple directories                                                                                                                    |
 | `projex vtex login`                | Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI. |
 | `projex vtex cms backup`           | Download the files from the checkout files of a VTEX site                                                                                                                                |
@@ -209,3 +224,80 @@ this command will create the following files:
   - CHANGELOG.md - File with the changelog of the project
   - .gitignore - File with the gitignore rules
 ```
+
+## Suggest Labels for Pull Requests
+
+The command `projex pull-request labels suggest` automatically analyzes git changes and suggests appropriate labels for pull requests.
+
+### Usage
+
+```bash
+projex pull-request labels suggest
+projex pull-request labels suggest --branch feature/my-feature
+projex pull-request labels suggest --target master --format table
+projex pull-request labels suggest --format csv
+```
+
+### Options
+
+- `--branch, -b`: Branch to analyze (defaults to current branch)
+- `--target, -t`: Target branch to compare against (auto-detects main branch: `main`, `master`, `develop`, `dev`)
+- `--format, -f`: Output format: json, table, list, txt, csv (defaults to json)
+- `--verbose, -v`: Show detailed analysis information
+
+### Suggested Label Types
+
+**Size Labels:**
+- `size:small`: Small changes (< 50 lines, ≤ 3 files)
+- `size:medium`: Medium changes (< 200 lines, ≤ 10 files)  
+- `size:large`: Large changes (≥ 200 lines or > 10 files)
+
+**Type Labels:**
+- `type:bug`: Bug fixes and error corrections
+- `type:feature`: New features and enhancements
+- `type:docs`: Documentation changes
+- `type:refactor`: Code refactoring
+- `type:test`: Test-related changes
+- `type:chore`: Maintenance and housekeeping
+
+**Scope Labels:**
+- `scope:api`: API-related changes
+- `scope:ui`: User interface changes
+- `scope:docs`: Documentation changes
+- `scope:tests`: Test-related changes
+- `scope:ci`: CI/CD related changes
+
+**Additional Flags:**
+- `breaking-change`: Breaking compatibility changes
+- `dependencies-updated`: Dependency updates
+- `documentation-needed`: Code changes without docs
+- `tests-needed`: Code changes without tests
+- `readme-need-update`: New docs without README reference
+
+### Example Output
+
+**CSV Format (ideal for automation):**
+```
+size:large,scope:ui,scope:api,type:feature,dependencies-updated
+```
+
+**JSON Format (for detailed analysis):**
+```json
+{
+  "labels": [
+    {"name": "size:medium", "confidence": 75, "description": "Medium change: 150 lines, 5 files"},
+    {"name": "type:feature", "confidence": 85, "description": "New feature or enhancement"}
+  ],
+  "flags": {
+    "breakingChange": false,
+    "dependencies": true,
+    "documentationNeeded": false
+  }
+}
+```
+
+This command is perfect for:
+- Automating PR label creation in CI/CD pipelines
+- Standardizing label usage across teams
+- Ensuring consistent PR categorization
+- Integration with GitHub Actions or other automation tools

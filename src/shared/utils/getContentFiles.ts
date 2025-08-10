@@ -41,7 +41,7 @@ export const getInformation = async (dir: string) => {
     } else {
       log.debug(`manifest.json not found in directory: ${dir}`);
     }
-  } catch (error) {
+  } catch {
     log.debug(`Error reading the manifest file in directory: ${dir}. Please check the file content.`);
   }
 };
