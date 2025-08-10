@@ -33,8 +33,8 @@ jobs:
       - name: "🛠️ Build project"
         run: npm run build
 
-      - name: "🔗 Link local projex bin"
-        run: npm link
+      - name: "📦 Install projex"
+        run: npm install projex
 
       - name: "👤 Set git user from last commit"
         run: |
