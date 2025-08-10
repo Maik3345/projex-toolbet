@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0](https://github.com/Maik3345/projex-toolbet/compare/v1.43.1...v2.0.0) - (2025-08-10)
+
+### Features
+
+* migrate to vitest and enhance pull request label suggestion with commit evidence ([#22](https://github.com/Maik3345/projex-toolbet/pull/22)) ([dcbeb12f](https://github.com/Maik3345/projex-toolbet/commit/dcbeb12f45889275c4c5de3fef9fe5ae48582576))
+
+### Bug Fixes
+
+* update repository url format and restructure bin entry in package.json ([f9f5f029](https://github.com/Maik3345/projex-toolbet/commit/f9f5f029a7272c9128b92c1e5ae17c98a944f524))
+
+### ⚠ BREAKING CHANGES
+
+* migrate to vitest and enhance pull request label suggestion with commit evidence ([#22](https://github.com/Maik3345/projex-toolbet/pull/22))
+
+
 ## [1.43.1](https://github.com/Maik3345/projex-toolbet/compare/v1.43.0...v1.43.1) - (2025-06-12)
 
 ### Bug Fixes
