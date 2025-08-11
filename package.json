@@ -41,8 +41,6 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "build": "shx rm -rf dist && tsc -b && tsc-alias",
     "build-dev": "tsc -b --incremental && tsc-alias",
-    "prepublish": "npm run build",
-    "postrelease": "npm run prepublish && npm publish",
     "prepare": "npx husky",
     "test": "vitest",
     "test:run": "vitest run",
