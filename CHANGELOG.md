@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.3.0](https://github.com/Maik3345/projex-toolbet/compare/v2.2.1...v2.3.0) - (2025-08-11)
+
+### Miscellaneous Chores
+
+* remove prepublish and postrelease scripts from package.json ([27a7332a](https://github.com/Maik3345/projex-toolbet/commit/27a7332a79eed358fa74e62b4dbac79cf7c7ab4f))
+
+
 ## [2.2.1](https://github.com/Maik3345/projex-toolbet/compare/v2.2.0...v2.2.1) - (2025-08-11)
 
 ### Bug Fixes
