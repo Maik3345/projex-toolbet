@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.2.1](https://github.com/Maik3345/projex-toolbet/compare/v2.2.0...v2.2.1) - (2025-08-11)
+
+### Bug Fixes
+
+* install projex globally instead of locally ([0d238ac8](https://github.com/Maik3345/projex-toolbet/commit/0d238ac89cc14a25a03c5b8022769ff44afb5175))
+* replace npm link with npm install for projex dependency ([ad158115](https://github.com/Maik3345/projex-toolbet/commit/ad158115a31363ef495bbdeb735aecd1c47239ea))
+
+
 ## [2.2.0](https://github.com/Maik3345/projex-toolbet/compare/v2.0.0...v2.2.0) - (2025-08-10)
 
 ### Features
