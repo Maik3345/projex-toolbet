@@ -50,7 +50,7 @@ runs:
             if [ "$label" = "$new" ]; then skip=1; break; fi
           done
           if [ $skip -eq 0 ]; then
-            gh pr edit $PR_NUMBER --remove-label "$label"
+            gh pr edit $PR_NUMBER --remove-label "$label" || true
           fi
         done
         # Agregar etiquetas nuevas
@@ -60,7 +60,7 @@ runs:
             if [ "$label" = "$new" ]; then found=1; break; fi
           done
           if [ $found -eq 0 ]; then
-            gh pr edit $PR_NUMBER --add-label "$new"
+            gh pr edit $PR_NUMBER --add-label "$new" || true
           fi
         done
         echo "Etiquetas sincronizadas: $LABELS"
