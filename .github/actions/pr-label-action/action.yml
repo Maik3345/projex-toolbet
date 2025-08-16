@@ -60,11 +60,12 @@ runs:
             if [ "$label" = "$new" ]; then found=1; break; fi
           done
           if [ $found -eq 0 ]; then
-            # Intenta agregar el label, si falla por no existir, créalo y vuelve a intentar
+            # Intenta agregar el label, si falla por no existir, créalo con color aleatorio y vuelve a intentar
             gh pr edit $PR_NUMBER --add-label "$new" || {
               echo "Label '$new' no existe, creándolo..."
-              # Crea el label con un color por defecto y sin descripción
-              gh label create "$new" --color "#ededed" --description "Auto-created by workflow" || true
+              # Generar color hexadecimal aleatorio
+              COLOR=$(printf '#%06X' $((RANDOM*RANDOM%16777215)))
+              gh label create "$new" --color "$COLOR" --description "Auto-created by workflow" || true
               gh pr edit $PR_NUMBER --add-label "$new" || true
             }
           fi
