@@ -31,6 +31,11 @@ runs:
           echo "No hay etiquetas sugeridas."
           exit 0
         fi
+        # Si no hay etiquetas válidas, continuar sin error
+        if [[ "$LABELS" == *not\ found* ]]; then
+          echo "No se encontraron etiquetas válidas para sincronizar."
+          exit 0
+        fi
         IFS=',' read -ra NEW_LABELS <<< "$LABELS"
         PR_NUMBER=${{ inputs.pr_number }}
         REPO="${GITHUB_REPOSITORY}"
