@@ -1,0 +1,9 @@
+name: 'PR Label Action'
+description: 'Synchronize pull request labels automatically'
+runs:
+  using: 'node16'
+  main: 'index.js'
+inputs:
+  pr_number:
+    description: 'Pull request number'
+    required: true

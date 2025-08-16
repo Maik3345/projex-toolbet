@@ -33,6 +33,6 @@ jobs:
 
       - name: "🏷️ Sincronizar etiquetas del Pull Request"
         if: github.event_name == 'pull_request'
-        uses: ./.github/workflows/pr-label-sync.yml
+        uses: ./.github/actions/pr-label-action
         with:
           pr_number: ${{ github.event.pull_request.number }}
