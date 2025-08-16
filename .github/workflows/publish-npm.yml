@@ -46,6 +46,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  release:
-    needs: build-and-publish
-    uses: Maik3345/projex-github-actions/.github/workflows/release.yml@main
+      - name: '🧹 Reset changes'
+        run: git reset --hard HEAD
+
+      - name: 🚀 Projex Release
+        uses: ./.github/actions/projex-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
