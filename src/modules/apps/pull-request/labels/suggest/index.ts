@@ -87,7 +87,7 @@ export const suggestLabels = async (options: SuggestLabelsOptions): Promise<void
     };
 
     // Format and display output
-    await formatOutput(suggestions, options.format, options.verbose);
+  await formatOutput(suggestions, options.format, options.verbose, options.colors);
 
   } catch (error) {
     log.error(Colors.ERROR('Failed to suggest labels'));
