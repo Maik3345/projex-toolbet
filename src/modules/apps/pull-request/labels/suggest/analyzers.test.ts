@@ -377,6 +377,29 @@ describe('hasDependencyUpdates', () => {
 });
 
 describe('needsDocumentation', () => {
+  it('should suggest documentationNeeded if only docs in .github/', () => {
+    const context = createMockContext({
+      changedFiles: ['src/api/feature.ts', '.github/PULL_REQUEST_TEMPLATE.md']
+    });
+    const result = needsDocumentation(context);
+    expect(result).toBe(true);
+  });
+
+  it('should suggest documentationNeeded if only docs in .vscode/', () => {
+    const context = createMockContext({
+      changedFiles: ['src/api/feature.ts', '.vscode/notes.md']
+    });
+    const result = needsDocumentation(context);
+    expect(result).toBe(true);
+  });
+
+  it('should not suggest documentationNeeded if docs outside ignored folders', () => {
+    const context = createMockContext({
+      changedFiles: ['src/api/feature.ts', 'docs/usage.md']
+    });
+    const result = needsDocumentation(context);
+    expect(result).toBe(false);
+  });
   it('should detect when documentation is needed for code changes', () => {
     const context = createMockContext({
       changedFiles: ['src/api/new-feature.ts', 'src/components/NewComponent.tsx']
