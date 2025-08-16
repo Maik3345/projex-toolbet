@@ -9,30 +9,30 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: "🔍 Checkout code"
+      - name: '🔍 Checkout code'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: "🟢 Set up Node.js"
+      - name: '🟢 Set up Node.js'
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
-      - name: "📦 Install pnpm"
-        run: npm install -g pnpm
-
-      - name: "📦 Install dependencies"
-        run: pnpm install
-
-      - name: "🧪 Run unit tests"
-        run: npm run test:cov
-
-      - name: "🛠️ Build project"
-        run: npm run build
-
-      - name: "🏷️ Sincronizar etiquetas del Pull Request"
+      - name: '🏷️ Sincronizar etiquetas del Pull Request'
         if: github.event_name == 'pull_request'
         uses: ./.github/actions/pr-label-action
         with:
           pr_number: ${{ github.event.pull_request.number }}
+
+      - name: '📦 Install pnpm'
+        run: npm install -g pnpm
+
+      - name: '📦 Install dependencies'
+        run: pnpm install
+
+      - name: '🧪 Run unit tests'
+        run: npm run test:cov
+
+      - name: '🛠️ Build project'
+        run: npm run build

@@ -13,44 +13,44 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: "🔍 Checkout code"
+      - name: '🔍 Checkout code'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: "🟢 Set up Node.js"
+      - name: '🟢 Set up Node.js'
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: "📦 Install pnpm"
+      - name: '📦 Install pnpm'
         run: npm install -g pnpm
 
-      - name: "📦 Install dependencies"
+      - name: '📦 Install dependencies'
         run: pnpm install
 
-      - name: "🛠️ Build project"
-        run: npm run build
-
-      - name: "📦 Install projex globally"
+      - name: '📦 Install projex globally'
         run: npm install -g projex
 
-      - name: "👤 Set git user from last commit"
+      - name: '👤 Set git user from last commit'
         run: |
           git config --global user.name "$(git log -1 --pretty=format:'%an')"
           git config --global user.email "$(git log -1 --pretty=format:'%ae')"
 
-      - name: "🚀 Release stable (pre-publish)"
+      - name: '🚀 Release stable (pre-publish)'
         run: projex git release stable --yes --no-deploy --no-push --no-check-release --no-tag
 
-      - name: "📤 Publish to npm"
+      - name: '🛠️ Build project'
+        run: npm run build
+
+      - name: '📤 Publish to npm'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: "🧹 Reset changes"
+      - name: '🧹 Reset changes'
         run: git reset --hard HEAD
 
-      - name: "🏁 Release stable and push (post-publish)"
+      - name: '🏁 Release stable and push (post-publish)'
         run: projex git release stable --yes
