@@ -10,6 +10,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: 'Instalar projex globalmente'
+      shell: bash
+      run: npm install -g projex
     - name: 'Sugerir etiquetas para el PR'
       id: suggest-labels
       shell: bash
