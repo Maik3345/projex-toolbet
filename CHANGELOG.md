@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.5.0](https://github.com/Maik3345/projex-toolbet/compare/v2.4.0...v2.5.0) - (2025-08-16)
+
+### Features
+
+* add documentation suggestion logic and hotfix flag to output formats ([#23](https://github.com/Maik3345/projex-toolbet/pull/23)) ([f2195bd3](https://github.com/Maik3345/projex-toolbet/commit/f2195bd3e68faf20446549e3381126563cce97c7))
+
+
 ## [2.4.0](https://github.com/Maik3345/projex-toolbet/compare/v2.3.0...v2.4.0) - (2025-08-16)
 
 ### Features
