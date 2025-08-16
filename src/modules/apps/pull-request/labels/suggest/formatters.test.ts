@@ -67,7 +67,8 @@ const baseSuggestions: SuggestedLabels = {
   dependencies: true,
   documentationNeeded: false,
   testsNeeded: true,
-  readmeNeedUpdate: false
+  readmeNeedUpdate: false,
+  hotfix: true,
 };
 
 const emptySuggestions: SuggestedLabels = {
@@ -78,7 +79,8 @@ const emptySuggestions: SuggestedLabels = {
   dependencies: false,
   documentationNeeded: false,
   testsNeeded: false,
-  readmeNeedUpdate: false
+  readmeNeedUpdate: false,
+  hotfix: false,
 };
 
 describe('formatters', () => {
@@ -117,7 +119,9 @@ describe('formatters', () => {
     
     it('handles csv format', async () => {
       await formatters.formatOutput(baseSuggestions, 'csv', false);
-      expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringMatching(/[\w-]+(,[\w-]+)*/));
+      const output = mockConsoleLog.mock.calls[0][0];
+      expect(output).toMatch(/[\w-]+(,[\w-]+)*/);
+      expect(output).toContain('hotfix');
     });
     
     it('defaults to json format for invalid format', async () => {
@@ -181,23 +185,21 @@ describe('formatters', () => {
     it('formats csv output with flags correctly', async () => {
       await formatters.formatOutput(baseSuggestions, 'csv', false);
       const output = mockConsoleLog.mock.calls[0][0];
-      
       // Verificar que incluye nombres de etiquetas
       expect(output).toContain('type:feature');
       expect(output).toContain('size:small');
       expect(output).toContain('release:major');
-      
       // Verificar que incluye flags
       expect(output).toContain('breaking-change');
       expect(output).toContain('dependencies-updated');
       expect(output).toContain('tests-needed');
+      expect(output).toContain('hotfix');
       expect(output).not.toContain('documentation-needed');
     });
     
     it('formats txt output with all sections', async () => {
       await formatters.formatOutput(baseSuggestions, 'txt', false);
       const output = mockConsoleLog.mock.calls[0][0];
-      
       // Verificar secciones del texto
       expect(output).toContain('SUGGESTED LABELS');
       expect(output).toContain('TYPE:');
@@ -208,6 +210,7 @@ describe('formatters', () => {
       expect(output).toContain('Breaking Change');
       expect(output).toContain('Dependencies Updated');
       expect(output).toContain('Tests Needed');
+      expect(output).toContain('hotfix');
       expect(output).toContain('Total Labels: 3');
     });
   });

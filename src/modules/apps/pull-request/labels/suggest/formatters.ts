@@ -159,7 +159,8 @@ const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean): Prom
   if (suggestions.documentationNeeded) flags.push('Documentation Needed');
   if (suggestions.testsNeeded) flags.push('Tests Needed');
   if (suggestions.readmeNeedUpdate) flags.push('README Update Needed');
-  
+  if (suggestions.hotfix) flags.push('hotfix');
+
   if (flags.length > 0) {
     output += 'ADDITIONAL FLAGS:\n';
     flags.forEach(flag => {
@@ -204,6 +205,7 @@ const formatAsCsv = async (suggestions: SuggestedLabels, verbose: boolean): Prom
   if (suggestions.documentationNeeded) flagLabels.push('documentation-needed');
   if (suggestions.testsNeeded) flagLabels.push('tests-needed');
   if (suggestions.readmeNeedUpdate) flagLabels.push('readme-need-update');
+  if (suggestions.hotfix) flagLabels.push('hotfix');
   
   // Combine all labels
   const allLabelNames = [...labelNames, ...flagLabels];
@@ -306,6 +308,7 @@ const showBooleanFlags = (suggestions: SuggestedLabels): void => {
   if (suggestions.documentationNeeded) flags.push('📝 Documentation Needed');
   if (suggestions.testsNeeded) flags.push('🧪 Tests Needed');
   if (suggestions.readmeNeedUpdate) flags.push('📋 README Update Needed');
+  if (suggestions.hotfix) flags.push('🚑 hotfix');
   
   if (flags.length > 0) {
     log.info(Colors.BLUE('\nAdditional Flags:'));

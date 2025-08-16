@@ -1,3 +1,10 @@
+/**
+ * Detecta si la rama actual es un hotfix (nombre contiene 'hotfix')
+ */
+export const isHotfixBranch = (context: AnalysisContext): boolean => {
+  if (!context.branch) return false;
+  return /hotfix/i.test(context.branch);
+};
 import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
 
 /**
@@ -481,12 +488,36 @@ export const hasDependencyUpdates = (context: AnalysisContext): boolean => {
  * Checks if documentation is needed
  */
 export const needsDocumentation = (context: AnalysisContext): boolean => {
+  // DEBUG: Log all changed files
+  if (process.env.PROJEX_DEBUG === '1') {
+    // eslint-disable-next-line no-console
+    console.log('[needsDocumentation] changedFiles:', context.changedFiles);
+  }
+
+  const IGNORED_DIRS = ['.github/', '.vscode/'];
+  const isIgnored = (file: string) => IGNORED_DIRS.some(dir => file.replace(/\\/g, '/').includes(dir));
+
   const hasCodeChanges = context.changedFiles.some((file) =>
-    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file),
+    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file)
   );
 
+
   const hasDocChanges = context.changedFiles.some(
-    (file) => /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc'),
+    (file) => {
+      if (isIgnored(file)) {
+        if (process.env.PROJEX_DEBUG === '1') {
+          // eslint-disable-next-line no-console
+          console.log('[needsDocumentation] Ignored doc file:', file);
+        }
+        return false;
+      }
+      const isDoc = /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc');
+      if (isDoc && process.env.PROJEX_DEBUG === '1') {
+        // eslint-disable-next-line no-console
+        console.log('[needsDocumentation] Detected doc file:', file);
+      }
+      return isDoc;
+    }
   );
 
   return hasCodeChanges && !hasDocChanges;
