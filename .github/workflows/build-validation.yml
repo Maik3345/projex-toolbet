@@ -29,7 +29,7 @@ jobs:
         with:
           pr_number: ${{ github.event.pull_request.number }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
       - name: '📦 Install pnpm'
         run: npm install -g pnpm
