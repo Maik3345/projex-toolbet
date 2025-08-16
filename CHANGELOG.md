@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.6.0](https://github.com/Maik3345/projex-toolbet/compare/v2.5.0...v2.6.0) - (2025-08-16)
+
+### Features
+
+* add pr label synchronization workflow to automate label management ([#24](https://github.com/Maik3345/projex-toolbet/pull/24)) ([3ea2d045](https://github.com/Maik3345/projex-toolbet/commit/3ea2d045cba1f8d44604f9ad4e1a87652b1381cc))
+
+
 ## [2.5.0](https://github.com/Maik3345/projex-toolbet/compare/v2.4.0...v2.5.0) - (2025-08-16)
 
 ### Features
