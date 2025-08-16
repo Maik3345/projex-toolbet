@@ -21,6 +21,7 @@ export interface SuggestedLabels {
   documentationNeeded: boolean;
   testsNeeded: boolean;
   readmeNeedUpdate: boolean;
+  hotfix: boolean;
 }
 
 export interface AnalysisContext {

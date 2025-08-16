@@ -56,41 +56,35 @@
 
 ---
 
-## 🎯 Palabras Clave que Activan los Flujos de Trabajo
+## 🎯 Sistema de Activación por Palabras Clave
 
-**INSTRUCCIÓN PARA COPILOT:** Cuando detectes cualquiera de estas palabras clave en el prompt del usuario, activa automáticamente las instrucciones correspondientes sin necesidad de que el usuario las mencione explícitamente:
+**INSTRUCCIÓN PARA COPILOT:** Cuando detectes cualquiera de estas palabras clave en el prompt del usuario, activa automáticamente las instrucciones correspondientes:
 
-### 📋 Pull Request y Control de Versiones
+---
 
-**Palabras clave:** `"pr"` | `"pull request"` | `"crear pr"` | `"generar pr"`  
-**→ ACTIVAR:** [pull-request-autofill.instructions.md](./instructions/pull-request/pull-request-autofill.instructions.md)  
-**Acción:** Automatiza la generación del contenido de Pull Request basándose en el template y el historial de cambios de la rama actual, incluyendo título con formato Conventional Commits
+### 📋 Conventional Commits
 
 **Palabras clave:** `"commit"` | `"conventional commit"` | `"formato commit"` | `"mensaje commit"`  
-**→ ACTIVAR:** [conventional-commit.instructions.md](./instructions/pull-request/conventional-commit.instructions.md)  
+**→ ACTIVAR:** [commit.instructions.md](./instructions/commit/commit.instructions.md)  
 **Acción:** Aplica las reglas de Conventional Commits 1.0.0 para estructurar mensajes de commit consistentes
+
+### 🧪 Cobertura de Tests
+
+**Palabras clave:** `"coverage"` | `"test-coverage"` | `"cobertura"` | `"sonar quality gate"` | `"cobertura tests"`  
+**→ ACTIVAR:** [coverage.instructions.md](./instructions/coverage/coverage.instructions.md)  
+**Acción:** Mejora sistemáticamente la cobertura de tests hasta alcanzar el 87% requerido por SonarQube
 
 ### 📚 Documentación General
 
 **Palabras clave:** `"doc"` | `"documentación"` | `"generar docs"` | `"crear documentación"`  
-**→ ACTIVAR:** [documentation.instructions.md](./instructions/documentation/documentation.instructions.md)  
-**Acción:** Genera documentación detallada en la carpeta docs con diagramas Mermaid, actualiza README.md y crea enlaces de navegación
+**→ ACTIVAR:** [doc.instructions.md](./instructions/doc/doc.instructions.md)  
+**Acción:** Genera documentación detallada en la carpeta docs con diagramas Mermaid y actualiza README.md
 
-### 🏪 Documentación VTEX IO
+### 📋 Pull Request y Control de Versiones
 
-**Palabras clave:** `"doc vtex"` | `"doc vtex io"` | `"vtex documentation"` | `"documentación vtex"`  
-**→ ACTIVAR:** [documentation-vtex-io.instructions.md](./instructions/documentation/documentation-vtex-io.instructions.md)  
-**Acción:** Especializada en documentación para proyectos VTEX IO, incluyendo componentes, props, configuración, APIs y rutas admin
-
-### 🧪 QA y Testing
-
-**Palabras clave:** `"qa"` | `"qa-hu"` | `"resumen qa"` | `"testing guide"` | `"qa guide"`  
-**→ ACTIVAR:** [qa-hu-guide.instructions.md](./instructions/backlog/qa-hu-guide.instructions.md)  
-**Acción:** Genera resumen estructurado para QA con casos de prueba, puntos críticos y regresiones a verificar
-
-**Palabras clave:** `"coverage"` | `"test-coverage"` | `"cobertura"` | `"sonar quality gate"` | `"cobertura tests"`  
-**→ ACTIVAR:** [test-coverage.instructions.md](./instructions/unit-testing/test-coverage.instructions.md)  
-**Acción:** Mejora sistemáticamente la cobertura de tests hasta alcanzar el 87% requerido por SonarQube Quality Gate B-2
+**Palabras clave:** `"pr"` | `"pull request"` | `"crear pr"` | `"generar pr"`  
+**→ ACTIVAR:** [pr-auto-fill.instructions.md](./instructions/pr/pr-auto-fill.instructions.md)  
+**Acción:** Automatiza la generación del contenido de Pull Request basándose en el template y el historial de cambios
 
 ---
 
@@ -98,6 +92,6 @@
 
 1. **Detecta las palabras clave** en el prompt del usuario (sin importar mayúsculas/minúsculas)
 2. **Activa automáticamente** las instrucciones del archivo correspondiente
-3. **Sigue las instrucciones específicas** del archivo `.instructions.md` referenciado
+3. **Sigue las instrucciones específicas** del archivo referenciado
 4. **No requieras** que el usuario mencione explícitamente las instrucciones
 5. **Ejecuta la tarea** según el flujo definido en las instrucciones específicas

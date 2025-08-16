@@ -204,6 +204,7 @@ const formatAsCsv = async (suggestions: SuggestedLabels, verbose: boolean): Prom
   if (suggestions.documentationNeeded) flagLabels.push('documentation-needed');
   if (suggestions.testsNeeded) flagLabels.push('tests-needed');
   if (suggestions.readmeNeedUpdate) flagLabels.push('readme-need-update');
+  if (suggestions.hotfix) flagLabels.push('hotfix');
   
   // Combine all labels
   const allLabelNames = [...labelNames, ...flagLabels];

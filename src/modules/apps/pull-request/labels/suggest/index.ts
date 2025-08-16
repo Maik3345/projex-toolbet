@@ -16,6 +16,7 @@ import {
   needsDocumentation,
   needsTests,
   needsReadmeUpdate,
+  isHotfixBranch,
 } from './analyzers';
 import { formatOutput } from './formatters';
 
@@ -82,6 +83,7 @@ export const suggestLabels = async (options: SuggestLabelsOptions): Promise<void
       documentationNeeded: needsDocumentation(context),
       testsNeeded: needsTests(context),
       readmeNeedUpdate: needsReadmeUpdate(context),
+      hotfix: isHotfixBranch(context),
     };
 
     // Format and display output

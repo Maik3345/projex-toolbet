@@ -1,3 +1,10 @@
+/**
+ * Detecta si la rama actual es un hotfix (nombre contiene 'hotfix')
+ */
+export const isHotfixBranch = (context: AnalysisContext): boolean => {
+  if (!context.branch) return false;
+  return /hotfix/i.test(context.branch);
+};
 import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
 
 /**
