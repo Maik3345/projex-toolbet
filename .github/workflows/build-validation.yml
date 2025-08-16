@@ -19,12 +19,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: '🏷️ Sincronizar etiquetas del Pull Request'
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/pr-label-action
+      - name: Sincronizar etiquetas del Pull Request
+        uses: Maik3345/projex-github-actions/src/pr-label-action@v1
         with:
           pr_number: ${{ github.event.pull_request.number }}
-          github_token: ${{ secrets.TOKEN_GITHUB }}
 
       - name: '📦 Install pnpm'
         run: npm install -g pnpm

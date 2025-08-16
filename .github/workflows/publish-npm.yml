@@ -6,6 +6,8 @@ on:
       - main
       - master
 
+  workflow_dispatch:
+
 permissions:
   contents: write
 
@@ -33,12 +35,7 @@ jobs:
       - name: '📦 Install projex globally'
         run: npm install -g projex
 
-      - name: '👤 Set git user from last commit'
-        run: |
-          git config --global user.name "$(git log -1 --pretty=format:'%an')"
-          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
-
-      - name: '🚀 Release stable (pre-publish)'
+      - name: Pre-release version bump (projex)
         run: projex git release stable --yes --no-deploy --no-push --no-check-release --no-tag
 
       - name: '🛠️ Build project'
@@ -49,8 +46,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: '🧹 Reset changes'
-        run: git reset --hard HEAD
-
-      - name: '🏁 Release stable and push (post-publish)'
-        run: projex git release stable --yes
+  release:
+    needs: build-and-publish
+    uses: Maik3345/projex-github-actions/.github/workflows/release.yml@main
