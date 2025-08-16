@@ -24,6 +24,7 @@ jobs:
         uses: ./.github/actions/pr-label-action
         with:
           pr_number: ${{ github.event.pull_request.number }}
+          github_token: ${{ secrets.TOKEN_GITHUB }}
 
       - name: '📦 Install pnpm'
         run: npm install -g pnpm
