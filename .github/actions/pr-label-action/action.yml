@@ -10,9 +10,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Instalar projex globalmente'
+    - name: 'Instalar projex desde el repo local'
       shell: bash
-      run: npm install -g projex
+      run: |
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        npm install -g .
     - name: 'Sugerir etiquetas para el PR'
       id: suggest-labels
       shell: bash
