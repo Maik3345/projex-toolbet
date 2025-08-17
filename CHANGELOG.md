@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.8.0](https://github.com/Maik3345/projex-toolbet/compare/v2.7.0...v2.8.0) - (2025-08-17)
+
+### Features
+
+* add tags to use ([#26](https://github.com/Maik3345/projex-toolbet/pull/26)) ([4f08bc03](https://github.com/Maik3345/projex-toolbet/commit/4f08bc031b63504a93c70781b5403885198fee9b))
+
+
 ## [2.7.0](https://github.com/Maik3345/projex-toolbet/compare/v2.6.0...v2.7.0) - (2025-08-17)
 
 ### Features
