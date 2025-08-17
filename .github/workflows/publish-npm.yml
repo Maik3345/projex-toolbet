@@ -50,6 +50,6 @@ jobs:
         run: git reset --hard HEAD
 
       - name: 🚀 Projex Release
-        uses: ./.github/actions/projex-release
+        uses: Maik3345/projex-github-actions/.github/actions/projex-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
