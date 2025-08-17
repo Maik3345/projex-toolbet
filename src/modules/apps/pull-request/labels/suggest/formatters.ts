@@ -2,6 +2,7 @@ import { Colors } from '@api';
 import { log } from '@shared';
 import { createTable } from '@api';
 import { SuggestedLabels, LabelSuggestion } from './types';
+import { LABEL_COLORS } from './colors';
 
 /**
  * Formats and displays the suggested labels
@@ -9,83 +10,84 @@ import { SuggestedLabels, LabelSuggestion } from './types';
 export const formatOutput = async (
   suggestions: SuggestedLabels,
   format: 'json' | 'table' | 'list' | 'txt' | 'csv',
-  verbose: boolean
+  verbose: boolean,
+  colors?: boolean
 ): Promise<void> => {
   switch (format) {
     case 'json':
-      await formatAsJson(suggestions, verbose);
+      await formatAsJson(suggestions, verbose, colors);
       break;
     case 'table':
-      await formatAsTable(suggestions, verbose);
+      await formatAsTable(suggestions, verbose, colors);
       break;
     case 'list':
-      await formatAsList(suggestions, verbose);
+      await formatAsList(suggestions, verbose, colors);
       break;
     case 'txt':
-      await formatAsTxt(suggestions, verbose);
+      await formatAsTxt(suggestions, verbose, colors);
       break;
     case 'csv':
-      await formatAsCsv(suggestions, verbose);
+      await formatAsCsv(suggestions, verbose, colors);
       break;
     default:
-      await formatAsJson(suggestions, verbose);
+      await formatAsJson(suggestions, verbose, colors);
   }
 };
 
 /**
  * Formats output as JSON
  */
-const formatAsJson = async (suggestions: SuggestedLabels, verbose: boolean): Promise<void> => {
+const formatAsJson = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const output = buildOutputObject(suggestions);
-  
+  if (colors) {
+    output.labels = output.labels.map((l: any) => ({ ...l, color: l.color }));
+  } else {
+    output.labels = output.labels.map((l: any) => { const { color, ...rest } = l; return rest; });
+  }
   if (verbose) {
     log.info(Colors.BLUE('Generated label suggestions:'));
   }
-  
   console.log(JSON.stringify(output, null, 2));
 };
 
 /**
  * Formats output as a table
  */
-const formatAsTable = async (suggestions: SuggestedLabels, verbose: boolean): Promise<void> => {
+const formatAsTable = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const allLabels = getAllLabels(suggestions);
-  
   if (allLabels.length === 0) {
     log.info(Colors.YELLOW('No labels suggested based on the analysis.'));
     return;
   }
-
   const tableData = allLabels.map(label => ({
     'Label': label.name,
     'Type': getLabelType(label.name),
     'Confidence': `${label.confidence}%`,
     'Description': label.description,
+  'Color': colors ? (LABEL_COLORS[label.name] || '#cccccc') : '',
     'Evidence': label.evidenceCommit ? `${label.evidenceCommit.commitId}: ${label.evidenceCommit.message}` : 'N/A',
   }));
-
   if (verbose) {
     log.info(Colors.BLUE('Generated label suggestions:'));
   }
-
-  const table = createTable({
-    head: ['Label', 'Type', 'Confidence', 'Description', 'Evidence'],
-  });
-
+  const head = ['Label', 'Type', 'Confidence', 'Description'];
+  if (colors) head.push('Color');
+  head.push('Evidence');
+  const table = createTable({ head });
   tableData.forEach(row => {
-    table.push([row.Label, row.Type, row.Confidence, row.Description, row.Evidence]);
+    const rowArr = [row.Label, row.Type, row.Confidence, row.Description];
+    if (colors) rowArr.push(row.Color);
+    rowArr.push(row.Evidence);
+    table.push(rowArr);
   });
-
   console.log(table.toString());
-
-  // Show boolean flags
   showBooleanFlags(suggestions);
 };
 
 /**
  * Formats output as a simple list
  */
-const formatAsList = async (suggestions: SuggestedLabels, verbose: boolean): Promise<void> => {
+const formatAsList = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const allLabels = getAllLabels(suggestions);
   
   if (verbose) {
@@ -108,7 +110,9 @@ const formatAsList = async (suggestions: SuggestedLabels, verbose: boolean): Pro
         const evidenceText = label.evidenceCommit 
           ? ` [${Colors.YELLOW(label.evidenceCommit.commitId)}: ${label.evidenceCommit.message}]`
           : '';
-        log.info(`  • ${Colors.WHITE(label.name)} ${confidenceColor(`(${label.confidence}%)`)} - ${label.description}${evidenceText}`);
+  const colorText = colors ? ` [${LABEL_COLORS[label.name] || '#cccccc'}]` : '';
+  const confText = `(${label.confidence}%)`;
+  log.info('  • ' + Colors.WHITE(label.name) + colorText + ' ' + confidenceColor(confText) + ' - ' + label.description + evidenceText);
       });
     }
   }
@@ -120,7 +124,7 @@ const formatAsList = async (suggestions: SuggestedLabels, verbose: boolean): Pro
 /**
  * Formats output as plain text
  */
-const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean): Promise<void> => {
+const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const allLabels = getAllLabels(suggestions);
   
   if (verbose) {
@@ -146,7 +150,8 @@ const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean): Prom
         const evidenceText = label.evidenceCommit 
           ? ` [${label.evidenceCommit.commitId}: ${label.evidenceCommit.message}]`
           : '';
-        output += `  - ${label.name} (${label.confidence}%): ${label.description}${evidenceText}\n`;
+  const colorText = colors ? ` [${LABEL_COLORS[label.name] || '#cccccc'}]` : '';
+  output += `  - ${label.name}${colorText} (${label.confidence}%): ${label.description}${evidenceText}\n`;
       });
       output += '\n';
     }
@@ -183,33 +188,30 @@ const formatAsTxt = async (suggestions: SuggestedLabels, verbose: boolean): Prom
 /**
  * Formats output as CSV (comma-separated labels)
  */
-const formatAsCsv = async (suggestions: SuggestedLabels, verbose: boolean): Promise<void> => {
+const formatAsCsv = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const allLabels = getAllLabels(suggestions);
-  
   if (verbose) {
     log.info(Colors.BLUE('Generated label suggestions:'));
   }
-
   if (allLabels.length === 0) {
     console.log('');
     return;
   }
-
-  // Get only the label names
-  const labelNames = allLabels.map(label => label.name);
-  
-  // Add flag-based labels if they exist
+  // Get label names (with color if requested)
+  const labelNames = allLabels.map(label => {
+  const color = colors ? (LABEL_COLORS[label.name] || '#cccccc') : undefined;
+    return colors ? `${label.name}:${color}` : label.name;
+  });
+  // Add flag-based labels with color if requested
   const flagLabels = [];
-  if (suggestions.breakingChange) flagLabels.push('breaking-change');
-  if (suggestions.dependencies) flagLabels.push('dependencies-updated');
-  if (suggestions.documentationNeeded) flagLabels.push('documentation-needed');
-  if (suggestions.testsNeeded) flagLabels.push('tests-needed');
-  if (suggestions.readmeNeedUpdate) flagLabels.push('readme-need-update');
-  if (suggestions.hotfix) flagLabels.push('hotfix');
-  
+  if (suggestions.breakingChange) flagLabels.push(colors ? `breaking-change:${LABEL_COLORS['breaking-change']}` : 'breaking-change');
+  if (suggestions.dependencies) flagLabels.push(colors ? `dependencies-updated:${LABEL_COLORS['dependencies-updated']}` : 'dependencies-updated');
+  if (suggestions.documentationNeeded) flagLabels.push(colors ? `documentation-needed:${LABEL_COLORS['documentation-needed']}` : 'documentation-needed');
+  if (suggestions.testsNeeded) flagLabels.push(colors ? `tests-needed:${LABEL_COLORS['tests-needed']}` : 'tests-needed');
+  if (suggestions.readmeNeedUpdate) flagLabels.push(colors ? `readme-need-update:${LABEL_COLORS['readme-need-update']}` : 'readme-need-update');
+  if (suggestions.hotfix) flagLabels.push(colors ? `hotfix:${LABEL_COLORS['hotfix']}` : 'hotfix');
   // Combine all labels
   const allLabelNames = [...labelNames, ...flagLabels];
-  
   // Output as comma-separated values
   console.log(allLabelNames.join(','));
 };
@@ -223,7 +225,7 @@ const buildOutputObject = (suggestions: SuggestedLabels) => {
   return {
     labels: allLabels.map(label => ({
       name: label.name,
-      color: label.color,
+  color: LABEL_COLORS[label.name] || '#cccccc',
       description: label.description,
       confidence: label.confidence,
       ...(label.evidenceCommit && {

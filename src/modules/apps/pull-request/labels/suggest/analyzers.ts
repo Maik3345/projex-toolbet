@@ -17,25 +17,18 @@ export const determineSizeLabel = (context: AnalysisContext): LabelSuggestion | 
   // Calculate size based on both line changes and file count
   let size: string;
   let confidence: number;
-  let color: string;
-
   if (totalLines < 50 && fileCount <= 3) {
     size = 'small';
     confidence = 85;
-    color = '#0e8a16'; // green
   } else if (totalLines < 200 && fileCount <= 10) {
     size = 'medium';
     confidence = 75;
-    color = '#fbca04'; // yellow
   } else {
     size = 'large';
     confidence = 90;
-    color = '#d73a49'; // red
   }
-
   return {
     name: `size:${size}`,
-    color,
     description: `${size.charAt(0).toUpperCase() + size.slice(1)} change: ${totalLines} lines, ${fileCount} files`,
     confidence,
   };
@@ -253,7 +246,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
       
       return {
         name: `type:${typeLabel}`,
-        color,
+  // color removed
         description,
         confidence: isBreaking ? Math.min(enhancedConfidence + 10, 100) : enhancedConfidence,
         evidenceCommit: evidence,
@@ -270,7 +263,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     if (hasTestFiles) {
       return {
         name: 'type:test',
-        color: '#6f42c1',
+  // color removed
         description: 'Testing',
         confidence: 60,
       };
@@ -279,7 +272,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     if (hasDocFiles) {
       return {
         name: 'type:docs',
-        color: '#0366d6',
+  // color removed
         description: 'Documentation',
         confidence: 60,
       };
@@ -289,7 +282,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
   // Ultimate fallback
   return {
     name: 'type:chore',
-    color: '#586069',
+  // color removed
     description: 'Maintenance',
     confidence: 50,
   };
@@ -319,7 +312,7 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   if (breakingEvidence) {
     return {
       name: 'release:breaking-change',
-      color: '#d73a49',
+  // color removed
       description: 'Breaking change requiring major version bump',
       confidence: 95,
       evidenceCommit: breakingEvidence,
@@ -345,7 +338,7 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   if (minorEvidence) {
     return {
       name: 'release:minor',
-      color: '#0075ca',
+  // color removed
       description: 'Minor version bump for new features',
       confidence: 85,
       evidenceCommit: minorEvidence,
@@ -361,7 +354,7 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
 
   return {
     name: 'release:patch',
-    color: '#28a745',
+  // color removed
     description: 'Patch version bump for bug fixes and minor changes',
     confidence: 75,
     evidenceCommit: patchEvidence,

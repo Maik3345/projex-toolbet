@@ -1,9 +1,14 @@
 name: Build Validation
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -20,11 +25,11 @@ jobs:
           node-version: '20'
 
       - name: '🏷️ Sincronizar etiquetas del Pull Request'
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/pr-label-action
+        uses: Maik3345/projex-github-actions/src/pr-label-action@v1
         with:
           pr_number: ${{ github.event.pull_request.number }}
-          github_token: ${{ secrets.TOKEN_GITHUB }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
       - name: '📦 Install pnpm'
         run: npm install -g pnpm

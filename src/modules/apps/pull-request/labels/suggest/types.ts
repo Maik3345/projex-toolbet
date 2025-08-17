@@ -1,6 +1,5 @@
 export interface LabelSuggestion {
   name: string;
-  color: string;
   description: string;
   confidence: number; // 0-100
   evidenceCommit?: CommitEvidence;
@@ -46,4 +45,5 @@ export interface SuggestLabelsOptions {
   format: 'json' | 'table' | 'list' | 'txt' | 'csv';
   verbose: boolean;
   noFetch?: boolean;
+  colors?: boolean;
 }

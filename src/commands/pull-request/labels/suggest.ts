@@ -35,6 +35,11 @@ export default class Suggest extends Command {
       default: 'json',
       options: ['json', 'table', 'list', 'txt', 'csv'],
     }),
+    colors: Flags.boolean({
+      description: 'Include the color for each label in the output (for GitHub label automation).',
+      required: false,
+      default: false,
+    }),
     'no-fetch': Flags.boolean({
       description: 'Skip automatic fetching of target branch from remote if not available locally.',
       required: false,
@@ -44,7 +49,7 @@ export default class Suggest extends Command {
 
   async run() {
     const {
-      flags: { branch, target, format, verbose, 'no-fetch': noFetch },
+      flags: { branch, target, format, verbose, colors, 'no-fetch': noFetch },
     } = await this.parse(Suggest);
 
     await suggestLabels({
@@ -52,6 +57,7 @@ export default class Suggest extends Command {
       target,
       format: format as 'json' | 'table' | 'list' | 'txt' | 'csv',
       verbose,
+      colors,
       noFetch,
     });
   }

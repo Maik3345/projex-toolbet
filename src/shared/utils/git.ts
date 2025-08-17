@@ -38,13 +38,19 @@ export const checkIfInGitRepo = () => {
   }
 };
 
+
 export const tag = (tagName: string, root: string) => {
-  const tagMessage = `Release ${tagName}`;
-  return runCommand(`git tag ${tagName} -m "${tagMessage}"`, root, `Tag created: ${tagName}`, true);
+  // Obtener el título del último commit
+  const lastCommitTitle = runCommand('git log -1 --pretty=%s', root, '', true)?.toString().trim() || `Release ${tagName}`;
+  return runCommand(`git tag ${tagName} -m "${lastCommitTitle}"`, root, `Tag created: ${tagName}`, true);
 };
 
 export const pushCommand = (tagName: string, noTag: boolean | undefined) => {
-  return `git push --force ${noTag ? '' : `&& git push origin ${tagName} --force`}`;
+  let command = 'git push --force';
+  if (!noTag) {
+    command += ` && git push origin ${tagName} --force`;
+  }
+  return command;
 };
 
 export const gitStatus = (root: string) => {
