@@ -8,6 +8,7 @@ export const LABEL_COLORS: Record<string, string> = {
   'size:large': '#e74c3c',      // Red
   // Type labels
   'type:bug': '#d73a4a',        // GitHub bug red
+  'type:fix': '#e67e22',        // Orange (fix)
   'type:feat': '#1abc9c',       // Teal (alias de feature)
   'type:feature': '#1abc9c',    // Teal
   'type:docs': '#6f42c1',       // Purple
@@ -29,6 +30,11 @@ export const LABEL_COLORS: Record<string, string> = {
   'scope:api': '#0366d6',       // Blue
   'scope:ui': '#a2eeef',        // Light blue
   'scope:ci': '#e99695',        // Pink
+  'scope:docs': '#6f42c1',      // Purple
+  'scope:tests': '#fbca04',     // Gold
+  'scope:other': '#95a5a6',     // Light gray
+  // Release special
+  'release:breaking-change': '#e11d21', // Strong red
   // Flags
   'breaking-change': '#e11d21', // Strong red
   'dependencies-updated': '#0366d6', // Blue
