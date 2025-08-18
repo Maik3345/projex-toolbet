@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.9.0](https://github.com/Maik3345/projex-toolbet/compare/v2.8.0...v2.9.0) - (2025-08-18)
+
+### Features
+
+* **cli**: add unit tests, improve logging, enhance utilities, and update documentation ([#27](https://github.com/Maik3345/projex-toolbet/pull/27)) ([446e201a](https://github.com/Maik3345/projex-toolbet/commit/446e201afb7893e69d199134b77447f654a733b3))
+
+
 ## [2.8.0](https://github.com/Maik3345/projex-toolbet/compare/v2.7.0...v2.8.0) - (2025-08-17)
 
 ### Features
