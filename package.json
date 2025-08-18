@@ -14,7 +14,7 @@
     "semver",
     "devops"
   ],
-  "homepage": "",
+  "homepage": "https://github.com/Maik3345/projex-toolbet",
   "bugs": {
     "url": "https://github.com/Maik3345/projex-toolbet/issues"
   },
@@ -78,7 +78,7 @@
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "^3.2.4",
     "eslint": "^8.57.1",
-    "eslint-config-oclif": "^5.2.2",
+    "eslint-config-oclif": "^6.0.95",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
