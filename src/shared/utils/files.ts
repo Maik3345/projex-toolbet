@@ -13,7 +13,9 @@ export class FilesUtils {
         log.info(`file ${Colors.GREEN(dir.split('/').pop() ?? '')} already exists.`);
       }
     } catch (err) {
-      log.error('an error occurred while creating the file:', err);
+      log.error(Colors.ERROR('Failed to create file: ') + dir);
+      log.error(Colors.WARNING('Tip: Check file permissions and disk space.'));
+      log.error(err);
     }
   };
 
@@ -28,7 +30,9 @@ export class FilesUtils {
         return false;
       }
     } catch (error) {
-      log.error('an error occurred while creating the directory:', error);
+      log.error(Colors.ERROR('Failed to create directory: ') + dir);
+      log.error(Colors.WARNING('Tip: Check directory permissions and disk space.'));
+      log.error(error);
     }
   };
 }

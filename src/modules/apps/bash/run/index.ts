@@ -16,7 +16,10 @@ export const bashRunCommand = async (
   },
 ) => {
   if (!command) {
-    log.error(Colors.ERROR('please provide a command to run'));
+    log.error(
+      Colors.ERROR('No command provided. Please specify a bash command to run.') +
+        '\nTip: Example usage: projex bash run "ls -la"',
+    );
     process.exit(1);
   }
 

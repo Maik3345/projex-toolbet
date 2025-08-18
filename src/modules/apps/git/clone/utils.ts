@@ -18,7 +18,10 @@ export class CloneUtils {
       log.info(`cloning repository ${chalk.bold(repository)}...`);
       return runCommand(`git clone ${this.repositoryUrl}${repository}`, this.root, 'Cloned');
     } catch (e: any) {
-      log.error(`${Colors.ERROR('an error occurred while cloning the repository')} ${chalk.bold(repository)}.`);
+      log.error(
+        Colors.ERROR(`Failed to clone repository: ${chalk.bold(repository)}.`) +
+        '\nTip: Check your network connection and repository URL.'
+      );
       log.error(e);
     }
   };

@@ -25,9 +25,10 @@ export const validateVersion = (oldVersion: string, releaseType: ReleaseType, ta
     const newVersion = parsedVersion?.version;
 
     if (!newVersion || !gt(newVersion, oldVersion)) {
-      const errorMessage = `the new version (${chalk.bold(
+      const errorMessage = `The new version (${chalk.bold(
         newVersion,
-      )}) must be greater than the old version (${chalk.bold(oldVersion)})`;
+      )}) must be greater than the previous version (${chalk.bold(oldVersion)}).\n` +
+        Colors.WARNING('Tip: Check the version number you are trying to release.');
       log.error(Colors.ERROR(errorMessage));
       throw new Error(errorMessage);
     }
@@ -40,13 +41,19 @@ export const validateVersion = (oldVersion: string, releaseType: ReleaseType, ta
   // Check if releaseType is valid.
   if (!supportedReleaseTypesList.includes(releaseType)) {
     const validReleaseTypes = supportedReleaseTypesList.join(', ');
-    throw new Error(`Invalid release type: ${releaseType}\nValid release types are: ${validReleaseTypes}`);
+    const errorMessage = `Invalid release type: ${releaseType}\nValid types: ${validReleaseTypes}.\n` +
+      Colors.WARNING('Tip: Use one of the valid release types.');
+    log.error(Colors.ERROR(errorMessage));
+    throw new Error(errorMessage);
   }
 
   // Check if tagName is valid.
   if (tagName && !supportedTagNamesList.includes(tagName)) {
     const validTagNames = supportedTagNamesList.join(', ');
-    throw new Error(`Invalid release tag: ${tagName}\nValid release tags are: ${validTagNames}`);
+    const errorMessage = `Invalid release tag: ${tagName}\nValid tags: ${validTagNames}.\n` +
+      Colors.WARNING('Tip: Use one of the valid release tags.');
+    log.error(Colors.ERROR(errorMessage));
+    throw new Error(errorMessage);
   }
 };
 

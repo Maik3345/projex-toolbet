@@ -1,4 +1,5 @@
-import { FilesUtils, runCommand, COMMIT_LINT_SETTINGS_CODE, HUSKY_COMMIT_MESSAGE_CODE } from '@shared';
+import { FilesUtils, runCommand, COMMIT_LINT_SETTINGS_CODE, HUSKY_COMMIT_MESSAGE_CODE, log } from '@shared';
+import { Colors } from '@api';
 import * as path from 'path';
 
 export class SetupConventionalUtil {
@@ -42,7 +43,8 @@ export class SetupConventionalUtil {
         const { execSync } = require('child_process');
         yarnVersion = execSync('yarn --version', { cwd: root, encoding: 'utf8' }).trim();
       } catch (e) {
-        console.warn('Could not determine Yarn version, defaulting to 1.x');
+        log.warn(Colors.WARNING('Could not determine Yarn version, defaulting to 1.x.') +
+          '\nTip: Make sure Yarn is installed and available in your PATH.');
       }
       if (yarnVersion.startsWith('1.')) {
         // Edit package.json directly
@@ -109,8 +111,9 @@ export class SetupConventionalUtil {
     try {
       await this.filesUtils.createFile(path.join(root, '.husky/commit-msg'), HUSKY_COMMIT_MESSAGE_CODE);
     } catch (err) {
-      // Si falla, mostrar advertencia pero no detener el flujo
-      console.warn('No se pudo crear el hook commit-msg:', err);
+      log.warn(Colors.WARNING('Could not create Husky commit-msg hook.') +
+        '\nTip: Check permissions for the .husky folder and try again.');
+      log.warn(err);
     }
 
     // add husky hook for prepare-commit-msg
