@@ -4,10 +4,11 @@ import { Args, Command } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Release extends Command {
-  static description = 'Clone the specified repositories (Only for git users)';
+  static description = 'Clone one or more repositories from a base URL. Useful for onboarding, monorepos, or batch cloning. Shows progress and actionable tips if cloning fails.';
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} git clone 'https://dev.azure.com/Team/Project/_git/' 'my-project-1, my-project-2'`)}`,
+    `${Colors.PINK(CLI_NAME + ' git clone')} 'https://dev.azure.com/Team/Project/_git/' 'my-project-1, my-project-2'   # Clone two Azure DevOps repos`,
+    `${Colors.PINK(CLI_NAME + ' git clone')} 'https://github.com/myorg/' 'repo1,repo2,repo3'   # Clone multiple GitHub repos`,
   ];
 
   static flags = {
@@ -18,12 +19,12 @@ export default class Release extends Command {
     repositoryUrl: Args.string({
       required: true,
       default: '',
-      description: `Specify the base repository URL`,
+      description: `The base URL for the repositories. Example: https://github.com/myorg/ or https://dev.azure.com/Team/Project/_git/`,
     }),
     repositoryList: Args.string({
       required: true,
       default: '',
-      description: `Specify the list of repositories to be cloned, separated by commas`,
+      description: `Comma-separated list of repository names to clone. Example: repo1,repo2,repo3`,
     }),
   };
 

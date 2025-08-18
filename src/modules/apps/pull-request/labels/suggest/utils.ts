@@ -1,7 +1,6 @@
-import { runCommand } from '@shared';
-import { AnalysisContext, CommitInfo } from './types';
 import { Colors } from '@api';
-import { log } from '@shared';
+import { log, runCommand } from '@shared';
+import { AnalysisContext, CommitInfo } from './types';
 
 /**
  * Gets the current branch name
@@ -11,7 +10,7 @@ export const getCurrentBranch = (cwd: string): string => {
     const output = runCommand('git rev-parse --abbrev-ref HEAD', cwd, '', true, 0, true);
     return output.toString().trim();
   } catch (error) {
-    log.error(Colors.ERROR('Failed to get current branch'));
+    log.error(Colors.ERROR('❌ Failed to get current branch'));
     throw error;
   }
 };
@@ -22,7 +21,7 @@ export const getCurrentBranch = (cwd: string): string => {
  */
 export const getDefaultBranch = (cwd: string): string => {
   const commonMainBranches = ['main', 'master', 'develop', 'dev'];
-  
+
   for (const branch of commonMainBranches) {
     try {
       // Check if the branch exists locally
@@ -39,7 +38,7 @@ export const getDefaultBranch = (cwd: string): string => {
       }
     }
   }
-  
+
   // If no common branches found, try to get the default branch from remote
   try {
     const output = runCommand('git symbolic-ref refs/remotes/origin/HEAD', cwd, '', true, 0, true);
@@ -51,9 +50,10 @@ export const getDefaultBranch = (cwd: string): string => {
   } catch {
     // Ignore error and fallback
   }
-  
+
   // Last resort: return 'main' as default
-  log.warn(Colors.WARNING('Could not detect default branch, using "main" as fallback'));
+  log.warn(Colors.WARNING('⚠️ Could not detect default branch, using "main" as fallback'));
+  log.info(Colors.YELLOW('💡 Tip: Make sure your repository has a recognizable main branch.'));
   return 'main';
 };
 
@@ -61,7 +61,12 @@ export const getDefaultBranch = (cwd: string): string => {
  * Ensures the target branch is available locally for comparison
  * Fetches from remote if the branch doesn't exist locally (unless noFetch is true)
  */
-export const ensureBranchAvailable = (branch: string, cwd: string, noFetch: boolean = false, verbose: boolean = false): void => {
+export const ensureBranchAvailable = (
+  branch: string,
+  cwd: string,
+  noFetch: boolean = false,
+  verbose: boolean = false,
+): void => {
   try {
     // First check if branch exists locally
     runCommand(`git show-ref --verify --quiet refs/heads/${branch}`, cwd, '', true, 0, true);
@@ -81,7 +86,7 @@ export const ensureBranchAvailable = (branch: string, cwd: string, noFetch: bool
       if (noFetch) {
         throw new Error(`Branch '${branch}' not found locally and --no-fetch flag is set`);
       }
-      
+
       // Branch doesn't exist in remote tracking, try to fetch it
       if (verbose) {
         log.info(Colors.BLUE(`Fetching branch ${Colors.WARNING(branch)} from remote...`));
@@ -96,13 +101,16 @@ export const ensureBranchAvailable = (branch: string, cwd: string, noFetch: bool
         // If direct fetch fails, try fetching all branches
         if (verbose) {
           log.warn(Colors.WARNING(`Direct fetch failed, trying to fetch all references...`));
+          log.warn(
+            Colors.WARNING(`Fetch error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`),
+          );
         }
         try {
           runCommand('git fetch origin', cwd, '', false, 0, false);
           if (verbose) {
             log.info(Colors.BLUE(`✓ Fetched all references from origin`));
           }
-          
+
           // Check again if branch is now available
           try {
             runCommand(`git show-ref --verify --quiet refs/remotes/origin/${branch}`, cwd, '', true, 0, true);
@@ -114,7 +122,11 @@ export const ensureBranchAvailable = (branch: string, cwd: string, noFetch: bool
             throw new Error(`Branch '${branch}' not found in remote repository`);
           }
         } catch (generalFetchError) {
-          throw new Error(`Failed to fetch from remote: ${generalFetchError instanceof Error ? generalFetchError.message : String(generalFetchError)}`);
+          throw new Error(
+            `Failed to fetch from remote: ${
+              generalFetchError instanceof Error ? generalFetchError.message : String(generalFetchError)
+            }`,
+          );
         }
       }
     }
@@ -136,12 +148,16 @@ export const getChangedFiles = (branch: string, target: string, cwd: string, ver
   for (let i = 0; i < attempts.length; i++) {
     try {
       const output = runCommand(attempts[i], cwd, '', true, 0, true);
-      const files = output.toString().trim().split('\n').filter((file: string) => file.length > 0);
-      
+      const files = output
+        .toString()
+        .trim()
+        .split('\n')
+        .filter((file: string) => file.length > 0);
+
       if (i > 0 && verbose) {
         log.info(Colors.BLUE(`✓ Used ${Colors.WARNING(attempts[i])} for comparison`));
       }
-      
+
       return files;
     } catch (error) {
       if (i === attempts.length - 1) {
@@ -175,21 +191,26 @@ export const getLineChanges = (branch: string, target: string, cwd: string): { a
   for (const command of attempts) {
     try {
       const output = runCommand(command, cwd, '', true, 0, true);
-      const statsLine = output.toString().split('\n').find((line: string) => line.includes('insertion') || line.includes('deletion'));
-      
+      const statsLine = output
+        .toString()
+        .split('\n')
+        .find((line: string) => line.includes('insertion') || line.includes('deletion'));
+
       if (!statsLine) {
         return { added: 0, deleted: 0 };
       }
 
       const addedMatch = statsLine.match(/(\d+) insertion/);
       const deletedMatch = statsLine.match(/(\d+) deletion/);
-      
+
       return {
         added: addedMatch ? parseInt(addedMatch[1]) : 0,
         deleted: deletedMatch ? parseInt(deletedMatch[1]) : 0,
       };
     } catch (error) {
-      // Continue to next attempt
+      log.error(
+        Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
+      );
       continue;
     }
   }
@@ -213,10 +234,16 @@ export const getCommitMessages = (branch: string, target: string, cwd: string): 
   for (const command of attempts) {
     try {
       const output = runCommand(command, cwd, '', true, 0, true);
-      const messages = output.toString().trim().split('\n').filter((msg: string) => msg.length > 0);
+      const messages = output
+        .toString()
+        .trim()
+        .split('\n')
+        .filter((msg: string) => msg.length > 0);
       return messages;
     } catch (error) {
-      // Continue to next attempt
+      log.error(
+        Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
+      );
       continue;
     }
   }
@@ -240,8 +267,12 @@ export const getDetailedCommits = (branch: string, target: string, cwd: string):
   for (const command of attempts) {
     try {
       const output = runCommand(command, cwd, '', true, 0, true);
-      const commitBlocks = output.toString().trim().split('\n\n').filter((block: string) => block.length > 0);
-      
+      const commitBlocks = output
+        .toString()
+        .trim()
+        .split('\n\n')
+        .filter((block: string) => block.length > 0);
+
       const commits: CommitInfo[] = [];
       for (const block of commitBlocks) {
         const lines = block.split('\n');
@@ -252,19 +283,21 @@ export const getDetailedCommits = (branch: string, target: string, cwd: string):
             const id = parts[0];
             const message = parts[1];
             const fullMessage = lines.slice(1).join('\n').trim() || message;
-            
+
             commits.push({
               id,
               message,
-              fullMessage
+              fullMessage,
             });
           }
         }
       }
-      
+
       return commits;
     } catch (error) {
-      // Continue to next attempt
+      log.error(
+        Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
+      );
       continue;
     }
   }
@@ -280,7 +313,7 @@ export const buildAnalysisContext = (
   branch: string,
   target: string,
   cwd: string,
-  verbose: boolean = false
+  verbose: boolean = false,
 ): AnalysisContext => {
   const changedFiles = getChangedFiles(branch, target, cwd, verbose);
   const lineChanges = getLineChanges(branch, target, cwd);

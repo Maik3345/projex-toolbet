@@ -4,16 +4,16 @@ import { Args, Command } from '@oclif/core';
 import { VTEX_CMS_DEFAULT_SITE, CLI_NAME, globalFlags } from '@shared';
 
 export default class Backup extends Command {
-  static description = `Download the files from the checkout files of a VTEX site`;
+  static description = `Download all checkout files from a VTEX site for backup or migration. Useful for versioning, disaster recovery, or moving between accounts. Shows clear output and actionable tips if something fails.`;
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} vtex cms backup`)}`,
-    `${Colors.PINK(`${CLI_NAME} vtex cms backup`)} my-site`,
+    `${Colors.PINK(CLI_NAME + ' vtex cms backup')}   # Backup files from the default VTEX site`,
+    `${Colors.PINK(CLI_NAME + ' vtex cms backup my-site')}   # Backup files from a specific site`,
   ];
 
   static args = {
     site: Args.string({
-      description: `Specify the account location to use. By default, the command uses the 'default' account of VTEX. This is useful when the account has multiple subhosts.`,
+      description: `The VTEX site/account to back up. Defaults to 'default'. Useful for multi-account setups.`,
     }),
   };
 

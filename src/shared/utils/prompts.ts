@@ -1,8 +1,19 @@
 const prompts = require('prompts');
 
+/**
+ * Utility class for handling user prompts in the command-line interface.
+ *
+ * @remarks
+ * This class provides methods to interactively prompt users for confirmation or input,
+ * and can be used to control process flow based on user responses.
+ */
 export class PromptsUtils {
-  /* The `continuePrompt` function is a method of the `PromptsUtils` class. It takes a `message`
-  parameter of type string. */
+  /**
+   * Prompts the user with a confirmation message and exits the process if the user does not confirm.
+   *
+   * @param message - The message to display in the confirmation prompt.
+   * @returns A promise that resolves when the prompt is completed. If the user does not confirm, the process exits.
+   */
   continuePrompt = async (message: string) => {
     const questions = [
       {

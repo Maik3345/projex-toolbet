@@ -14,7 +14,7 @@
     "semver",
     "devops"
   ],
-  "homepage": "",
+  "homepage": "https://github.com/Maik3345/projex-toolbet",
   "bugs": {
     "url": "https://github.com/Maik3345/projex-toolbet/issues"
   },
@@ -49,15 +49,16 @@
     "test:cov": "vitest run --coverage"
   },
   "dependencies": {
-    "@oclif/core": "^4.3.3",
-    "@oclif/plugin-help": "^6.2.28",
-    "@oclif/plugin-warn-if-update-available": "^3.1.41",
-    "axios": "^1.9.0",
+    "@oclif/core": "^4.5.2",
+    "@oclif/plugin-autocomplete": "^3.2.34",
+    "@oclif/plugin-help": "^6.2.32",
+    "@oclif/plugin-warn-if-update-available": "^3.1.46",
+    "axios": "^1.11.0",
     "chalk": "4.1.2",
     "child-process-es6-promise": "~1.2.1",
     "cli-table": "^0.3.11",
     "configstore": "^5.0.1",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.1",
     "prompts": "^2.4.2",
     "semver": "^7.7.2",
     "shx": "^0.4.0",
@@ -70,22 +71,23 @@
     "@types/cli-table": "^0.3.4",
     "@types/configstore": "^6.0.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.19.0",
-    "@types/ramda": "^0.30.2",
+    "@types/node": "^20.19.11",
+    "@types/prompts": "^2.4.9",
+    "@types/ramda": "^0.31.0",
     "@types/semver": "^7.7.0",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "^3.2.4",
     "eslint": "^8.57.1",
-    "eslint-config-oclif": "^5.2.2",
+    "eslint-config-oclif": "^6.0.95",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "engines": {
@@ -98,24 +100,28 @@
     "topicSeparator": " ",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-autocomplete"
     ],
     "warn-if-update-available": {
       "frequency": 1,
       "frequencyUnit": "days",
       "timeoutInDays": 7,
-      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>.",
+      "message": "🚀  A new version of <%= config.name %> is available!\n\nCurrent: <%= chalk.greenBright(config.version) %>   Latest: <%= chalk.greenBright(latest) %>\n\nUpdate now: npm i -g <%= config.name %>\nSee what's new: https://github.com/Maik3345/projex-toolbet/blob/main/CHANGELOG.md\n",
       "registry": "https://registry.npmjs.org"
     },
     "topics": {
       "git": {
-        "description": "Utilities for manage the git repository"
+        "description": "Utilities to manage the git repository and release workflows"
       },
       "vtex": {
-        "description": "Utilities for manage the vtex process and workflow"
+        "description": "Utilities to manage VTEX platform processes and automation"
       },
       "bash": {
-        "description": "Utilities for manage the bash process and workflow"
+        "description": "Batch command execution and bash workflow automation"
+      },
+      "pull-request": {
+        "description": "Pull request label suggestion and workflow utilities"
       }
     }
   }

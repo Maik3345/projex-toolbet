@@ -4,12 +4,12 @@ import { Args, Command } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Browse extends Command {
-  static description = `Run a command and automatically accept any "Yes/No" questions by default.`;
+  static description = `Run any VTEX CLI command and automatically answer all Yes/No prompts with 'Yes'. Perfect for CI/CD, automation, and scripting. Shows clear output and actionable tips if something fails.`;
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex release minor stable'`,
-    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex publish'`,
-    `${Colors.PINK(`${CLI_NAME} vtex run`)} 'vtex deploy'`,
+    `${Colors.PINK(CLI_NAME + ' vtex run')} 'vtex release minor stable'   # Release with auto-confirmation`,
+    `${Colors.PINK(CLI_NAME + ' vtex run')} 'vtex publish'   # Publish with all prompts auto-accepted`,
+    `${Colors.PINK(CLI_NAME + ' vtex run')} 'vtex deploy'   # Deploy with no manual intervention`,
   ];
 
   static flags = {
@@ -18,7 +18,7 @@ export default class Browse extends Command {
 
   static args = {
     command: Args.string({
-      description: `Specify the command to run. When using this command, we detect any prompts with the question "Yes/No" and automatically respond with "Yes". If the command finishes with errors, we throw an error to terminate the process.`,
+      description: `The VTEX CLI command to execute. All Yes/No prompts will be answered with 'Yes' automatically. Example: ${Colors.GREEN('vtex publish')}`,
     }),
   };
 

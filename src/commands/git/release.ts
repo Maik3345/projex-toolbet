@@ -4,66 +4,67 @@ import { Args, Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Release extends Command {
-  static description =
-    'Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).';
+  public static readonly description =
+    'Automate your release process: bump version, update changelog, commit, tag, and push in one step. Supports pre/post scripts, dry-run, and custom tagging. Shows clear output and actionable tips.';
 
-  static examples = [
-    `${Colors.PINK(`${CLI_NAME} git release`)}`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} beta`,
-    `${Colors.PINK(`${CLI_NAME} git release`)} stable`,
+  public static readonly examples = [
+    `${Colors.PINK(CLI_NAME + ' git release')}   # Standard release (patch, beta tag by default)`,
+    `${Colors.PINK(CLI_NAME + ' git release minor stable')}   # Minor release with stable tag`,
+    `${Colors.PINK(CLI_NAME + ' git release major --no-push')}   # Major release, do not push automatically`,
+    `${Colors.PINK(CLI_NAME + ' git release --get-version')}   # Show current version only`,
   ];
 
-  static flags = {
+  public static readonly flags = {
     ...globalFlags,
     yes: Flags.boolean({
-      description: 'Automatically answer yes to all prompts.',
+      description: 'Skip all confirmation prompts and run non-interactively.',
       char: 'y',
       default: false,
     }),
     'no-push': Flags.boolean({
-      description: 'Do not automatically push all changes to the remote repository.',
+      description: 'Do not push changes or tags to the remote repository automatically.',
       default: false,
     }),
     'no-deploy': Flags.boolean({
-      description: 'Do not automatically run the preRelease script from the manifest file.',
+      description: 'Skip running any deployment or pre-release scripts.',
       default: false,
     }),
     'no-check-release': Flags.boolean({
-      description: 'Do not automatically check if the release is valid and does not have local changes.',
+      description: 'Skip validation for uncommitted changes before releasing.',
       default: false,
     }),
     'no-pre-release': Flags.boolean({
-      description: 'Do not automatically run the preRelease script from the manifest file.',
+      description: 'Skip running pre-release scripts.',
       default: false,
     }),
     'no-post-release': Flags.boolean({
-      description: 'Do not automatically run the postRelease script from the manifest file.',
+      description: 'Skip running post-release scripts.',
       default: false,
     }),
     'no-tag': Flags.boolean({
-      description: 'Do not automatically tag the release.',
+      description: 'Do not create a git tag for this release.',
       default: false,
     }),
     'get-version': Flags.boolean({
-      description: 'Only get the current version without performing any release actions.',
+      description: 'Show the current version and exit (no release performed).',
       default: false,
     }),
     'get-release-type': Flags.boolean({
-      description: 'Get the release type of the current version.',
+      description: 'Show the release type (major, minor, patch, etc.) of the current version.',
       default: false,
     }),
     'get-only-version-number': Flags.boolean({
-      description: 'Get the version number only.',
+      description: 'Show only the version number (no extra output).',
       default: false,
     }),
   };
 
-  static args = {
+  public static readonly args = {
     tagName: Args.string({
       required: false,
       default: '',
       options: Object.keys(supportedTagNames),
-      description: 'The name of the tag. Defaults to "beta".',
+      description: 'Release tag to use (e.g. beta, stable). Defaults to "beta".',
     }),
   };
 

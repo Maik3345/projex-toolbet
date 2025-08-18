@@ -1,41 +1,39 @@
-import { log } from "../logger";
-import { spawn } from "child_process";
+import { log } from '../logger';
+import { spawn } from 'child_process';
 
 /**
- * The `runMultipleCommand` function executes a command in the shell and returns a promise that
- * resolves when the command exits, while also logging the output and handling any errors.
- * @param {string} command - The `command` parameter is a string that represents the command you want
- * to run. It can be any valid command that can be executed in a shell environment.
- * @param [errors] - The `errors` parameter is an optional array of strings. It is used to specify
- * specific error messages that should cause the process to exit with a non-zero status code. If any of
- * the error messages are found in the stderr output of the command being executed, the process will
- * exit with a status code
- * @returns The function `runMultipleCommand` returns a Promise that resolves to a string.
+ * Executes a shell command and logs its output and errors.
+ *
+ * @param command - The shell command to execute.
+ * @param errors - An optional array of error strings to watch for in stderr output. If any are detected, the process will exit with code 1.
+ * @returns A promise that resolves with the string 'exit' when the command completes.
+ *
+ * @remarks
+ * - Standard output is logged as informational messages.
+ * - Standard error is logged as warnings. If any of the specified error strings are found in the error output, a critical error is logged and the process exits.
+ * - Uses Node.js `spawn` with `shell: true`.
  */
-export const runMultipleCommand = (
-  command: string,
-  errors?: Array<string>
-): Promise<string> => {
+export const runMultipleCommand = (command: string, errors?: Array<string>): Promise<string> => {
   const task = spawn(`${command}`, [], {
     shell: true,
   });
   return new Promise(function (resolve) {
-    // Método para imprimir el log normal
-    task.stdout!.on("data", (data: string) => {
-      log.info(data.toString());
+    task.stdout.on('data', (data: string) => {
+      log.info(`ℹ️ ${data.toString()}`);
     });
 
-    task.on("exit", () => {
-      resolve("exit");
+    task.on('exit', () => {
+      resolve('exit');
     });
 
-    // Método para imprimir el log de error
-    task.stderr!.on("data", (data: string) => {
-      log.warn(data.toString());
+    task.stderr.on('data', (data: string) => {
+      log.warn(`⚠️ ${data.toString()}`);
 
       if (errors) {
-        errors.map((item: string) => {
+        errors.forEach((item: string) => {
           if (data.toString().includes(item)) {
+            log.error('❌ Critical error detected.');
+            log.info('💡 Tip: Review the error message above and check your command or environment.');
             process.exit(1);
           }
         });

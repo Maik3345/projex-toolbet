@@ -5,14 +5,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,ts}'],
+    include: ['test/**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist'],
     typecheck: {
-      tsconfig: './tsconfig.test.json'
+      tsconfig: './tsconfig.test.json',
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html','lcov'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules',
         'dist',
@@ -34,9 +34,9 @@ export default defineConfig({
           statements: 87,
           branches: 87,
           functions: 87,
-          lines: 87
-        }
-      }
+          lines: 87,
+        },
+      },
     },
   },
   resolve: {

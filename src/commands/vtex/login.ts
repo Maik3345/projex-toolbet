@@ -4,27 +4,28 @@ import { Args, Command } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Login extends Command {
-  static description = `Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI.`;
+  static description = `Log in to VTEX using your account, email, workspace, API key, and API token. Stores credentials in the VTEX config file for seamless CLI usage and automation.`;
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} vtex login [YourAccount] [YourEmail] [YourWorkspace] [YourApiKey] [YourApiToken]`)}`,
+    `${Colors.PINK(CLI_NAME + ' vtex login myaccount user@email.com dev myapikey myapitoken')}   # Log in to VTEX with all parameters`,
+    `${Colors.PINK(CLI_NAME + ' vtex login myaccount user@email.com dev')}   # Log in with just account, email, and workspace`,
   ];
 
   static args = {
     account: Args.string({
-      description: `Specify the account to set in the config file.`,
+      description: `Your VTEX account name.`,
     }),
     email: Args.string({
-      description: `Specify the user email to set in the config file.`,
+      description: `Your VTEX user email.`,
     }),
     workspace: Args.string({
-      description: `Specify the workspace to use in the process.`,
+      description: `Workspace to use (e.g. dev, master).`,
     }),
     apiKey: Args.string({
-      description: `Specify your API key to use in the process.`,
+      description: `API key for authentication (optional).`,
     }),
     apiToken: Args.string({
-      description: `Specify your API token to use in the process.`,
+      description: `API token for authentication (optional).`,
     }),
   };
 
