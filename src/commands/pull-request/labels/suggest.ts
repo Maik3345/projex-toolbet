@@ -4,18 +4,24 @@ import { Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Suggest extends Command {
-  static description =
+  public static readonly description =
     'Automatically suggest smart labels for your pull requests based on code changes, commit messages, and file types. Supports size/type/scope labels, color output, and multiple formats. Great for CI/CD and team consistency.';
 
-  static examples = [
+  public static readonly examples = [
     `${Colors.PINK(CLI_NAME + ' pull-request labels suggest')}   # Suggest labels for current branch`,
-    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --branch feature/new-component')}   # Analyze a specific branch`,
-    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --target main --format table')}   # Output as table comparing to main`,
-    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --format csv --colors')}   # Output as CSV with color codes`,
+    `${Colors.PINK(
+      CLI_NAME + ' pull-request labels suggest --branch feature/new-component',
+    )}   # Analyze a specific branch`,
+    `${Colors.PINK(
+      CLI_NAME + ' pull-request labels suggest --target main --format table',
+    )}   # Output as table comparing to main`,
+    `${Colors.PINK(
+      CLI_NAME + ' pull-request labels suggest --format csv --colors',
+    )}   # Output as CSV with color codes`,
     `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --no-fetch')}   # Skip fetching remote branches`,
   ];
 
-  static flags = {
+  public static readonly flags = {
     ...globalFlags,
     branch: Flags.string({
       description: 'Branch to analyze for label suggestions. Defaults to the current branch.',

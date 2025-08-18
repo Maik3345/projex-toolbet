@@ -69,11 +69,44 @@ const addArgs = format((info: any) => {
  * @param info - The log information object, expected to contain `level`, `message`, `args`, and optional `sender`.
  * @returns The formatted log message string.
  */
+// Helper to colorize the full message by log level
+const colorizeByLevel = (level: string, text: string) => {
+  const color = levelColorMap[level] || COLORS.GREY;
+  return chalk.hex(color)(text);
+};
+
+// Helper to pretty-print objects/arrays with color and multiline
+const prettyPrint = (value: any) => {
+  if (typeof value === 'object' && value !== null) {
+    return chalk.cyanBright(
+      JSON.stringify(value, null, 2)
+    );
+  }
+  return value;
+};
+
+// Option to output logs as JSON (for integration/monitoring)
+const LOG_AS_JSON = process.env.LOG_AS_JSON === 'true';
+
 const messageFormatter = format.printf((info: any) => {
   const { sender = '', message, args = [] } = info;
-  const formattedMsgWithArgs = formatWithOptions({ colors: true }, message, ...args);
+  if (LOG_AS_JSON) {
+    // Structured JSON output for console
+    return JSON.stringify({
+      level: info.level,
+      icon: getLevelIcon(info.level),
+      message,
+      args,
+      sender,
+      timestamp: info.timestamp
+    }, null, 2);
+  }
+  // Colorize and pretty-print objects/arrays in args
+  const formattedArgs = args.map(prettyPrint);
+  const formattedMsgWithArgs = formatWithOptions({ colors: true }, message, ...formattedArgs);
   const logIcon = getLevelIcon(info.level);
-  const msg = `${logIcon} ${formattedMsgWithArgs}  ${chalk.gray(sender)}`;
+  // Colorize the full message by level
+  const msg = colorizeByLevel(info.level, `${logIcon} ${formattedMsgWithArgs}`) + (sender ? `  ${chalk.gray(sender)}` : '');
   return msg;
 });
 
@@ -82,7 +115,9 @@ const messageFormatter = format.printf((info: any) => {
  *
  * @returns {'debug' | 'info'} Returns `'debug'` if verbose mode is enabled, otherwise `'info'`.
  */
+// Allow log level by environment (LOG_LEVEL=warn, etc)
 export const consoleLoggerLevel = () => {
+  if (process.env.LOG_LEVEL) return process.env.LOG_LEVEL;
   return isVerbose ? 'debug' : 'info';
 };
 
