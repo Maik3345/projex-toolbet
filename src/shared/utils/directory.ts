@@ -1,5 +1,4 @@
 import { Colors, getCurrentDirectory } from '@api';
-import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
@@ -123,7 +122,7 @@ export class DirectoryUtils {
     let selection = await this.chooseFolders(files, message);
     const selectedFolders = selection.choices;
     const numSelectedFolders = selectedFolders.length;
-    log.info(`${Colors.GREEN('📁 Number of selected folders:')} ${chalk.bold.whiteBright(numSelectedFolders)}`);
+    log.info(`${Colors.GREEN('📁 Number of selected folders:')} ${Colors.WHITE(numSelectedFolders.toString())}`);
     if (numSelectedFolders === 0) {
       log.info(Colors.YELLOW('💡 Tip: Select at least one folder to proceed.'));
     }
@@ -243,9 +242,7 @@ export class DirectoryUtils {
         return;
       }
 
-      log.info(`${Colors.BLUE('🔧 Setting up for:')} ${Colors.PINK(folder.name)}`);
       await method(folder.path);
-      log.info(`${Colors.GREEN('✅ Setup complete for:')} ${Colors.PINK(folder.name)}`);
     });
 
     await Promise.all(folderOperations);

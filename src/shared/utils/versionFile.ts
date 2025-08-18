@@ -13,7 +13,6 @@ import { log, runCommand } from '@shared';
 import { existsSync, readJsonSync, writeJsonSync } from 'fs-extra';
 import { inc, ReleaseType, valid } from 'semver';
 
-import chalk from 'chalk';
 import fs from 'fs';
 import { resolve } from 'path';
 
@@ -182,9 +181,7 @@ export class VersionFileUtils {
       content.version = newVersion;
   this.fs.writeJsonSync(file, content, { spaces: 2 });
   this.log.info(
-        `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
-          newVersion,
-        )} in ${chalk.bold.blue(file)}`,
+  `${Colors.GREEN('✅ Bumped version')} ${Colors.YELLOW(oldVersion)} -> ${Colors.GREEN(newVersion)} in ${Colors.BLUE(file)}`,
       );
     });
   };
@@ -229,9 +226,7 @@ export class VersionFileUtils {
 
   this.fs.writeJsonSync(this.packageFile, contentPackageJson, { spaces: 2 });
   this.log.info(
-        `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
-          newVersion,
-        )} in ${chalk.bold.blue(this.packageFile)}`,
+  `${Colors.GREEN('✅ Bumped version')} ${Colors.YELLOW(oldVersion)} -> ${Colors.GREEN(newVersion)} in ${Colors.BLUE(this.packageFile)}`,
       );
     }
 
@@ -240,9 +235,7 @@ export class VersionFileUtils {
       contentManifest.version = newVersion;
   this.fs.writeJsonSync(this.manifestFile, contentManifest, { spaces: 2 });
   this.log.info(
-        `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
-          newVersion,
-        )} in ${chalk.bold.blue(this.manifestFile)}`,
+  `${Colors.GREEN('✅ Bumped version')} ${Colors.YELLOW(oldVersion)} -> ${Colors.GREEN(newVersion)} in ${Colors.BLUE(this.manifestFile)}`,
       );
     }
   };

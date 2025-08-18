@@ -54,7 +54,6 @@
     "@oclif/plugin-help": "^6.2.32",
     "@oclif/plugin-warn-if-update-available": "^3.1.46",
     "axios": "^1.11.0",
-    "chalk": "4.1.2",
     "child-process-es6-promise": "~1.2.1",
     "cli-table": "^0.3.11",
     "configstore": "^5.0.1",

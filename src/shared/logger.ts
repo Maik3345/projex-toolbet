@@ -1,5 +1,4 @@
-import { COLORS } from '@api';
-import chalk from 'chalk';
+import { COLORS, Colors } from '@api';
 import { join } from 'path';
 import { formatWithOptions } from 'util';
 import { createLogger, format, transports } from 'winston';
@@ -19,7 +18,7 @@ enum LogLevelIcons {
  * Returns a colored icon representing the specified log level.
  *
  * Looks up the icon and color associated with the provided log level,
- * and returns the icon string styled with the corresponding color using `chalk`.
+ * and returns the icon string styled with the corresponding color using ANSI escapes.
  * If the log level is not recognized, returns an empty string.
  *
  * @param level - The log level as a string (e.g., "info", "error", "warn").
@@ -38,7 +37,7 @@ const levelColorMap: Record<string, string> = {
 const getLevelIcon = (level: string) => {
   const color = levelColorMap[level] || COLORS.GREY;
   const icon = LogLevelIcons[level as keyof typeof LogLevelIcons];
-  return icon ? chalk.hex(color)(icon) : '';
+  return icon ? Colors.colorize(color, icon) : '';
 };
 
 // The debug file is likely to be on ~/.config/configstore/debug.json
@@ -72,15 +71,13 @@ const addArgs = format((info: any) => {
 // Helper to colorize the full message by log level
 const colorizeByLevel = (level: string, text: string) => {
   const color = levelColorMap[level] || COLORS.GREY;
-  return chalk.hex(color)(text);
+  return Colors.colorize(color, text);
 };
 
 // Helper to pretty-print objects/arrays with color and multiline
 const prettyPrint = (value: any) => {
   if (typeof value === 'object' && value !== null) {
-    return chalk.cyanBright(
-      JSON.stringify(value, null, 2)
-    );
+    return Colors.CYAN(JSON.stringify(value, null, 2));
   }
   return value;
 };
@@ -92,21 +89,26 @@ const messageFormatter = format.printf((info: any) => {
   const { sender = '', message, args = [] } = info;
   if (LOG_AS_JSON) {
     // Structured JSON output for console
-    return JSON.stringify({
-      level: info.level,
-      icon: getLevelIcon(info.level),
-      message,
-      args,
-      sender,
-      timestamp: info.timestamp
-    }, null, 2);
+    return JSON.stringify(
+      {
+        level: info.level,
+        icon: getLevelIcon(info.level),
+        message,
+        args,
+        sender,
+        timestamp: info.timestamp,
+      },
+      null,
+      2,
+    );
   }
   // Colorize and pretty-print objects/arrays in args
   const formattedArgs = args.map(prettyPrint);
   const formattedMsgWithArgs = formatWithOptions({ colors: true }, message, ...formattedArgs);
   const logIcon = getLevelIcon(info.level);
   // Colorize the full message by level
-  const msg = colorizeByLevel(info.level, `${logIcon} ${formattedMsgWithArgs}`) + (sender ? `  ${chalk.gray(sender)}` : '');
+  const msg =
+    colorizeByLevel(info.level, `${logIcon} ${formattedMsgWithArgs}`) + (sender ? `  ${Colors.GREY(sender)}` : '');
   return msg;
 });
 
