@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@oclif/core": "^4.5.2",
+    "@oclif/plugin-autocomplete": "^3.2.34",
     "@oclif/plugin-help": "^6.2.32",
     "@oclif/plugin-warn-if-update-available": "^3.1.46",
     "axios": "^1.11.0",
@@ -98,7 +99,8 @@
     "topicSeparator": " ",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-autocomplete"
     ],
     "warn-if-update-available": {
       "frequency": 1,

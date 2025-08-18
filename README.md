@@ -77,21 +77,21 @@ Create the command file in the folder `./src/commands` with the name of the comm
 
 You can see the list of commands with the command `projex --help` and you can see the help of a specific command with the command `projex <command> --help`
 
-| Command                            | Description                                                                                                                                                                              |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `projex git init`                  | Initialize base files for managing documentation and versioning in a Git repository                                                                                                      |
-| `projex git setup conventional`    | Set up conventional commits with Husky and Commitlint for selected repositories (only for Git users)                                                                                      |
-| `projex git setup devops template` | Add necessary files and folders for Azure DevOps setup                                                                                                                                   |
-| `projex git update changelog`      | Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)                                                               |
-| `projex git clone`                 | Clone the specified repositories (Only for git users)                                                                                                                                    |
-| `projex git release`               | Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).                                                                                        |
-| `projex pull-request labels suggest` | Suggests labels for pull requests based on git changes, commit messages, and modified files                                                                                           |
-| `projex bash run`                  | Run a command in the current directory or select multiple directories                                                                                                                    |
-| `projex vtex login`                | Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI. |
-| `projex vtex cms backup`           | Download the files from the checkout files of a VTEX site                                                                                                                                |
-| `projex vtex cms deploy`           | Deploy local files in the checkout of the current account                                                                                                                                |
-| `projex vtex run`                  | Run a command and automatically accept any "Yes/No" questions by default.                                                                                                                |
-| `projex vtex run-script`           | Run a command from the manifest.json file, if the command not exist in this file pass to search in the package.json file default.                                                        |
+| Command                              | Description                                                                                                                                                                              |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projex git init`                    | Initialize base files for managing documentation and versioning in a Git repository                                                                                                      |
+| `projex git setup conventional`      | Set up conventional commits with Husky and Commitlint for selected repositories (only for Git users)                                                                                     |
+| `projex git setup devops template`   | Add necessary files and folders for Azure DevOps setup                                                                                                                                   |
+| `projex git update changelog`        | Update the changelog file with the latest changes in the current branch or with the provided content. (Only for git users)                                                               |
+| `projex git clone`                   | Clone the specified repositories (Only for git users)                                                                                                                                    |
+| `projex git release`                 | Bumps the app version, commits, and pushes the app to the remote repository (Only for git users).                                                                                        |
+| `projex pull-request labels suggest` | Suggests labels for pull requests based on git changes, commit messages, and modified files                                                                                              |
+| `projex bash run`                    | Run a command in the current directory or select multiple directories                                                                                                                    |
+| `projex vtex login`                  | Command to log in to VTEX. This command uses the API key and API token to obtain the authentication token and save it in the VTEX config file, allowing the process to use the VTEX CLI. |
+| `projex vtex cms backup`             | Download the files from the checkout files of a VTEX site                                                                                                                                |
+| `projex vtex cms deploy`             | Deploy local files in the checkout of the current account                                                                                                                                |
+| `projex vtex run`                    | Run a command and automatically accept any "Yes/No" questions by default.                                                                                                                |
+| `projex vtex run-script`             | Run a command from the manifest.json file, if the command not exist in this file pass to search in the package.json file default.                                                        |
 
 ## Commands
 
@@ -262,11 +262,11 @@ projex pull-request labels suggest --format table --colors
 ```
 Output:
 
-| Label         | Type    | Confidence | Description                | Color    | Evidence |
-|-------------- |---------|------------|----------------------------|----------|----------|
-| type:feature  | type    | 85%        | New feature or enhancement | #28a745  | N/A      |
-| scope:api     | scope   | 80%        | API-related changes        | #0366d6  | N/A      |
-| size:medium   | size    | 75%        | Medium change: 150 lines   | #ffcc00  | N/A      |
+| Label        | Type  | Confidence | Description                | Color   | Evidence |
+| ------------ | ----- | ---------- | -------------------------- | ------- | -------- |
+| type:feature | type  | 85%        | New feature or enhancement | #28a745 | N/A      |
+| scope:api    | scope | 80%        | API-related changes        | #0366d6 | N/A      |
+| size:medium  | size  | 75%        | Medium change: 150 lines   | #ffcc00 | N/A      |
 
 **JSON Format:**
 ```bash
@@ -346,3 +346,26 @@ This command is perfect for:
 - Standardizing label usage across teams
 - Ensuring consistent PR categorization
 - Integration with GitHub Actions or other automation tools
+
+
+# Autocompletado de comandos
+
+Projex CLI soporta autocompletado para bash, zsh y fish usando el plugin oficial de oclif.
+
+### Instalación y activación del autocompletado
+
+Para habilitar el autocompletado de comandos, ejecuta el siguiente comando y sigue las instrucciones que aparecen en pantalla:
+
+```bash
+projex autocomplete
+```
+
+Esto generará instrucciones específicas para tu shell (bash, zsh o fish). Por ejemplo:
+
+- **Bash:**
+  1. Ejecuta:
+    ```bash
+    projex autocomplete
+    ```
+  2. Sigue la instrucción que aparece
+  3. Emplea el autocompletado en tus comandos con <TAB>
