@@ -1,5 +1,5 @@
 import { Colors } from '@api';
-import { release, supportedTagNames } from '@modules';
+import { supportedTagNames } from '@modules';
 import { Args, Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
@@ -63,7 +63,7 @@ export default class Release extends Command {
     tagName: Args.string({
       required: false,
       default: '',
-      options: Object.keys(supportedTagNames),
+      options: Object.keys(supportedTagNames || {}),
       description: 'Release tag to use (e.g. beta, stable). Defaults to "beta".',
     }),
   };
@@ -75,6 +75,7 @@ export default class Release extends Command {
       args: { tagName },
     } = await this.parse(Release);
 
+    const { release } = await import('@modules');
     await release(
       {
         yes,

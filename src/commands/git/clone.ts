@@ -1,21 +1,25 @@
 import { Colors } from '@api';
-import { clone } from '@modules';
 import { Args, Command } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Release extends Command {
-  static description = 'Clone one or more repositories from a base URL. Useful for onboarding, monorepos, or batch cloning. Shows progress and actionable tips if cloning fails.';
+  public static readonly description =
+    'Clone one or more repositories from a base URL. Useful for onboarding, monorepos, or batch cloning. Shows progress and actionable tips if cloning fails.';
 
-  static examples = [
-    `${Colors.PINK(CLI_NAME + ' git clone')} 'https://dev.azure.com/Team/Project/_git/' 'my-project-1, my-project-2'   # Clone two Azure DevOps repos`,
-    `${Colors.PINK(CLI_NAME + ' git clone')} 'https://github.com/myorg/' 'repo1,repo2,repo3'   # Clone multiple GitHub repos`,
+  public static readonly examples = [
+    `${Colors.PINK(
+      CLI_NAME + ' git clone',
+    )} 'https://dev.azure.com/Team/Project/_git/' 'my-project-1, my-project-2'   # Clone two Azure DevOps repos`,
+    `${Colors.PINK(
+      CLI_NAME + ' git clone',
+    )} 'https://github.com/myorg/' 'repo1,repo2,repo3'   # Clone multiple GitHub repos`,
   ];
 
-  static flags = {
+  public static readonly flags = {
     ...globalFlags,
   };
 
-  static args = {
+  public static readonly args = {
     repositoryUrl: Args.string({
       required: true,
       default: '',
@@ -33,6 +37,7 @@ export default class Release extends Command {
       args: { repositoryUrl, repositoryList },
     } = await this.parse(Release);
 
+    const { clone } = await import('@modules');
     await clone(repositoryUrl, repositoryList);
   }
 }
