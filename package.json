@@ -104,7 +104,7 @@
       "frequency": 1,
       "frequencyUnit": "days",
       "timeoutInDays": 7,
-      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>.",
+      "message": "🚀  A new version of <%= config.name %> is available!\n\nCurrent: <%= chalk.greenBright(config.version) %>   Latest: <%= chalk.greenBright(latest) %>\n\nUpdate now: npm i -g <%= config.name %>\nSee what's new: https://github.com/Maik3345/projex-toolbet/blob/main/CHANGELOG.md\n",
       "registry": "https://registry.npmjs.org"
     },
     "topics": {
