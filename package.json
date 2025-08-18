@@ -109,13 +109,16 @@
     },
     "topics": {
       "git": {
-        "description": "Utilities for manage the git repository"
+        "description": "Utilities to manage the git repository and release workflows"
       },
       "vtex": {
-        "description": "Utilities for manage the vtex process and workflow"
+        "description": "Utilities to manage VTEX platform processes and automation"
       },
       "bash": {
-        "description": "Utilities for manage the bash process and workflow"
+        "description": "Batch command execution and bash workflow automation"
+      },
+      "pull-request": {
+        "description": "Pull request label suggestion and workflow utilities"
       }
     }
   }
