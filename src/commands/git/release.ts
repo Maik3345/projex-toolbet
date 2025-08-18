@@ -4,17 +4,17 @@ import { Args, Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Release extends Command {
-  static description =
+  public static readonly description =
     'Automate your release process: bump version, update changelog, commit, tag, and push in one step. Supports pre/post scripts, dry-run, and custom tagging. Shows clear output and actionable tips.';
 
-  static examples = [
+  public static readonly examples = [
     `${Colors.PINK(CLI_NAME + ' git release')}   # Standard release (patch, beta tag by default)`,
     `${Colors.PINK(CLI_NAME + ' git release minor stable')}   # Minor release with stable tag`,
     `${Colors.PINK(CLI_NAME + ' git release major --no-push')}   # Major release, do not push automatically`,
     `${Colors.PINK(CLI_NAME + ' git release --get-version')}   # Show current version only`,
   ];
 
-  static flags = {
+  public static readonly flags = {
     ...globalFlags,
     yes: Flags.boolean({
       description: 'Skip all confirmation prompts and run non-interactively.',
@@ -59,7 +59,7 @@ export default class Release extends Command {
     }),
   };
 
-  static args = {
+  public static readonly args = {
     tagName: Args.string({
       required: false,
       default: '',
