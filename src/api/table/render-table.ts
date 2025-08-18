@@ -39,7 +39,6 @@ export const renderTableOfCommits = ({
   });
 
   console.log(`${table.toString()}\n`);
-  console.log(chalk.green('✅ Table rendered successfully.'));
 };
 
 /**
@@ -76,5 +75,4 @@ export const renderTableOfReleaseVersions = ({
   });
 
   console.log(`${table.toString()}\n`);
-  console.log(chalk.green('✅ Table rendered successfully.'));
 };

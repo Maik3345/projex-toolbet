@@ -31,7 +31,6 @@ export const formatOutput = async (
     default:
       await formatAsJson(suggestions, verbose, colors);
   }
-  log.info(Colors.BLUE('🏷️ Suggested labels:'));
 };
 
 /**
@@ -59,7 +58,7 @@ const formatAsJson = async (suggestions: SuggestedLabels, verbose: boolean, colo
 const formatAsTable = async (suggestions: SuggestedLabels, verbose: boolean, colors?: boolean): Promise<void> => {
   const allLabels = getAllLabels(suggestions);
   if (allLabels.length === 0) {
-  log.info(Colors.YELLOW('ℹ️ No labels suggested based on the analysis.'));
+    log.info(Colors.YELLOW('ℹ️ No labels suggested based on the analysis.'));
     return;
   }
   const tableData = allLabels.map((label) => ({

@@ -9,6 +9,7 @@ export const isHotfixBranch = (context: AnalysisContext): boolean => {
   return /hotfix/i.test(context.branch);
 };
 import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
+import { log } from '@shared';
 
 /**
  * Determines an appropriate size label for a pull request based on the number of lines added/deleted
@@ -478,7 +479,7 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
   // DEBUG: Log all changed files
   if (process.env.PROJEX_DEBUG === '1') {
     // eslint-disable-next-line no-console
-    console.log('[needsDocumentation] changedFiles:', context.changedFiles);
+  log.info('[needsDocumentation] changedFiles:', context.changedFiles);
   }
 
   const IGNORED_DIRS = ['.github/', '.vscode/'];
@@ -492,14 +493,14 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
     if (isIgnored(file)) {
       if (process.env.PROJEX_DEBUG === '1') {
         // eslint-disable-next-line no-console
-        console.log('[needsDocumentation] Ignored doc file:', file);
+  log.info('[needsDocumentation] Ignored doc file:', file);
       }
       return false;
     }
     const isDoc = /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc');
     if (isDoc && process.env.PROJEX_DEBUG === '1') {
       // eslint-disable-next-line no-console
-      console.log('[needsDocumentation] Detected doc file:', file);
+  log.info('[needsDocumentation] Detected doc file:', file);
     }
     return isDoc;
   });

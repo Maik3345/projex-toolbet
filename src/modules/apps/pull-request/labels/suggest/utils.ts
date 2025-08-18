@@ -8,7 +8,6 @@ import { AnalysisContext, CommitInfo } from './types';
 export const getCurrentBranch = (cwd: string): string => {
   try {
     const output = runCommand('git rev-parse --abbrev-ref HEAD', cwd, '', true, 0, true);
-    log.info(Colors.BLUE(`🌿 Current branch: ${output.toString().trim()}`));
     return output.toString().trim();
   } catch (error) {
     log.error(Colors.ERROR('❌ Failed to get current branch'));
