@@ -65,6 +65,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@oclif/plugin-help": "^6.2.32",
+    "@oclif/plugin-update": "^4.7.4",
     "@oclif/prettier-config": "^0.2.1",
     "@types/cli-table": "^0.3.4",
     "@types/configstore": "^6.0.2",
@@ -101,7 +102,8 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-warn-if-update-available",
-      "@oclif/plugin-autocomplete"
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-update"
     ],
     "hooks": {
       "init": "./dist/hooks/init.js"
