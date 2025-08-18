@@ -1,4 +1,14 @@
 import { Colors, getAppRoot } from '@api';
+// Dependencias inyectables para facilitar testeo
+type FsLike = {
+  existsSync: typeof fs.existsSync;
+  readJsonSync: typeof readJsonSync;
+  writeJsonSync: typeof writeJsonSync;
+};
+type LogLike = typeof log;
+type RunCommandLike = typeof runCommand;
+type ProcessExitLike = typeof process.exit;
+
 import { log, runCommand } from '@shared';
 import { existsSync, readJsonSync, writeJsonSync } from 'fs-extra';
 import { inc, ReleaseType, valid } from 'semver';
@@ -57,7 +67,21 @@ export class VersionFileUtils {
   public versionContent: any = null;
   public changelogPath: string;
 
-  constructor() {
+  private fs: FsLike;
+  private log: LogLike;
+  private runCommand: RunCommandLike;
+  private processExit: ProcessExitLike;
+
+  constructor(opts?: {
+    fs?: FsLike;
+    log?: LogLike;
+    runCommand?: RunCommandLike;
+    processExit?: ProcessExitLike;
+  }) {
+    this.fs = opts?.fs || { existsSync, readJsonSync, writeJsonSync };
+    this.log = opts?.log || log;
+    this.runCommand = opts?.runCommand || runCommand;
+    this.processExit = opts?.processExit || process.exit;
     this.root = getAppRoot();
     this.manifestVersionFile = resolve(this.root, 'manifest.json');
     this.packageVersionFile = resolve(this.root, 'package.json');
@@ -73,7 +97,7 @@ export class VersionFileUtils {
    */
   public checkDirectory = (repository: string) => {
     try {
-      return fs.existsSync(repository);
+      return this.fs.existsSync(repository);
     } catch {
       return false;
     }
@@ -93,19 +117,19 @@ export class VersionFileUtils {
   private readonly readVersionFile = () => {
     if (this.checkDirectory(this.manifestVersionFile)) {
       this.manifestFile = this.manifestVersionFile;
-      this.manifestContent = readJsonSync(this.manifestVersionFile);
+      this.manifestContent = this.fs.readJsonSync(this.manifestVersionFile);
     }
     if (this.checkDirectory(this.packageVersionFile)) {
       this.packageFile = this.packageVersionFile;
-      this.packageJsonContent = readJsonSync(this.packageVersionFile);
+      this.packageJsonContent = this.fs.readJsonSync(this.packageVersionFile);
     }
 
     if (!this.manifestContent && !this.packageJsonContent) {
-      log.error(
+      this.log.error(
         `${Colors.ERROR('❌ Version file not found:')} ${this.manifestVersionFile} or ${this.packageVersionFile}.`,
       );
-      log.info(Colors.YELLOW('💡 Tip: Make sure you have a manifest.json or package.json in your project root.'));
-      process.exit(1);
+      this.log.info(Colors.YELLOW('💡 Tip: Make sure you have a manifest.json or package.json in your project root.'));
+      this.processExit(1);
     }
 
     this.versionFile = this.manifestFile || this.packageFile;
@@ -153,11 +177,11 @@ export class VersionFileUtils {
 
     releaseFiles.forEach((file) => {
       const resolveFile = resolve(this.root, file);
-      const content = readJsonSync(resolveFile);
+  const content = this.fs.readJsonSync(resolveFile);
       const oldVersion = content.version;
       content.version = newVersion;
-      writeJsonSync(file, content, { spaces: 2 });
-      log.info(
+  this.fs.writeJsonSync(file, content, { spaces: 2 });
+  this.log.info(
         `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
           newVersion,
         )} in ${chalk.bold.blue(file)}`,
@@ -184,7 +208,7 @@ export class VersionFileUtils {
       gitAddCommand += ` "${resolveFile}"`;
       successMessage += ` ${resolveFile}`;
     });
-    return runCommand(gitAddCommand, this.root, successMessage, true);
+    return this.runCommand(gitAddCommand, this.root, successMessage, true);
   };
 
   /**
@@ -203,8 +227,8 @@ export class VersionFileUtils {
       const oldVersion = contentPackageJson.version;
       contentPackageJson.version = newVersion;
 
-      writeJsonSync(this.packageFile, contentPackageJson, { spaces: 2 });
-      log.info(
+  this.fs.writeJsonSync(this.packageFile, contentPackageJson, { spaces: 2 });
+  this.log.info(
         `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
           newVersion,
         )} in ${chalk.bold.blue(this.packageFile)}`,
@@ -214,8 +238,8 @@ export class VersionFileUtils {
     if (contentManifest) {
       const oldVersion = contentManifest.version;
       contentManifest.version = newVersion;
-      writeJsonSync(this.manifestFile, contentManifest, { spaces: 2 });
-      log.info(
+  this.fs.writeJsonSync(this.manifestFile, contentManifest, { spaces: 2 });
+  this.log.info(
         `${Colors.GREEN('✅ Bumped version')} ${chalk.bold.yellow(oldVersion)} -> ${chalk.bold.green(
           newVersion,
         )} in ${chalk.bold.blue(this.manifestFile)}`,
@@ -236,9 +260,9 @@ export class VersionFileUtils {
   public readVersion = () => {
     const version = valid(this.versionContent?.version, true);
     if (!version) {
-      log.error(Colors.ERROR(`❌ Invalid app version: ${version}`));
-      log.info(Colors.YELLOW('💡 Tip: Check the version field in your manifest.json or package.json.'));
-      process.exit(1);
+  this.log.error(Colors.ERROR(`❌ Invalid app version: ${version}`));
+  this.log.info(Colors.YELLOW('💡 Tip: Check the version field in your manifest.json or package.json.'));
+  this.processExit(1);
     }
     return version;
   };
@@ -288,19 +312,19 @@ export class VersionFileUtils {
     let gitAddCommand = 'git add ';
     let successMessage = 'files added:';
 
-    if (existsSync(this.manifestFile)) {
+    if (this.fs.existsSync(this.manifestFile)) {
       gitAddCommand += ` "${this.manifestFile}"`;
       successMessage += ` ${this.manifestFile}`;
     }
-    if (existsSync(this.packageFile)) {
+    if (this.fs.existsSync(this.packageFile)) {
       gitAddCommand += ` "${this.packageFile}"`;
       successMessage += ` ${this.packageFile}`;
     }
-    if (existsSync(this.changelogPath)) {
+    if (this.fs.existsSync(this.changelogPath)) {
       gitAddCommand += ` "${this.changelogPath}"`;
       successMessage = ` ${this.changelogPath}`;
     }
-    return runCommand(gitAddCommand, this.root, successMessage, true);
+    return this.runCommand(gitAddCommand, this.root, successMessage, true);
   };
 
   /**
@@ -342,8 +366,8 @@ export class VersionFileUtils {
   private readonly getScript = (key: string): string => {
     const versionFile = this.getVersionFileToUse();
     if (!versionFile) {
-      log.error('no version file found');
-      process.exit(1);
+  this.log.error('no version file found');
+  this.processExit(1);
     }
 
     return versionFile.scripts?.[key];
@@ -369,7 +393,7 @@ export class VersionFileUtils {
       } else if (scriptInPackageFile) {
         return scriptInPackageFile;
       } else {
-        log.warn(`no script found for ${key}`);
+  this.log.warn(`no script found for ${key}`);
       }
     }
   };
@@ -383,7 +407,7 @@ export class VersionFileUtils {
    */
   public runFindScript = (key: string, msg: string) => {
     const cmd = this.findScript(key);
-    return cmd ? runCommand(cmd, this.root, msg, false) : log.verbose(`no script found for ${key}`);
+  return cmd ? this.runCommand(cmd, this.root, msg, false) : this.log.verbose(`no script found for ${key}`);
   };
 
   /**
@@ -399,7 +423,7 @@ export class VersionFileUtils {
    */
   public runScript = (key: string, msg: string) => {
     const cmd: string = this.getScript(key);
-    return cmd ? runCommand(cmd, this.root, msg, false) : log.verbose(`no script found for ${key}`);
+  return cmd ? this.runCommand(cmd, this.root, msg, false) : this.log.verbose(`no script found for ${key}`);
   };
 
   /**
