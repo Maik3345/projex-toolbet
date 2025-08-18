@@ -1,6 +1,6 @@
 import { Colors } from '@api';
 import { checkGit, checkIfInGitRepo, log, pushCommand, tag } from '@shared';
-import chalk from 'chalk';
+
 import { shouldUpdateChangelog } from './changelog';
 import { ReleaseUtils } from './utils';
 
@@ -98,7 +98,7 @@ export const release = async (
         await utils.postRelease(noPostRelease);
       }
     } catch (e) {
-      log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${chalk.bold(newVersion)}.`);
+      log.error(`${Colors.ERROR('an error occurred while releasing the new version')} ${Colors.BLUE(newVersion)}.`);
       log.error(e);
       process.exit(1);
     }

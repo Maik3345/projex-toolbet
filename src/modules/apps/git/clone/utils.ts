@@ -1,6 +1,5 @@
 import { Colors, getCurrentDirectory } from '@api';
 import { log, runCommand } from '@shared';
-import chalk from 'chalk';
 import fs from 'fs';
 
 /**
@@ -43,14 +42,14 @@ export class CloneUtils {
    */
   public cloneRepository = (repository: string) => {
     try {
-      log.info(`${Colors.BLUE('🔗 Cloning repository:')} ${chalk.bold(repository)}...`);
+      log.info(`${Colors.BLUE('🔗 Cloning repository:')} ${Colors.BLUE(repository)}...`);
       return runCommand(
         `git clone ${this.repositoryUrl}${repository}`,
         this.root,
         Colors.GREEN('✅ Repository cloned successfully!'),
       );
     } catch (e: any) {
-      log.error(Colors.ERROR(`❌ Failed to clone repository: ${chalk.bold(repository)}.`));
+      log.error(Colors.ERROR(`❌ Failed to clone repository: ${Colors.BLUE(repository)}.`));
       log.info(Colors.YELLOW('💡 Tip: Check your network connection and repository URL.'));
       log.error(e);
     }

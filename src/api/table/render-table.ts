@@ -1,19 +1,16 @@
-import chalk from 'chalk';
-
-import { createTable } from './table';
+import { Colors, createTable } from '@api';
 
 /**
- * Renders a table of commits to the console with a given title and list of items.
+ * Renders a formatted table of commit messages to the console.
  *
- * @param params - An object containing the following properties:
+ * @param params - The parameters for rendering the table.
  * @param params.title - The title to display as the table header.
  * @param params.emptyMessage - The message to display if the list is empty.
- * @param params.listArray - The array of commit messages or items to display in the table.
+ * @param params.listArray - The array of commit messages to display in the table.
  *
  * @remarks
- * - If the list is empty, an error message and a tip are displayed.
- * - Each item in the list is displayed with an index and styled output.
- * - Uses `chalk` for colored console output and `createTable` for table formatting.
+ * If the `listArray` is empty, an error message and a tip are displayed instead of the table.
+ * Each commit message is displayed with its index in a colored table format.
  */
 export const renderTableOfCommits = ({
   title,
@@ -26,18 +23,17 @@ export const renderTableOfCommits = ({
 }): void => {
   if (listArray.length === 0) {
     return console.log(
-      `${chalk.red('❌ ' + emptyMessage)}\n${chalk.yellow('💡 Tip: Make a commit to see it listed here.')}`,
+      `${Colors.ERROR('❌ ' + emptyMessage)}\n${Colors.YELLOW('💡 Tip: Make a commit to see it listed here.')}`,
     );
   }
 
   const table = createTable({
-    head: [chalk.green('🔢 #'), chalk.green(title)],
+    head: [Colors.GREEN('🔢 #'), Colors.GREEN(title)],
   });
 
   listArray.forEach((text: string, index: number) => {
-    table.push([`${index + 1}`, `${chalk.blue(text)}`]);
+    table.push([`${index + 1}`, `${Colors.BLUE(text)}`]);
   });
-
   console.log(`${table.toString()}\n`);
 };
 
@@ -62,12 +58,12 @@ export const renderTableOfReleaseVersions = ({
 }): void => {
   if (listArray.length === 0) {
     return console.log(
-      `${chalk.red('❌ ' + emptyMessage)}\n${chalk.yellow('💡 Tip: Run a release to generate a version entry.')}`,
+      `${Colors.ERROR('❌ ' + emptyMessage)}\n${Colors.YELLOW('💡 Tip: Run a release to generate a version entry.')}`,
     );
   }
 
   const table = createTable({
-    head: [chalk.green('🏷️ Version'), chalk.green('Value')],
+    head: [Colors.GREEN('🏷️ Version'), Colors.GREEN('Value')],
   });
 
   listArray.forEach((item) => {

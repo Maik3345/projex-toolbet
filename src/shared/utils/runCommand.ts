@@ -1,6 +1,5 @@
 const cp = require('child-process-es6-promise');
 import { Colors } from '@api';
-import chalk from 'chalk';
 import { log } from '../logger';
 
 /**
@@ -32,11 +31,11 @@ export const runCommand = (
       cwd,
     });
     if (!hideSuccessMessage) {
-      log.verbose(Colors.BLUE(`running command: ${Colors.WARNING(chalk.bold(cmd))}`));
+      log.verbose(Colors.BLUE(`running command: ${Colors.WARNING(Colors.BLUE(cmd))}`));
     }
     return output;
   } catch (e: any) {
-    const cmdInCwd = `${chalk.bold(cmd)} in ${chalk.bold(cwd)}`;
+    const cmdInCwd = `${Colors.BLUE(cmd)} in ${Colors.BLUE(cwd)}`;
     log.verbose(`${Colors.ERROR('error:')} ${Colors.WHITE(cmdInCwd)}`);
     if (!makeThrow) {
       return;
@@ -45,7 +44,7 @@ export const runCommand = (
     if (retries <= 0) {
       throw e;
     }
-    log.verbose(`retrying command: ${chalk.bold(cmd)} in ${chalk.bold(cwd)}`);
+    log.verbose(`retrying command: ${Colors.BLUE(cmd)} in ${Colors.BLUE(cwd)}`);
 
     return runCommand(cmd, cwd, successMessage, hideOutput, retries - 1, hideSuccessMessage);
   }

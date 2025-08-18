@@ -10,7 +10,7 @@ import {
   runCommand,
   VersionFileUtils,
 } from '@shared';
-import chalk from 'chalk';
+
 import { close, existsSync, openSync, readFileSync, writeSync } from 'fs-extra';
 import { ReleaseType } from 'semver';
 import { organizeCommitsToChangelog, validateVersion } from './changelog';
@@ -138,7 +138,7 @@ export class ReleaseUtils {
     if (!checkPreRelease) {
       if (!this.checkNothingToCommit()) {
         log.warn(
-          chalk.red(
+          Colors.ERROR(
             'process could not continue because there are uncommitted changes, Please commit your changes before proceeding.',
           ),
         );
@@ -168,7 +168,7 @@ export class ReleaseUtils {
    */
   public confirmRelease = async (newVersion: string): Promise<boolean> => {
     const answer = await promptConfirm(
-      chalk.green(`are you sure you want to release with version ${chalk.blue(newVersion)}?`),
+      Colors.GREEN(`are you sure you want to release with version ${Colors.BLUE(newVersion)}?`),
     );
     if (!answer) {
       log.warn('aborted release.');

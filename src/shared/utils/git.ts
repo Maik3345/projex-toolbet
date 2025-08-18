@@ -1,5 +1,4 @@
 import { Colors } from '@api';
-import chalk from 'chalk';
 import { log } from '../logger';
 import { runCommand } from './runCommand';
 const cp = require('child-process-es6-promise');
@@ -16,7 +15,7 @@ export const checkGit = () => {
   try {
     cp.execSync('git --version');
   } catch (e) {
-    log.error(Colors.ERROR(`❌ ${chalk.bold('git')} is not available in your system.`));
+    log.error(Colors.ERROR(`❌ ${Colors.BLUE('git')} is not available in your system.`));
     log.info(Colors.YELLOW('💡 Tip: Install git from https://git-scm.com/downloads and try again.'));
     throw e;
   }

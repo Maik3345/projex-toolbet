@@ -1,4 +1,4 @@
-import { LogLevelColors } from '@api';
+import { COLORS } from '@api';
 import chalk from 'chalk';
 import { join } from 'path';
 import { formatWithOptions } from 'util';
@@ -25,8 +25,18 @@ enum LogLevelIcons {
  * @param level - The log level as a string (e.g., "info", "error", "warn").
  * @returns The colored icon string for the log level, or an empty string if not found.
  */
+// Mapeo simple de nivel de log a color pastel
+const levelColorMap: Record<string, string> = {
+  info: COLORS.GREEN,
+  warn: COLORS.WARNING_TERMINAL,
+  error: COLORS.ERROR,
+  debug: COLORS.CYAN,
+  silly: COLORS.PURPLE,
+  verbose: COLORS.BLUE,
+};
+
 const getLevelIcon = (level: string) => {
-  const color = LogLevelColors[level as keyof typeof LogLevelColors];
+  const color = levelColorMap[level] || COLORS.GREY;
   const icon = LogLevelIcons[level as keyof typeof LogLevelIcons];
   return icon ? chalk.hex(color)(icon) : '';
 };
@@ -60,7 +70,7 @@ const addArgs = format((info: any) => {
  * @returns The formatted log message string.
  */
 const messageFormatter = format.printf((info: any) => {
-  const { sender = '', message, args = [] } = info as any;
+  const { sender = '', message, args = [] } = info;
   const formattedMsgWithArgs = formatWithOptions({ colors: true }, message, ...args);
   const logIcon = getLevelIcon(info.level);
   const msg = `${logIcon} ${formattedMsgWithArgs}  ${chalk.gray(sender)}`;

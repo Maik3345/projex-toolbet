@@ -1,6 +1,6 @@
 import { Colors } from '@api';
 import { log } from '@shared';
-import chalk from 'chalk';
+
 import { gt, parse, ReleaseType, valid } from 'semver';
 import {
   releaseTypesToUpdateChangelogList,
@@ -50,8 +50,8 @@ export const validateVersion = (oldVersion: string, releaseType: ReleaseType, ta
 
     if (!newVersion || !gt(newVersion, oldVersion)) {
       const errorMessage =
-        `❌ The new version (${chalk.bold(newVersion)}) must be greater than the previous version (${chalk.bold(
-          oldVersion,
+        `❌ The new version (${Colors.BLUE(newVersion || '')}) must be greater than the previous version (${Colors.BLUE(
+          oldVersion || '',
         )}).\n` + Colors.YELLOW('💡 Tip: Check the version number you are trying to release.');
       log.error(Colors.ERROR(errorMessage));
       throw new Error(errorMessage);
