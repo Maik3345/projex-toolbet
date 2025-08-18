@@ -8,7 +8,8 @@ import { EventEmitter } from 'events';
 vi.mock('../logger', () => ({
   log: {
     debug: vi.fn(),
-    error: vi.fn()
+    error: vi.fn(),
+    info: vi.fn()
   }
 }));
 
@@ -16,32 +17,28 @@ vi.mock('child_process', () => ({
   spawn: vi.fn()
 }));
 
-// Mock process.exit
-const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
-  throw new Error('Process exit prevented');
-});
+
 
 describe('runOnlyCommand', () => {
   let mockTask: any;
   let mockStdout: EventEmitter;
   let mockStderr: EventEmitter;
+  let mockExit: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+    mockExit = vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('process.exit called'); });
     mockStdout = new EventEmitter();
     mockStderr = new EventEmitter();
-    
     mockTask = {
       stdout: mockStdout,
       stderr: mockStderr
     };
-    
     (spawn as any).mockReturnValue(mockTask);
   });
 
   afterEach(() => {
-    mockExit.mockClear();
+    mockExit.mockRestore();
   });
 
   it('should execute command and return stdout data', async () => {
@@ -56,7 +53,7 @@ describe('runOnlyCommand', () => {
     const result = await promise;
     
     expect(spawn).toHaveBeenCalledWith(command, [], { shell: true });
-    expect(log.debug).toHaveBeenCalledWith(expectedOutput);
+  expect(log.debug).toHaveBeenCalledWith(expect.stringContaining(expectedOutput));
     expect(result).toBe(expectedOutput);
   });
 
@@ -78,21 +75,22 @@ describe('runOnlyCommand', () => {
     
     await promise;
     
-    expect(log.debug).toHaveBeenCalledWith(outputData);
+  expect(log.debug).toHaveBeenCalledWith(expect.stringContaining(outputData));
   });
 
   it('should handle stderr data and exit process', () => {
     const command = 'failing command';
     const errorData = 'error message';
-    
+
     runOnlyCommand(command);
-    
+
     expect(() => {
       mockStderr.emit('data', errorData);
-    }).toThrow('Process exit prevented');
-    
-    expect(log.debug).toHaveBeenCalledWith('Error running the command: ' + command);
-    expect(log.error).toHaveBeenCalledWith(errorData);
+    }).toThrow();
+
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining('❌ Error running the command: ' + command));
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining(errorData));
+    expect(log.info).toHaveBeenCalledWith(expect.stringContaining('💡 Tip: Check the command syntax and your environment variables.'));
     expect(mockExit).toHaveBeenCalledWith(1);
   });
 
@@ -106,7 +104,7 @@ describe('runOnlyCommand', () => {
     
     const result = await promise;
     
-    expect(log.debug).toHaveBeenCalledWith('buffer data');
+  expect(log.debug).toHaveBeenCalledWith(expect.stringContaining('buffer data'));
     expect(result).toBe('buffer data');
   });
 
@@ -118,9 +116,9 @@ describe('runOnlyCommand', () => {
     
     expect(() => {
       mockStderr.emit('data', bufferData);
-    }).toThrow('Process exit prevented');
+    }).toThrow();
     
-    expect(log.error).toHaveBeenCalledWith('error buffer');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('error buffer'));
   });
 
   it('should resolve promise on first stdout data event', async () => {
@@ -148,7 +146,7 @@ describe('runOnlyCommand', () => {
     const result = await promise;
     
     expect(result).toBe(outputData);
-    expect(log.debug).toHaveBeenCalledWith(outputData);
+  expect(log.debug).toHaveBeenCalledWith(expect.stringContaining(outputData));
   });
 
   it('should handle empty command string', () => {

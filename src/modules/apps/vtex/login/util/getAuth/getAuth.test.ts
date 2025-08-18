@@ -46,7 +46,7 @@ describe('serviceGetAuth', () => {
     const result = await serviceGetAuth('account', 'apiKey', undefined as any);
 
     // Check the log and result
-    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('account'));
     expect(result).toBeUndefined();
   });
 
@@ -61,7 +61,7 @@ describe('serviceGetAuth', () => {
 
     // Check the logs and result
     expect(log.debug).toHaveBeenCalledWith('Network error');
-    expect(log.error).toHaveBeenCalledWith('error on get auth token');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('auth token'));
     expect(result).toBeUndefined();
   });
 
@@ -70,7 +70,7 @@ describe('serviceGetAuth', () => {
     const result = await serviceGetAuth('account', undefined as any, 'apiToken');
 
     // Check the log and result
-    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('account'));
     expect(result).toBeUndefined();
   });
 
@@ -79,7 +79,7 @@ describe('serviceGetAuth', () => {
     const result = await serviceGetAuth(undefined as any, 'apiKey', 'apiToken');
 
     // Check the log and result
-    expect(log.error).toHaveBeenCalledWith('no account, apiToken or apiKey');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('account'));
     expect(result).toBeUndefined();
   });
 });

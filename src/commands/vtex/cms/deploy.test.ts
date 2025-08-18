@@ -24,13 +24,13 @@ describe('Deploy Command (vtex cms deploy)', () => {
   it('should call deploy with provided extension, site, and yes flag', async () => {
     command._mockParseResult = { args: { extension: 'ext', site: 'my-site' }, flags: { yes: true } };
     await command.run();
-    expect(deploy).toHaveBeenCalledWith('ext', 'my-site', { yes: true });
+  expect(deploy).toHaveBeenCalledWith('ext', { yes: true }, 'my-site');
   });
 
   it('should call deploy with default site and no extension', async () => {
     command._mockParseResult = { args: { extension: undefined, site: undefined }, flags: { yes: false } };
     await command.run();
-    expect(deploy).toHaveBeenCalledWith(undefined, expect.any(String), { yes: false });
+  expect(deploy).toHaveBeenCalledWith(undefined, { yes: false }, 'default');
   });
 
   it('should handle errors from deploy', async () => {

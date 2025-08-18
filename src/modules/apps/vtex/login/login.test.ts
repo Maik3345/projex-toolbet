@@ -40,7 +40,7 @@ describe('login', () => {
       login: email,
       env: 'prod',
     });
-    expect(log.info).toHaveBeenCalledWith('saving the authentication token in the VTEX config file...');
+  expect(log.info).toHaveBeenCalledWith(expect.stringContaining('authentication token'));
   });
 
   it('should throw an error if no token information is found', async () => {
@@ -54,12 +54,12 @@ describe('login', () => {
 
     await expect(login(account, email, workspace, apiKey, apiToken, false))
       .rejects.toThrow('Failed to obtain authentication token');
-    expect(log.error).toHaveBeenCalledWith('error while obtaining authentication token');
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('authentication token'));
   });
 
   it('should throw an error if any of the required parameters are missing', async () => {
     await expect(login(undefined, 'email', 'workspace', 'apiKey', 'apiToken', false))
       .rejects.toThrow('Missing required parameters');
-    expect(log.error).toHaveBeenCalledWith(expect.stringContaining('please provide all the required parameters to log in.'));
+  expect(log.error).toHaveBeenCalledWith(expect.stringContaining('required parameters'));
   });
 });

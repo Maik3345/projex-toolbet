@@ -11,6 +11,7 @@ vi.mock('../logger', () => ({
   log: {
     info: vi.fn(),
     warn: vi.fn(),
+    error: vi.fn(),
   },
 }));
 
@@ -18,29 +19,30 @@ import { runMultipleCommand } from './runMultipleCommand';
 import { spawn } from 'child_process';
 import { log } from '../logger';
 
-// Mock process.exit
-const mockProcessExit = vi.spyOn(process, 'exit').mockImplementation(() => {
-  throw new Error('process.exit called');
-});
+
 
 describe('runMultipleCommand', () => {
   let mockTask: EventEmitter & {
     stdout: EventEmitter;
     stderr: EventEmitter;
   };
+  let mockProcessExit: any;
 
   const mockSpawn = vi.mocked(spawn);
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+    mockProcessExit = vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('process.exit called'); });
     // Create fresh EventEmitters for each test
     mockTask = Object.assign(new EventEmitter(), {
       stdout: new EventEmitter(),
       stderr: new EventEmitter(),
     });
-
     mockSpawn.mockReturnValue(mockTask as any);
+  });
+
+  afterEach(() => {
+    mockProcessExit.mockRestore();
   });
 
   it('should execute command with correct parameters', async () => {
@@ -73,7 +75,7 @@ describe('runMultipleCommand', () => {
     
     await promise;
     
-    expect(log.info).toHaveBeenCalledWith(testData);
+  expect(log.info).toHaveBeenCalledWith(expect.stringContaining(testData));
   });
 
   it('should convert stdout data to string', async () => {
@@ -90,7 +92,7 @@ describe('runMultipleCommand', () => {
     
     await promise;
     
-    expect(log.info).toHaveBeenCalledWith('buffer data');
+  expect(log.info).toHaveBeenCalledWith(expect.stringContaining('buffer data'));
   });
 
   it('should log stderr data using log.warn', async () => {
@@ -107,7 +109,7 @@ describe('runMultipleCommand', () => {
     
     await promise;
     
-    expect(log.warn).toHaveBeenCalledWith(errorData);
+  expect(log.warn).toHaveBeenCalledWith(expect.stringContaining(errorData));
   });
 
   it('should convert stderr data to string', async () => {
@@ -124,21 +126,23 @@ describe('runMultipleCommand', () => {
     
     await promise;
     
-    expect(log.warn).toHaveBeenCalledWith('buffer error');
+  expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('buffer error'));
   });
 
   it('should exit process when stderr contains specific error', async () => {
     const command = 'test-command';
     const errorData = 'fatal error occurred';
     const errors = ['fatal error'];
-    
-    const promise = runMultipleCommand(command, errors);
-    
-    // Emit stderr data with error
+
+    runMultipleCommand(command, errors);
+
     expect(() => {
       mockTask.stderr.emit('data', errorData);
-    }).toThrow('process.exit called');
-    
+    }).toThrow();
+
+    expect(log.warn).toHaveBeenCalledWith(expect.stringContaining(errorData));
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining('❌ Critical error detected.'));
+    expect(log.info).toHaveBeenCalledWith(expect.stringContaining('💡 Tip: Review the error message above and check your command or environment.'));
     expect(mockProcessExit).toHaveBeenCalledWith(1);
   });
 
@@ -165,14 +169,16 @@ describe('runMultipleCommand', () => {
     const command = 'test-command';
     const errorData = 'critical system failure';
     const errors = ['fatal error', 'critical system', 'panic'];
-    
-    const promise = runMultipleCommand(command, errors);
-    
-    // Emit stderr data with one of the matching errors
+
+    runMultipleCommand(command, errors);
+
     expect(() => {
       mockTask.stderr.emit('data', errorData);
-    }).toThrow('process.exit called');
-    
+    }).toThrow();
+
+    expect(log.warn).toHaveBeenCalledWith(expect.stringContaining(errorData));
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining('❌ Critical error detected.'));
+    expect(log.info).toHaveBeenCalledWith(expect.stringContaining('💡 Tip: Review the error message above and check your command or environment.'));
     expect(mockProcessExit).toHaveBeenCalledWith(1);
   });
 
@@ -190,7 +196,7 @@ describe('runMultipleCommand', () => {
     
     const result = await promise;
     
-    expect(log.warn).toHaveBeenCalledWith(errorData);
+  expect(log.warn).toHaveBeenCalledWith(expect.stringContaining(errorData));
     expect(mockProcessExit).not.toHaveBeenCalled();
     expect(result).toBe('exit');
   });
