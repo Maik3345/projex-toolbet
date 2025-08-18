@@ -227,15 +227,60 @@ this command will create the following files:
 
 ## Suggest Labels for Pull Requests
 
+
 The command `projex pull-request labels suggest` automatically analyzes git changes and suggests appropriate labels for pull requests.
 
+### New: Show Recommended Label Colors
+
+You can use the `--colors` flag to include the recommended color for each suggested label in the output. This is useful for visual reference or when configuring label colors in your repository.
+
 ### Usage
+
 
 ```bash
 projex pull-request labels suggest
 projex pull-request labels suggest --branch feature/my-feature
 projex pull-request labels suggest --target master --format table
 projex pull-request labels suggest --format csv
+projex pull-request labels suggest --colors
+```
+
+#### Example outputs with --colors
+
+**CSV Format:**
+```bash
+projex pull-request labels suggest --format csv --colors
+```
+Output:
+```
+type:feature:#28a745,scope:api:#0366d6,size:medium:#ffcc00
+```
+
+**Table Format:**
+```bash
+projex pull-request labels suggest --format table --colors
+```
+Output:
+
+| Label         | Type    | Confidence | Description                | Color    | Evidence |
+|-------------- |---------|------------|----------------------------|----------|----------|
+| type:feature  | type    | 85%        | New feature or enhancement | #28a745  | N/A      |
+| scope:api     | scope   | 80%        | API-related changes        | #0366d6  | N/A      |
+| size:medium   | size    | 75%        | Medium change: 150 lines   | #ffcc00  | N/A      |
+
+**JSON Format:**
+```bash
+projex pull-request labels suggest --format json --colors
+```
+Output:
+```json
+{
+  "labels": [
+    { "name": "type:feature", "confidence": 85, "description": "New feature or enhancement", "color": "#28a745" },
+    { "name": "scope:api", "confidence": 80, "description": "API-related changes", "color": "#0366d6" },
+    { "name": "size:medium", "confidence": 75, "description": "Medium change: 150 lines", "color": "#ffcc00" }
+  ]
+}
 ```
 
 ### Options
