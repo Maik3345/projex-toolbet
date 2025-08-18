@@ -102,6 +102,9 @@
       "@oclif/plugin-warn-if-update-available",
       "@oclif/plugin-autocomplete"
     ],
+    "hooks": {
+      "init": "./dist/hooks/init.js"
+    },
     "warn-if-update-available": {
       "frequency": 1,
       "frequencyUnit": "days",
