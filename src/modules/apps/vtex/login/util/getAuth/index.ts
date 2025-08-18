@@ -18,7 +18,8 @@ import axios from 'axios';
 export const serviceGetAuth = async (account: string, apiKey: string, apiToken: string) => {
   try {
     if (!apiToken || !apiKey || !account) {
-      log.error('no account, apiToken or apiKey');
+      log.error('❌ Missing account, API token, or API key.');
+      log.info('💡 Tip: Please provide all required credentials.');
       return undefined;
     }
 
@@ -41,7 +42,8 @@ export const serviceGetAuth = async (account: string, apiKey: string, apiToken: 
     return await axios(config);
   } catch (error) {
     log.debug(error);
-    log.error('error on get auth token');
+    log.error('❌ Error while obtaining VTEX auth token.');
+    log.info('💡 Tip: Check your API key and token.');
     return undefined;
   }
 };

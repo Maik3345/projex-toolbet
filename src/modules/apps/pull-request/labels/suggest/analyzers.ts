@@ -1,5 +1,8 @@
 /**
- * Detecta si la rama actual es un hotfix (nombre contiene 'hotfix')
+ * Determines whether the current branch name indicates a hotfix branch.
+ *
+ * @param context - The analysis context containing branch information.
+ * @returns `true` if the branch name contains "hotfix" (case-insensitive), otherwise `false`.
  */
 export const isHotfixBranch = (context: AnalysisContext): boolean => {
   if (!context.branch) return false;
@@ -8,7 +11,12 @@ export const isHotfixBranch = (context: AnalysisContext): boolean => {
 import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
 
 /**
- * Determines the size of the change based on files and lines modified
+ * Determines an appropriate size label for a pull request based on the number of lines added/deleted
+ * and the number of files changed. Returns a label suggestion with a confidence score.
+ *
+ * @param context - The analysis context containing added/deleted lines and changed files.
+ * @returns A label suggestion object with the size label, description, and confidence score,
+ *          or `null` if a label cannot be determined.
  */
 export const determineSizeLabel = (context: AnalysisContext): LabelSuggestion | null => {
   const totalLines = context.addedLines + context.deletedLines;
@@ -40,11 +48,11 @@ export const determineSizeLabel = (context: AnalysisContext): LabelSuggestion | 
 export const determineTypeLabels = (context: AnalysisContext): LabelSuggestion[] => {
   // Priority-based type determination following conventional commits
   const primaryType = determinePrimaryConventionalType(context);
-  
+
   if (primaryType) {
     return [primaryType];
   }
-  
+
   return [];
 };
 
@@ -53,11 +61,11 @@ export const determineTypeLabels = (context: AnalysisContext): LabelSuggestion[]
  */
 export const determineReleaseLabels = (context: AnalysisContext): LabelSuggestion[] => {
   const releaseType = determinePrimaryReleaseType(context);
-  
+
   if (releaseType) {
     return [releaseType];
   }
-  
+
   return [];
 };
 
@@ -101,16 +109,11 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
       description: 'Bug fix',
       confidence: 85,
     },
-    
+
     // PERF (Medium Priority)
     {
       type: 'perf',
-      patterns: [
-        /\bperf:/i,
-        /\bperf\(/i,
-        /\b(performance|optimize|faster)\b/i,
-        /\b(speed|efficiency)\b/i,
-      ],
+      patterns: [/\bperf:/i, /\bperf\(/i, /\b(performance|optimize|faster)\b/i, /\b(speed|efficiency)\b/i],
       color: '#28a745',
       description: 'Performance improvement',
       confidence: 80,
@@ -134,13 +137,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     // DOCS (Medium Priority)
     {
       type: 'docs',
-      patterns: [
-        /\bdocs:/i,
-        /\bdocs\(/i,
-        /\b(docs?|documentation|readme)\b/i,
-        /\b(comment|javadoc)\b/i,
-        /\.md$/i,
-      ],
+      patterns: [/\bdocs:/i, /\bdocs\(/i, /\b(docs?|documentation|readme)\b/i, /\b(comment|javadoc)\b/i, /\.md$/i],
       color: '#0366d6',
       description: 'Documentation',
       confidence: 75,
@@ -205,12 +202,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     // CHORE (Lowest Priority)
     {
       type: 'chore',
-      patterns: [
-        /\bchore:/i,
-        /\bchore\(/i,
-        /\b(chore|maintenance|update)\b/i,
-        /\b(version)\b/i,
-      ],
+      patterns: [/\bchore:/i, /\bchore\(/i, /\b(chore|maintenance|update)\b/i, /\b(version)\b/i],
       color: '#586069',
       description: 'Maintenance',
       confidence: 65,
@@ -223,30 +215,29 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     if (evidence) {
       // Check if this is a breaking change for this type
       const breakingPatterns = [
-        /!:/,  // feat!: or fix!: pattern
+        /!:/, // feat!: or fix!: pattern
         /\bbreaking\s+change/i,
         /\bbreaking:/i,
         /\bmajor\s+change/i,
         /\bincompatible/i,
       ];
-      
-      const isBreaking = breakingPatterns.some(pattern => 
-        pattern.test(evidence.message) ||
-        context.commits.some(commit => 
-          pattern.test(commit.message) || pattern.test(commit.fullMessage)
-        )
+
+      const isBreaking = breakingPatterns.some(
+        (pattern) =>
+          pattern.test(evidence.message) ||
+          context.commits.some((commit) => pattern.test(commit.message) || pattern.test(commit.fullMessage)),
       );
-      
+
       // Calculate enhanced confidence based on multiple factors
       const enhancedConfidence = calculateEnhancedConfidence(typeDef, allContent, context);
-      
+
       const typeLabel = isBreaking ? `${typeDef.type}!` : typeDef.type;
       const description = isBreaking ? `${typeDef.description} (breaking change)` : typeDef.description;
       const color = isBreaking ? '#d73a49' : typeDef.color; // Red for breaking changes
-      
+
       return {
         name: `type:${typeLabel}`,
-  // color removed
+        // color removed
         description,
         confidence: isBreaking ? Math.min(enhancedConfidence + 10, 100) : enhancedConfidence,
         evidenceCommit: evidence,
@@ -257,22 +248,22 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
   // Default fallback if no specific pattern matches
   // Analyze file changes to make an educated guess
   if (context.changedFiles.length > 0) {
-    const hasTestFiles = context.changedFiles.some(file => /\.(test|spec)\./i.test(file));
-    const hasDocFiles = context.changedFiles.some(file => /\.(md|txt|rst)$/i.test(file));
-    
+    const hasTestFiles = context.changedFiles.some((file) => /\.(test|spec)\./i.test(file));
+    const hasDocFiles = context.changedFiles.some((file) => /\.(md|txt|rst)$/i.test(file));
+
     if (hasTestFiles) {
       return {
         name: 'type:test',
-  // color removed
+        // color removed
         description: 'Testing',
         confidence: 60,
       };
     }
-    
+
     if (hasDocFiles) {
       return {
         name: 'type:docs',
-  // color removed
+        // color removed
         description: 'Documentation',
         confidence: 60,
       };
@@ -282,7 +273,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
   // Ultimate fallback
   return {
     name: 'type:chore',
-  // color removed
+    // color removed
     description: 'Maintenance',
     confidence: 50,
   };
@@ -291,7 +282,7 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
 /**
  * Determines the primary release type based on git release logic:
  * 1. Breaking changes = breaking (highest priority)
- * 2. Features/enhancements = minor 
+ * 2. Features/enhancements = minor
  * 3. Bug fixes = patch (lowest priority)
  */
 const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion | null => {
@@ -303,16 +294,16 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   const breakingPatterns = [
     /\bbreaking\s+change/i,
     /\bbreaking:/i,
-    /!:/,  // feat!: or fix!: pattern
+    /!:/, // feat!: or fix!: pattern
     /\bmajor\s+change/i,
     /\bincompatible/i,
   ];
-  
+
   const breakingEvidence = findCommitEvidence(breakingPatterns, context);
   if (breakingEvidence) {
     return {
       name: 'release:breaking-change',
-  // color removed
+      // color removed
       description: 'Breaking change requiring major version bump',
       confidence: 95,
       evidenceCommit: breakingEvidence,
@@ -338,7 +329,7 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   if (minorEvidence) {
     return {
       name: 'release:minor',
-  // color removed
+      // color removed
       description: 'Minor version bump for new features',
       confidence: 85,
       evidenceCommit: minorEvidence,
@@ -346,15 +337,18 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   }
 
   // Everything else is patch (bug fixes, docs, tests, chores)
-  const patchEvidence = context.commits.length > 0 ? {
-    commitId: context.commits[0].id,
-    message: context.commits[0].message,
-    matchedPattern: 'default patch classification',
-  } : undefined;
+  const patchEvidence =
+    context.commits.length > 0
+      ? {
+          commitId: context.commits[0].id,
+          message: context.commits[0].message,
+          matchedPattern: 'default patch classification',
+        }
+      : undefined;
 
   return {
     name: 'release:patch',
-  // color removed
+    // color removed
     description: 'Patch version bump for bug fixes and minor changes',
     confidence: 75,
     evidenceCommit: patchEvidence,
@@ -488,30 +482,27 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
   }
 
   const IGNORED_DIRS = ['.github/', '.vscode/'];
-  const isIgnored = (file: string) => IGNORED_DIRS.some(dir => file.replace(/\\/g, '/').includes(dir));
+  const isIgnored = (file: string) => IGNORED_DIRS.some((dir) => file.replace(/\\/g, '/').includes(dir));
 
   const hasCodeChanges = context.changedFiles.some((file) =>
-    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file)
+    /\.(ts|js|tsx|jsx|py|go|java|c|cpp|cs|php|rb)$/i.test(file),
   );
 
-
-  const hasDocChanges = context.changedFiles.some(
-    (file) => {
-      if (isIgnored(file)) {
-        if (process.env.PROJEX_DEBUG === '1') {
-          // eslint-disable-next-line no-console
-          console.log('[needsDocumentation] Ignored doc file:', file);
-        }
-        return false;
-      }
-      const isDoc = /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc');
-      if (isDoc && process.env.PROJEX_DEBUG === '1') {
+  const hasDocChanges = context.changedFiles.some((file) => {
+    if (isIgnored(file)) {
+      if (process.env.PROJEX_DEBUG === '1') {
         // eslint-disable-next-line no-console
-        console.log('[needsDocumentation] Detected doc file:', file);
+        console.log('[needsDocumentation] Ignored doc file:', file);
       }
-      return isDoc;
+      return false;
     }
-  );
+    const isDoc = /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc');
+    if (isDoc && process.env.PROJEX_DEBUG === '1') {
+      // eslint-disable-next-line no-console
+      console.log('[needsDocumentation] Detected doc file:', file);
+    }
+    return isDoc;
+  });
 
   return hasCodeChanges && !hasDocChanges;
 };

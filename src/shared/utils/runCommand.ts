@@ -1,28 +1,20 @@
 const cp = require('child-process-es6-promise');
 import { Colors } from '@api';
-import { log } from '../logger';
 import chalk from 'chalk';
+import { log } from '../logger';
 
 /**
- * The `runCommand` function executes a command in a specified directory, logs success and error
- * messages, and allows for retries.
- * @param {string} cmd - The `cmd` parameter is a string that represents the command to be executed. It
- * can be any valid command that can be run in the command line.
- * @param {string} cwd - The `cwd` parameter stands for "current working directory". It specifies the
- * directory in which the command should be executed.
- * @param {string} successMessage - The `successMessage` parameter is a string that represents the
- * message to be displayed when the command is executed successfully.
- * @param [hideOutput=false] - A boolean flag indicating whether to hide the output of the command
- * being executed. If set to true, the output will not be displayed in the console. If set to false,
- * the output will be displayed in the console.
- * @param [retries=0] - The `retries` parameter is used to specify the number of times the command
- * should be retried if it fails. If the command fails and the number of retries is greater than 0, the
- * function will recursively call itself with the same parameters, except for the `retries` parameter
- * which will
- * @param [hideSuccessMessage=false] - The `hideSuccessMessage` parameter is a boolean flag that
- * determines whether the success message should be displayed or not. If set to `true`, the success
- * message will be hidden. If set to `false` (default), the success message will be displayed.
- * @returns The function `runCommand` returns the output of the executed command.
+ * Executes a shell command synchronously in a specified working directory, with optional output control, retries, and logging.
+ *
+ * @param cmd - The shell command to execute.
+ * @param cwd - The current working directory in which to run the command.
+ * @param successMessage - A message to display upon successful execution.
+ * @param hideOutput - If true, suppresses the command output; otherwise, outputs to the console. Defaults to false.
+ * @param retries - The number of times to retry the command if it fails. Defaults to 0 (no retries).
+ * @param hideSuccessMessage - If true, suppresses the success message logging. Defaults to false.
+ * @param makeThrow - If true, throws an error on failure after all retries; otherwise, returns undefined. Defaults to true.
+ * @returns The output of the executed command, or undefined if not throwing on failure.
+ * @throws Will throw an error if the command fails and `makeThrow` is true and retries are exhausted.
  */
 export const runCommand = (
   cmd: string,
@@ -44,7 +36,8 @@ export const runCommand = (
     }
     return output;
   } catch (e: any) {
-    log.verbose(`${Colors.ERROR('error:')} ${Colors.WHITE(`${chalk.bold(cmd)} in ${chalk.bold(cwd)}`)}`);
+    const cmdInCwd = `${chalk.bold(cmd)} in ${chalk.bold(cwd)}`;
+    log.verbose(`${Colors.ERROR('error:')} ${Colors.WHITE(cmdInCwd)}`);
     if (!makeThrow) {
       return;
     }

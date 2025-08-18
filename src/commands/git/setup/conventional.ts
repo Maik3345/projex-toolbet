@@ -5,17 +5,17 @@ import { setupConventional } from '../../../modules/apps/git/setup/conventional'
 import { globalFlags } from '@shared';
 
 export default class Release extends Command {
-  static description = 'Set up conventional commits with Husky and Commitlint for selected repositories (only for Git users)';
+  static description = 'Set up Conventional Commits, Husky hooks, and Commitlint in your project for standardized commit messages and automated changelog. Great for teams and CI/CD.';
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} git setup conventional`)}`,
-    `${Colors.PINK(`${CLI_NAME} git setup conventional -l`)}`,
+    `${Colors.PINK(CLI_NAME + ' git setup conventional')}   # Set up in the current project`,
+    `${Colors.PINK(CLI_NAME + ' git setup conventional -l')}   # Select from multiple projects`,
   ];
 
   static flags = {
     ...globalFlags,
     list: Flags.boolean({
-      description: 'List all projects to select for conventional commits setup',
+      description: 'Show a list of all detected projects and select where to set up Conventional Commits.',
       char: 'l',
       default: false,
     }),

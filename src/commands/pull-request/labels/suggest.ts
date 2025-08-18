@@ -5,43 +5,42 @@ import { CLI_NAME, globalFlags } from '@shared';
 
 export default class Suggest extends Command {
   static description =
-    'Suggests labels for pull requests based on git changes, commit messages, and modified files.';
+    'Automatically suggest smart labels for your pull requests based on code changes, commit messages, and file types. Supports size/type/scope labels, color output, and multiple formats. Great for CI/CD and team consistency.';
 
   static examples = [
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)}`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --branch feature/new-component`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --target master --verbose`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --target main --format txt`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format table --verbose`,
-    `${Colors.PINK(`${CLI_NAME} pull-request labels suggest`)} --format csv --no-fetch`,
+    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest')}   # Suggest labels for current branch`,
+    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --branch feature/new-component')}   # Analyze a specific branch`,
+    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --target main --format table')}   # Output as table comparing to main`,
+    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --format csv --colors')}   # Output as CSV with color codes`,
+    `${Colors.PINK(CLI_NAME + ' pull-request labels suggest --no-fetch')}   # Skip fetching remote branches`,
   ];
 
   static flags = {
     ...globalFlags,
     branch: Flags.string({
-      description: 'The branch to analyze for label suggestions. Defaults to current branch.',
+      description: 'Branch to analyze for label suggestions. Defaults to the current branch.',
       char: 'b',
       required: false,
     }),
     target: Flags.string({
-      description: 'The target branch to compare against. If not specified, attempts to detect the default branch (main, master, develop, etc.).',
+      description: 'Target branch to compare against. Auto-detects main, master, develop, etc. if not specified.',
       char: 't',
       required: false,
     }),
     format: Flags.string({
-      description: 'Output format for the suggested labels.',
+      description: 'Output format for suggested labels: json, table, list, txt, or csv.',
       char: 'f',
       required: false,
       default: 'json',
       options: ['json', 'table', 'list', 'txt', 'csv'],
     }),
     colors: Flags.boolean({
-      description: 'Include the color for each label in the output (for GitHub label automation).',
+      description: 'Include recommended color for each label (useful for GitHub/GitLab automation).',
       required: false,
       default: false,
     }),
     'no-fetch': Flags.boolean({
-      description: 'Skip automatic fetching of target branch from remote if not available locally.',
+      description: 'Do not fetch target branch from remote if not available locally.',
       required: false,
       default: false,
     }),

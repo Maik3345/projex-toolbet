@@ -1,9 +1,31 @@
 import { Colors } from '@api';
 import { checkGit, checkIfInGitRepo, log, pushCommand, tag } from '@shared';
+import chalk from 'chalk';
 import { shouldUpdateChangelog } from './changelog';
 import { ReleaseUtils } from './utils';
-import chalk from 'chalk';
 
+/**
+ * Handles the process of creating and managing a Git release, including version bumping,
+ * changelog updates, tagging, pushing, and optional deployment steps.
+ *
+ * @param options - Configuration options to control the release process.
+ * @param options.y - If true, automatically confirm the release without prompting.
+ * @param options.yes - Alias for `y`.
+ * @param options.noPush - If true, skip pushing changes to the remote repository.
+ * @param options.noDeploy - If true, skip the deployment step after release.
+ * @param options.noCheckRelease - If true, skip pre-release checks.
+ * @param options.noTag - If true, do not create a Git tag for the release.
+ * @param options.getVersion - If true, output version information and exit.
+ * @param options.noPreRelease - If true, skip pre-release hooks.
+ * @param options.noPostRelease - If true, skip post-release hooks.
+ * @param options.getReleaseType - If true, output the release type and exit.
+ * @param options.getOnlyVersionNumber - If true, output only the new version number and exit.
+ * @param tagName - The name of the Git tag to create for the release.
+ *
+ * @returns {Promise<void>} Resolves when the release process is complete or exits early based on options.
+ *
+ * @throws Will log and exit the process if an error occurs during the release process.
+ */
 export const release = async (
   options: {
     y?: boolean;
@@ -54,15 +76,15 @@ export const release = async (
     try {
       await utils.preRelease({ noPreRelease, checkPreRelease, releaseType });
 
-      await utils.versionFileUtils.updateReleaseFilesVersion(newVersion);
-      await utils.versionFileUtils.bump(newVersion);
+      utils.versionFileUtils.updateReleaseFilesVersion(newVersion);
+      utils.versionFileUtils.bump(newVersion);
 
       if (shouldUpdateChangelog(releaseType, tagName)) {
         utils.updateChangelog(changelogVersion, changelog);
       }
 
       if (!pushAutomatic) {
-        await utils.versionFileUtils.addReleaseFiles();
+        utils.versionFileUtils.addReleaseFiles();
         await utils.versionFileUtils.add();
         await utils.commit(tagText, releaseType);
       }

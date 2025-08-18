@@ -1,8 +1,8 @@
 /**
- * The function `getAccountName` takes a string as input and returns the 6th word in the string.
- * @param {string} text - A string that contains multiple words separated by spaces or commas.
- * @returns The function `getAccountName` returns the 6th element (index 5) after splitting the input
- * `text` by spaces and commas.
+ * Extracts the sixth word from a given string, splitting by spaces and/or commas.
+ *
+ * @param text - The input string containing account information.
+ * @returns The sixth word in the string, or `undefined` if there are fewer than six words.
  */
 export const getAccountName = (text: string) => {
   return text.split(/[ ,]+/)[5];
