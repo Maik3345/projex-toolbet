@@ -30,17 +30,17 @@ flowchart TB
         version["Version Management"]:::statementClass
     end
 
-    subgraph "External Dependencies"
-        chalk["Chalk (Colors)"]:::amazonClass
-        inquirer["Prompts (Input)"]:::amazonClass
-        fs["File System"]:::dbClass
-        child_process["Child Process"]:::amazonClass
-    end
+  subgraph "External Dependencies"
+    colors["Colors (ANSI)"]:::amazonClass
+    inquirer["Prompts (Input)"]:::amazonClass
+    fs["File System"]:::dbClass
+    child_process["Child Process"]:::amazonClass
+  end
 
-    constants --> chalk
-    prompts --> inquirer
-    files --> fs
-    commands --> child_process
+  constants --> colors
+  prompts --> inquirer
+  files --> fs
+  commands --> child_process
     
     logger --> constants
     table --> constants
@@ -90,21 +90,17 @@ flowchart TB
 ### Configuración de Colores
 ```typescript
 // src/api/constants/colors-chalk.ts
-export const colors = {
-  primary: chalk.blue,
-  success: chalk.green,
-  warning: chalk.yellow,
-  error: chalk.red,
-  info: chalk.cyan,
-  muted: chalk.gray,
-  bold: chalk.bold,
-  dim: chalk.dim
-};
+export class Colors {
+  public static readonly GREEN = (msg: string) => /* ... */;
+  public static readonly ERROR = (msg: string) => /* ... */;
+  public static readonly YELLOW = (msg: string) => /* ... */;
+  // ...otros colores
+}
 
 // Uso en comandos
-console.log(colors.success('✅ Operation completed'));
-console.log(colors.error('❌ Error occurred'));
-console.log(colors.warning('⚠️ Warning message'));
+console.log(Colors.GREEN('✅ Operation completed'));
+console.log(Colors.ERROR('❌ Error occurred'));
+console.log(Colors.YELLOW('⚠️ Warning message'));
 ```
 
 ## Sistema de Ejecución de Comandos

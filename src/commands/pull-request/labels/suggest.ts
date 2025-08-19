@@ -1,5 +1,4 @@
 import { Colors } from '@api';
-import { suggestLabels } from '@modules';
 import { Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags } from '@shared';
 
@@ -57,6 +56,7 @@ export default class Suggest extends Command {
       flags: { branch, target, format, verbose, colors, 'no-fetch': noFetch },
     } = await this.parse(Suggest);
 
+    const { suggestLabels } = await import('@modules');
     await suggestLabels({
       branch,
       target,

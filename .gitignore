@@ -33,3 +33,6 @@ yarn.lock
 
 # Coverage
 /coverage
+
+# Temporary files
+*.tgz

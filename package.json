@@ -51,22 +51,21 @@
   "dependencies": {
     "@oclif/core": "^4.5.2",
     "@oclif/plugin-autocomplete": "^3.2.34",
-    "@oclif/plugin-help": "^6.2.32",
     "@oclif/plugin-warn-if-update-available": "^3.1.46",
     "axios": "^1.11.0",
-    "chalk": "4.1.2",
     "child-process-es6-promise": "~1.2.1",
     "cli-table": "^0.3.11",
     "configstore": "^5.0.1",
     "fs-extra": "^11.3.1",
     "prompts": "^2.4.2",
     "semver": "^7.7.2",
-    "shx": "^0.4.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@oclif/plugin-help": "^6.2.32",
+    "@oclif/plugin-update": "^4.7.4",
     "@oclif/prettier-config": "^0.2.1",
     "@types/cli-table": "^0.3.4",
     "@types/configstore": "^6.0.2",
@@ -84,6 +83,7 @@
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
+    "shx": "^0.4.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
@@ -98,11 +98,16 @@
     "bin": "projex",
     "scope": "projex",
     "topicSeparator": " ",
+    "helpClass": "./dist/cli-help",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-warn-if-update-available",
-      "@oclif/plugin-autocomplete"
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-update"
     ],
+    "hooks": {
+      "init": "./dist/hooks/init.js"
+    },
     "warn-if-update-available": {
       "frequency": 1,
       "frequencyUnit": "days",
@@ -124,5 +129,10 @@
         "description": "Pull request label suggestion and workflow utilities"
       }
     }
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/**/*.js"
+    }
+  ]
 }

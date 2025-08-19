@@ -1,5 +1,4 @@
 import { Colors } from '@api';
-import { deploy } from '@modules';
 import { Args, Command, Flags } from '@oclif/core';
 import { CLI_NAME, globalFlags, VTEX_CMS_DEFAULT_SITE } from '@shared';
 
@@ -36,6 +35,7 @@ export default class Deploy extends Command {
     const { yes } = flags;
     const { site = VTEX_CMS_DEFAULT_SITE, extension } = args;
 
+    const { deploy } = await import('@modules');
     await deploy(extension, { yes }, site);
   }
 }
