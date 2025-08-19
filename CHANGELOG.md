@@ -1,3 +1,8 @@
+
+### Code Refactoring
+
+* main: reorganize changelog entries and improve release utility methods ([3b5fac9f](https://github.com/Maik3345/projex-toolbet/commit/3b5fac9f6bb26cf755675f25a6a20e4e5bcf87c8))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
