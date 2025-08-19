@@ -1,8 +1,3 @@
-
-### Features
-
-* implement code changes to enhance functionality and improve performance ([#28](https://github.com/Maik3345/projex-toolbet/pull/28)) ([e56a33fd](https://github.com/Maik3345/projex-toolbet/commit/e56a33fdb4db46dc1100e66eb73ccc952ccdb7e5))
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -11,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+### Features
+
+* implement code changes to enhance functionality and improve performance ([#28](https://github.com/Maik3345/projex-toolbet/pull/28)) ([e56a33fd](https://github.com/Maik3345/projex-toolbet/commit/e56a33fdb4db46dc1100e66eb73ccc952ccdb7e5))
 
 ## [2.9.0](https://github.com/Maik3345/projex-toolbet/compare/v2.8.0...v2.9.0) - (2025-08-18)
 
