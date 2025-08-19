@@ -1,3 +1,8 @@
+
+### Features
+
+* implement code changes to enhance functionality and improve performance ([#28](https://github.com/Maik3345/projex-toolbet/pull/28)) ([e56a33fd](https://github.com/Maik3345/projex-toolbet/commit/e56a33fdb4db46dc1100e66eb73ccc952ccdb7e5))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
