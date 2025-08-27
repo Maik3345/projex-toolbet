@@ -295,7 +295,7 @@ export const getDetailedCommits = (branch: string, target: string, cwd: string):
 
       return commits;
     } catch (error) {
-      log.error(
+      log.verbose(
         Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
       );
       continue;
