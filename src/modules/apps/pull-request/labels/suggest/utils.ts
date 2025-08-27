@@ -208,14 +208,14 @@ export const getLineChanges = (branch: string, target: string, cwd: string): { a
         deleted: deletedMatch ? parseInt(deletedMatch[1]) : 0,
       };
     } catch (error) {
-      log.error(
+      log.verbose(
         Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
       );
       continue;
     }
   }
 
-  log.error(Colors.ERROR('Failed to get line changes'));
+  log.verbose(Colors.ERROR('Failed to get line changes'));
   return { added: 0, deleted: 0 };
 };
 
