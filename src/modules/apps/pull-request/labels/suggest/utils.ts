@@ -241,7 +241,7 @@ export const getCommitMessages = (branch: string, target: string, cwd: string): 
         .filter((msg: string) => msg.length > 0);
       return messages;
     } catch (error) {
-      log.error(
+      log.verbose(
         Colors.ERROR(`Error executing command "${command}": ${error instanceof Error ? error.message : String(error)}`),
       );
       continue;
