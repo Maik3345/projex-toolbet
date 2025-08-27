@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.15.0](https://github.com/Maik3345/projex-toolbet/compare/v2.14.0...v2.15.0) - (2025-08-27)
+
+### Code Refactoring
+
+* main: change error logging to verbose in getcommitmessages function ([841864b0](https://github.com/Maik3345/projex-toolbet/commit/841864b00407cca88755c1c4362a3bd23a812500))
+
+
 ## [2.14.0](https://github.com/Maik3345/projex-toolbet/compare/v2.13.0...v2.14.0) - (2025-08-27)
 
 ### Code Refactoring
