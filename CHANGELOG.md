@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.13.0](https://github.com/Maik3345/projex-toolbet/compare/v2.12.0...v2.13.0) - (2025-08-27)
+
+### Code Refactoring
+
+* fix/get-labels-logs: change error logging to verbose for line changes function ([#29](https://github.com/Maik3345/projex-toolbet/pull/29)) ([d22fcff1](https://github.com/Maik3345/projex-toolbet/commit/d22fcff16b04b4ce4c20c28c16e3267155ad264f))
+
+
 ## [2.12.0](https://github.com/Maik3345/projex-toolbet/compare/v2.11.0...v2.12.0) - (2025-08-19)
 
 ### Features
