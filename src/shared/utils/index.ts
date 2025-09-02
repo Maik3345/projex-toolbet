@@ -1,9 +1,6 @@
 export * from './account';
 export * from './code';
 export * from './debounce';
-export * from './directory';
-export * from './files';
-export * from './getContentFiles';
 export * from './git';
 export * from './oclif';
 export * from './prompts';
@@ -11,3 +8,4 @@ export * from './runCommand';
 export * from './runMultipleCommand';
 export * from './runOnlyCommand';
 export * from './versionFile';
+export * from './fileUtils';
