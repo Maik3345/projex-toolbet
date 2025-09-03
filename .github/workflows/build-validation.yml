@@ -42,3 +42,20 @@ jobs:
 
       - name: '🛠️ Build project'
         run: npm run build
+
+      - name: '🧪 Verify CLI functionality'
+        run: |
+          # Link the CLI globally
+          npm link
+
+          # Check that the CLI responds to basic commands
+          projex --help
+          projex git --help
+          projex vtex --help
+          
+          # Try a simple command like version check
+          projex --version
+          
+          # Validate at least one specific command works
+          # This ensures imports are correctly resolved
+          projex git init --help
