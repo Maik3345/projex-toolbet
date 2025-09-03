@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { SuggestLabelsOptions, suggestLabels } from '../../../../../../src/modules/apps/pull-request/labels';
 
 describe('suggestLabels', () => {
+  // Define reusable test options
   const mockOptions: SuggestLabelsOptions = {
     branch: 'feature/test-branch',
     target: 'main',
@@ -32,18 +33,11 @@ describe('suggestLabels', () => {
 
   it('should accept valid options', () => {
     expect(() => {
-      // This should not throw
-      const options: SuggestLabelsOptions = {
-        target: 'main',
-        format: 'json',
-        verbose: true,
-      };
-
-      const optionsTxt: SuggestLabelsOptions = {
-        target: 'main',
-        format: 'txt',
-        verbose: false,
-      };
+      // Test JSON format options
+      suggestLabels(mockOptions);
+      
+      // Test TXT format options
+      suggestLabels(mockOptionsTxt);
     }).not.toThrow();
   });
 });

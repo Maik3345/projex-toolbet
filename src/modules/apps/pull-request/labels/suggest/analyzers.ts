@@ -8,8 +8,8 @@ export const isHotfixBranch = (context: AnalysisContext): boolean => {
   if (!context.branch) return false;
   return /hotfix/i.test(context.branch);
 };
-import { AnalysisContext, LabelSuggestion, CommitEvidence } from './types';
 import { log } from '@shared';
+import { AnalysisContext, CommitEvidence, LabelSuggestion } from './types';
 
 /**
  * Determines an appropriate size label for a pull request based on the number of lines added/deleted
@@ -234,11 +234,9 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
 
       const typeLabel = isBreaking ? `${typeDef.type}!` : typeDef.type;
       const description = isBreaking ? `${typeDef.description} (breaking change)` : typeDef.description;
-      const color = isBreaking ? '#d73a49' : typeDef.color; // Red for breaking changes
 
       return {
         name: `type:${typeLabel}`,
-        // color removed
         description,
         confidence: isBreaking ? Math.min(enhancedConfidence + 10, 100) : enhancedConfidence,
         evidenceCommit: evidence,
@@ -255,7 +253,6 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     if (hasTestFiles) {
       return {
         name: 'type:test',
-        // color removed
         description: 'Testing',
         confidence: 60,
       };
@@ -264,7 +261,6 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
     if (hasDocFiles) {
       return {
         name: 'type:docs',
-        // color removed
         description: 'Documentation',
         confidence: 60,
       };
@@ -274,7 +270,6 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
   // Ultimate fallback
   return {
     name: 'type:chore',
-    // color removed
     description: 'Maintenance',
     confidence: 50,
   };
@@ -287,10 +282,6 @@ const determinePrimaryConventionalType = (context: AnalysisContext): LabelSugges
  * 3. Bug fixes = patch (lowest priority)
  */
 const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion | null => {
-  const allMessages = context.commitMessages.join(' ').toLowerCase();
-  const changedFiles = context.changedFiles.join(' ').toLowerCase();
-  const allContent = `${allMessages} ${changedFiles}`;
-
   // Check for breaking changes first (highest priority)
   const breakingPatterns = [
     /\bbreaking\s+change/i,
@@ -304,7 +295,6 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   if (breakingEvidence) {
     return {
       name: 'release:breaking-change',
-      // color removed
       description: 'Breaking change requiring major version bump',
       confidence: 95,
       evidenceCommit: breakingEvidence,
@@ -330,7 +320,6 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
   if (minorEvidence) {
     return {
       name: 'release:minor',
-      // color removed
       description: 'Minor version bump for new features',
       confidence: 85,
       evidenceCommit: minorEvidence,
@@ -349,7 +338,6 @@ const determinePrimaryReleaseType = (context: AnalysisContext): LabelSuggestion 
 
   return {
     name: 'release:patch',
-    // color removed
     description: 'Patch version bump for bug fixes and minor changes',
     confidence: 75,
     evidenceCommit: patchEvidence,
@@ -479,7 +467,7 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
   // DEBUG: Log all changed files
   if (process.env.PROJEX_DEBUG === '1') {
     // eslint-disable-next-line no-console
-  log.info('[needsDocumentation] changedFiles:', context.changedFiles);
+    log.info('[needsDocumentation] changedFiles:', context.changedFiles);
   }
 
   const IGNORED_DIRS = ['.github/', '.vscode/'];
@@ -493,14 +481,14 @@ export const needsDocumentation = (context: AnalysisContext): boolean => {
     if (isIgnored(file)) {
       if (process.env.PROJEX_DEBUG === '1') {
         // eslint-disable-next-line no-console
-  log.info('[needsDocumentation] Ignored doc file:', file);
+        log.info('[needsDocumentation] Ignored doc file:', file);
       }
       return false;
     }
     const isDoc = /\.(md|txt|doc|docx|rst)$/i.test(file) || file.toLowerCase().includes('doc');
     if (isDoc && process.env.PROJEX_DEBUG === '1') {
       // eslint-disable-next-line no-console
-  log.info('[needsDocumentation] Detected doc file:', file);
+      log.info('[needsDocumentation] Detected doc file:', file);
     }
     return isDoc;
   });

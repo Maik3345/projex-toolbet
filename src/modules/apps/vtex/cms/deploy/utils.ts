@@ -1,5 +1,14 @@
 import { Colors } from '@api';
-import { Commands, DirectoryUtils, Endpoints, IFile, PromptsUtils, getAccountName, log, runOnlyCommand } from '@shared';
+import {
+  Commands,
+  DirectoryUtils,
+  Endpoints,
+  IFile,
+  PromptsUtils,
+  log,
+  extractAccountName,
+  runOnlyCommand,
+} from '@shared';
 import axios from 'axios';
 import fs from 'fs';
 
@@ -59,7 +68,11 @@ export class DeployUtils {
     // 3 Get the vtex and account tocket. put together the url to be used
     this.token = await runOnlyCommand(Commands.GET_TOKEN);
     this.userInfo = await runOnlyCommand(Commands.GET_ACCOUNT);
-    this.account = getAccountName(this.userInfo);
+    const extractedAccount = extractAccountName(this.userInfo);
+    if (!extractedAccount) {
+      throw new Error('Failed to extract account name from user info');
+    }
+    this.account = extractedAccount;
     log.debug(`Use the account  ${Colors.PINK(this.account)}`);
   };
 
@@ -81,11 +94,11 @@ export class DeployUtils {
         )} with de site configuration ${Colors.WARNING(this.site)}. Do you want to continue?`,
       ));
 
-  log.info('🚀 Uploading files...');
+    log.info('🚀 Uploading files...');
     const results = files.map(async (item) => {
       const url = Endpoints.UPLOAD_FILE(this.account.replace(/\s/g, ''), item.name, this.site);
       const data = fs.readFileSync(item.path, 'utf8');
-  log.info(`⬆️ Uploading the file ${item.name}`);
+      log.info(`⬆️ Uploading the file ${item.name}`);
       await this.uploadFile({
         data,
         url,
