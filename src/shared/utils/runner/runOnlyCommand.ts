@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { log } from '../../../../src/shared';
+import { log } from '@shared';
 
 export const runOnlyCommand = (command: string): Promise<string> => {
   const task = spawn(`${command}`, [], {
