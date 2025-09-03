@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.16.0](https://github.com/Maik3345/projex-toolbet/compare/v2.15.0...v2.16.0) - (2025-09-03)
+
+### Code Refactoring
+
+* **utils**: reorganizar estructura de utilidades y mejorar sistema de importación ([#30](https://github.com/Maik3345/projex-toolbet/pull/30)) ([fd433a1b](https://github.com/Maik3345/projex-toolbet/commit/fd433a1b7a88aa008db7dd18bcb90ca50031ede9))
+
+
 ## [2.15.0](https://github.com/Maik3345/projex-toolbet/compare/v2.14.0...v2.15.0) - (2025-08-27)
 
 ### Code Refactoring
