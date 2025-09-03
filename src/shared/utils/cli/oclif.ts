@@ -20,3 +20,7 @@ export const globalFlags = {
     description: 'Shows this help message.',
   }),
 };
+
+/**
+ * Additional oclif flag utilities can be added here.
+ */

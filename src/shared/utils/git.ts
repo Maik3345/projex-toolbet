@@ -1,6 +1,6 @@
 import { Colors } from '@api';
 import { log } from '../logger';
-import { runCommand } from './runCommand';
+import { runCommand } from '@shared';
 const cp = require('child-process-es6-promise');
 
 /**

@@ -42,7 +42,7 @@ const formatAsJson = async (suggestions: SuggestedLabels, verbose: boolean, colo
     output.labels = output.labels.map((l: any) => ({ ...l, color: l.color }));
   } else {
     output.labels = output.labels.map((l: any) => {
-      const { color, ...rest } = l;
+      const { color: _unused, ...rest } = l;
       return rest;
     });
   }

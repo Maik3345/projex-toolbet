@@ -1,5 +1,5 @@
 import { Colors } from '@api';
-import { Commands, Endpoints, getAccountName, log, runOnlyCommand } from '@shared';
+import { Commands, Endpoints, extractAccountName, log, runOnlyCommand } from '@shared';
 import axios from 'axios';
 import fs from 'fs';
 
@@ -43,7 +43,11 @@ export const backup = async (site: string | undefined) => {
   log.info(`${Colors.BLUE('🔑 Obtaining the token and the account to use...')}`);
   const token = await runOnlyCommand(Commands.GET_TOKEN);
   const userInfo = await runOnlyCommand(Commands.GET_ACCOUNT);
-  const account = getAccountName(userInfo);
+  const extractedAccount = extractAccountName(userInfo);
+  if (!extractedAccount) {
+    throw new Error('Failed to extract account name from user info');
+  }
+  const account = extractedAccount;
   log.debug(`${Colors.BLUE('👤 Using VTEX account:')} ${Colors.PINK(account)}`);
 
   const url = Endpoints.GET_DIRECTORY_FILES(account.replace(/\s/g, ''), site);

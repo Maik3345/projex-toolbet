@@ -31,3 +31,33 @@ export class PromptsUtils {
     }
   };
 }
+
+/**
+ * Default instance of PromptsUtils for convenience.
+ */
+export const promptsUtils = new PromptsUtils();
+
+/**
+ * Prompts the user with a yes/no question.
+ *
+ * @param message - The message to display to the user.
+ * @param defaultValue - The default value (true for yes, false for no).
+ * @returns A promise that resolves with the user's response.
+ */
+export const confirmPrompt = async (message: string, defaultValue = false): Promise<boolean> => {
+  const prompts = require('prompts');
+  
+  const question = {
+    type: 'confirm',
+    name: 'value',
+    message,
+    initial: defaultValue,
+  };
+
+  const response = await prompts(question);
+  return response.value;
+};
+
+/**
+ * Additional prompt utilities can be added here.
+ */

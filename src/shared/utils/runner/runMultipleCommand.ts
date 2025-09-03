@@ -1,18 +1,6 @@
-import { log } from '../logger';
+import { log } from '../../../shared/logger';
 import { spawn } from 'child_process';
 
-/**
- * Executes a shell command and logs its output and errors.
- *
- * @param command - The shell command to execute.
- * @param errors - An optional array of error strings to watch for in stderr output. If any are detected, the process will exit with code 1.
- * @returns A promise that resolves with the string 'exit' when the command completes.
- *
- * @remarks
- * - Standard output is logged as informational messages.
- * - Standard error is logged as warnings. If any of the specified error strings are found in the error output, a critical error is logged and the process exits.
- * - Uses Node.js `spawn` with `shell: true`.
- */
 export const runMultipleCommand = (command: string, errors?: Array<string>): Promise<string> => {
   const task = spawn(`${command}`, [], {
     shell: true,

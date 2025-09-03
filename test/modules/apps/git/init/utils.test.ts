@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SetupGitRepositoryUtils } from '../../../../../src/modules/apps/git/init/utils';
-import { FilesUtils, README_TEMPLATE_CODE, GIT_IGNORE_TEMPLATE_CODE, CHANGELOG_TEMPLATE_CODE } from '../../../../../src/shared';
+import {
+  FilesUtils,
+  README_TEMPLATE_CODE,
+  GIT_IGNORE_TEMPLATE_CODE,
+  CHANGELOG_TEMPLATE_CODE,
+} from '../../../../../src/shared';
 
 // Mock dependencies
 vi.mock('../../../../../src/shared', () => ({
@@ -21,7 +26,7 @@ describe('SetupGitRepositoryUtils', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     mockFilesUtils = {
       createDirectory: vi.fn(),
       createFile: vi.fn(),
@@ -51,18 +56,9 @@ describe('SetupGitRepositoryUtils', () => {
       expect(mockFilesUtils.createDirectory).toHaveBeenCalledWith(`${testRoot}/docs`);
 
       // Verify file creations
-      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(
-        `${testRoot}/README.md`,
-        README_TEMPLATE_CODE
-      );
-      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(
-        `${testRoot}/.gitignore`,
-        GIT_IGNORE_TEMPLATE_CODE
-      );
-      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(
-        `${testRoot}/CHANGELOG.md`,
-        CHANGELOG_TEMPLATE_CODE
-      );
+      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(`${testRoot}/README.md`, README_TEMPLATE_CODE);
+      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(`${testRoot}/.gitignore`, GIT_IGNORE_TEMPLATE_CODE);
+      expect(mockFilesUtils.createFile).toHaveBeenCalledWith(`${testRoot}/CHANGELOG.md`, CHANGELOG_TEMPLATE_CODE);
 
       // Verify all calls were made
       expect(mockFilesUtils.createDirectory).toHaveBeenCalledTimes(1);
@@ -120,12 +116,12 @@ describe('SetupGitRepositoryUtils', () => {
 
     it('should create files in correct order', async () => {
       let callOrder: string[] = [];
-      
+
       mockFilesUtils.createDirectory.mockImplementation(async (path) => {
         callOrder.push(`createDirectory: ${path}`);
       });
-      
-      mockFilesUtils.createFile.mockImplementation(async (path, content) => {
+
+      mockFilesUtils.createFile.mockImplementation(async (path) => {
         callOrder.push(`createFile: ${path}`);
       });
 

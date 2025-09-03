@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { globalFlags } from '../../../src/shared/utils/oclif';
+import { globalFlags } from '../../../src/shared/utils/cli/oclif';
 import { Flags } from '@oclif/core';
 
 // Mock @oclif/core
